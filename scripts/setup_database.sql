@@ -24,15 +24,15 @@ CREATE TABLE IF NOT EXISTS applications
 
 CREATE TABLE IF NOT EXISTS user_connections
 (
-    id                     bigint    NOT NULL,
-    user_id                bigint    NOT NULL,
-    application_id         bigint    NOT NULL,
-    name        varchar(255) NOT NULL,
+    id                     bigint       NOT NULL,
+    user_id                bigint       NOT NULL,
+    application_id         bigint       NOT NULL,
+    name                   varchar(255) NOT NULL,
     connection_credentials jsonb,
-    created_at             timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (id),
-    FOREIGN KEY (user_id) REFERENCES users (id),
-    FOREIGN KEY (application_id) REFERENCES applications (id)
+    created_at             timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id)
+    --FOREIGN KEY (user_id) REFERENCES users (id),
+    --FOREIGN KEY (application_id) REFERENCES applications (id)
 );
 
 CREATE TABLE IF NOT EXISTS application_events
@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS application_events
     triggers                jsonb,
     created_at              timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
-    FOREIGN KEY (application_id) REFERENCES applications (id),
+    --FOREIGN KEY (application_id) REFERENCES applications (id),
     UNIQUE (application_id, name)
 );
 
@@ -56,9 +56,31 @@ CREATE TABLE IF NOT EXISTS application_reactions
     application_event_id bigint       NOT NULL,
     name                 varchar(255) NOT NULL,
     description          text         NOT NULL,
-    parameters           jsonb,
+    action_mapping           jsonb,
     created_at           timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
-    FOREIGN KEY (application_event_id) REFERENCES application_events (id),
+    --FOREIGN KEY (application_event_id) REFERENCES application_events (id),
     UNIQUE (application_event_id, name)
+);
+
+CREATE TABLE IF NOT EXISTS applets
+(
+    id                     bigint       NOT NULL,
+    user_id                bigint       NOT NULL,
+    event_id               bigint       NOT NULL,
+    event_trigger_data     jsonb,
+    event_connection_id    bigint,
+    reaction_id            bigint       NOT NULL,
+    reaction_action        jsonb,
+    reaction_connection_id bigint,
+    name                   varchar(255) NOT NULL,
+    description            text         NOT NULL,
+    active                 boolean      NOT NULL,
+    created_at             timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id)
+    --FOREIGN KEY (user_id) REFERENCES users (id),
+    --FOREIGN KEY (event_id) REFERENCES application_events (id),
+    --FOREIGN KEY (reaction_id) REFERENCES application_reactions (id),
+    --FOREIGN KEY (event_connection_id) REFERENCES user_connections (id),
+    --FOREIGN KEY (reaction_connection_id) REFERENCES user_connections (id)
 );

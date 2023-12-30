@@ -7,8 +7,12 @@
 export const KAFKA_CONSUMER_METHOD_METADATA = 'KAFKA_CONSUMER_METHOD_METADATA';
 
 export const Consumer = (topic: string): MethodDecorator => {
-    return (target, propertyKey, descriptor) => {
-        if (descriptor.value)
-            Reflect.defineMetadata(KAFKA_CONSUMER_METHOD_METADATA, topic, descriptor.value);
-    };
+  return (target, propertyKey, descriptor) => {
+    if (descriptor.value)
+      Reflect.defineMetadata(
+        KAFKA_CONSUMER_METHOD_METADATA,
+        topic,
+        descriptor.value,
+      );
+  };
 };
