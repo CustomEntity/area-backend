@@ -19,17 +19,18 @@ const ConnectionCredentialsSchema = z.union([
   }),
 ]);
 
-export class UserConnectionCreatedEvent implements Event {
+export class UserConnectionDeletedEvent implements Event {
   constructor(
     public readonly userId: string,
-    public readonly connectionId: string,
-    public readonly connectionName: string,
+    public readonly id: string,
+    public readonly applicationId: string,
+    public readonly name: string,
     public readonly connectionCredentials: z.infer<
       typeof ConnectionCredentialsSchema
     >,
   ) {}
 
   getName(): string {
-    return UserConnectionCreatedEvent.name;
+    return UserConnectionDeletedEvent.name;
   }
 }

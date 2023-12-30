@@ -45,7 +45,7 @@ export class KnexUserQueryRepository implements UserQueryRepository {
     }
 
     return {
-      id: user.id,
+      id: user.id.toString(),
       firstName: user.first_name,
       lastName: user.last_name,
       email: user.email,

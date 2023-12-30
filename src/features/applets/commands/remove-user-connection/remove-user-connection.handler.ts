@@ -5,30 +5,25 @@
  **/
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { AppletRepository } from '../../ports/applet.repository';
-import { ExecuteAppletCommand } from './execute-applet.command';
+import { RemoveUserConnectionCommand } from './remove-user-connection.command';
 
-@CommandHandler(ExecuteAppletCommand)
-export class ExecuteAppletHandler
-  implements ICommandHandler<ExecuteAppletCommand>
+@CommandHandler(RemoveUserConnectionCommand)
+export class RemoveUserConnectionHandler
+  implements ICommandHandler<RemoveUserConnectionCommand>
 {
-  constructor(
-    public readonly appletRepository: AppletRepository,
-  ) {}
+  constructor(public readonly appletRepository: AppletRepository) {}
 
-  async execute(command: ExecuteAppletCommand): Promise<void> {
-    const appletId = command.appletId;
-
-    const applet = await this.appletRepository.findById(appletId);
-    if (!applet) {
-      throw new Error(`Applet with id ${appletId} not found`);
-    }
-
-    /*const eventsData = await this.eventService.retrieveNewEventsData(
-      applet.eventConnection.value.application.name,
-      applet.event.value.name,
-      applet.eventTriggerData?.value || null,
-      applet.eventConnection.value.connectionCredentials,
+  async execute(command: RemoveUserConnectionCommand): Promise<void> {
+    const applets = await this.appletRepository.findByUserConnectionId(
+      command.userConnectionId,
     );
-    console.log(eventsData);*/
+
+    console.log('applets', applets);
+
+    for (const applet of applets) {
+      applet.removeUserConnection(command.userConnectionId);
+
+      await this.appletRepository.save(applet);
+    }
   }
 }

@@ -9,9 +9,9 @@ import { DomainError } from '../../../../shared/domain-error';
 export class ApplicationDoesNotExistError extends DomainError {
   constructor(applicationName: string) {
     super(
-        'NotFound',
-        'application-does-not-exist',
-        `The application ${applicationName} does not exist`,
+      'NotFound',
+      'application-does-not-exist',
+      `The application ${applicationName} does not exist`,
     );
   }
 }

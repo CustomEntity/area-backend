@@ -20,7 +20,6 @@ export class SnowflakeIdProvider implements IdProvider {
       epoch: epoch,
       preset: 'ipv4',
     });
-    console.log(this.snowflakify.nextId());
   }
 
   getId(): string {

@@ -60,6 +60,12 @@ export class KnexUserConnectionRepository implements UserConnectionRepository {
       this.mapper.toEntity(userConnection),
     );
   }
+
+  async delete(userConnection: UserConnection): Promise<void> {
+    await this.connection(USER_CONNECTION_TABLE)
+      .where('id', userConnection.id)
+      .del();
+  }
 }
 
 class KnexUserConnectionMapper extends Mapper<UserConnection> {

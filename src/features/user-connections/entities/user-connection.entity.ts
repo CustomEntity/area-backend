@@ -33,6 +33,10 @@ export class UserConnection extends Entity<UserConnectionData> {
     return this.data.name;
   }
 
+  set name(name: string) {
+    this.data.name = name;
+  }
+
   get connectionCredentials(): ConnectionCredentials {
     return this.data.connectionCredentials;
   }

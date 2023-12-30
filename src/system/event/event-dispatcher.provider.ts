@@ -7,9 +7,9 @@
 export const EVENT_DISPATCHER = Symbol('EVENT_DISPATCHER');
 
 export interface Event {
-    getName(): string;
+  getName(): string;
 }
 
 export interface EventDispatcher {
-    dispatch(event: Event): Promise<void>;
+  dispatch(event: Event): Promise<void>;
 }

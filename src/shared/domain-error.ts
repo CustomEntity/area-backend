@@ -14,9 +14,9 @@ const ErrorType = {
 
 export class DomainError extends Error {
   constructor(
-      readonly errorType: (typeof ErrorType)[keyof typeof ErrorType],
-      readonly code: string,
-      readonly message: string,
+    readonly errorType: (typeof ErrorType)[keyof typeof ErrorType],
+    readonly code: string,
+    readonly message: string,
   ) {
     super(message);
   }

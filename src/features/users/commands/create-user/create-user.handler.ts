@@ -27,7 +27,7 @@ export class CreateUserHandler implements ICommandHandler<CreateUserCommand> {
     const user = await this.userRepository.findByEmail(command.email);
 
     if (user) {
-        throw new UserAlreadyExistsError(command.email);
+      throw new UserAlreadyExistsError(command.email);
     }
 
     const hashedPassword = command.password

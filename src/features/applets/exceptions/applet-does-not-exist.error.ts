@@ -9,9 +9,9 @@ import { DomainError } from '../../../shared/domain-error';
 export class AppletDoesNotExistError extends DomainError {
   constructor(appletId: string) {
     super(
-        'NotFound',
-        'applet_does_not_exist',
-        `Applet with id ${appletId} does not exist`,
+      'NotFound',
+      'applet_does_not_exist',
+      `Applet with id ${appletId} does not exist`,
     );
   }
 }

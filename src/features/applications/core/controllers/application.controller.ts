@@ -7,8 +7,10 @@
 import { Controller, Get } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
 import { FindAllApplicationsQuery } from '../queries/find-all-applications/find-all-applications.query';
+import {ApiTags} from "@nestjs/swagger";
 
 @Controller('applications')
+@ApiTags('applications')
 export class ApplicationController {
   constructor(private readonly queryBus: QueryBus) {}
 
@@ -18,7 +20,6 @@ export class ApplicationController {
       new FindAllApplicationsQuery(),
     );
 
-    console.log('aa', applications);
     return applications;
   }
 }

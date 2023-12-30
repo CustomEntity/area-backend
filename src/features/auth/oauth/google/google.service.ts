@@ -16,7 +16,7 @@ import { ID_PROVIDER, IdProvider } from '../../../../system/id/id.provider';
 import { GoogleAuthPayload } from './google.strategy';
 import { CreateUserCommand } from '../../../users/commands/create-user/create-user.command';
 import { Response } from 'express';
-import {UserAlreadyExistsError} from "../../../users/exceptions/user-already-exists.error";
+import { UserAlreadyExistsError } from '../../../users/exceptions/user-already-exists.error';
 
 @Injectable()
 export class GoogleService {
@@ -29,7 +29,10 @@ export class GoogleService {
     private readonly idProvider: IdProvider,
   ) {}
 
-  async login(payload: GoogleAuthPayload, res: Response) : Promise<{access_token: string}> {
+  async login(
+    payload: GoogleAuthPayload,
+    res: Response,
+  ): Promise<{ access_token: string }> {
     const user = await this.userRepository.findByEmail(payload.email);
     let id = undefined;
     if (!user) {
@@ -53,7 +56,7 @@ export class GoogleService {
     }
 
     const jwtPayload = {
-      id: id,
+      id: id.toString(),
       firstName: payload.firstName,
       lastName: payload.lastName,
       email: payload.email,

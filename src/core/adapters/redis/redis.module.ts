@@ -4,13 +4,12 @@
  * @created : 2023-12-17
  **/
 
-import {Global, Module} from "@nestjs/common";
-import {RedisService} from "./redis.service";
+import { Global, Module } from '@nestjs/common';
+import { RedisService } from './redis.service';
 
 @Global()
 @Module({
-    providers: [RedisService],
-    controllers: [RedisService],
+  providers: [RedisService],
+  controllers: [RedisService],
 })
-export class RedisModule {
-}
+export class RedisModule {}

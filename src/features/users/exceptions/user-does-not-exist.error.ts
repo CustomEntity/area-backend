@@ -9,9 +9,9 @@ import { DomainError } from '../../../shared/domain-error';
 export class UserDoesNotExistError extends DomainError {
   constructor(userId: string) {
     super(
-        'NotFound',
-        'user_does_not_exist',
-        `User with id ${userId} does not exist`,
+      'NotFound',
+      'user_does_not_exist',
+      `User with id ${userId} does not exist`,
     );
   }
 }

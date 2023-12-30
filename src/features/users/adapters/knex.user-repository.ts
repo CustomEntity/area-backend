@@ -63,7 +63,7 @@ export class KnexUserRepository implements UserRepository {
 class KnexUserMapper extends Mapper<User> {
   toEntity(data: any): User {
     return new User({
-      id: data.id,
+      id: data.id.toString(),
       firstName: data.first_name,
       lastName: data.last_name,
       email: Email.create(data.email),
