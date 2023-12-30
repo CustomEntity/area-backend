@@ -66,6 +66,34 @@ export class CreateAppletHandler
       );
     }
 
+    if (event.data.triggerMapping.value && command.eventTriggerData) {
+      for (const [key, value] of Object.entries(
+        event.data.triggerMapping.value,
+      )) {
+        if (value.required && !command.eventTriggerData[key]) {
+          throw new DomainError(
+            'InvalidArgument',
+            'MISSING_REQUIRED_FIELD',
+            `Missing required field '${key}' in eventTriggerData`,
+          );
+        }
+      }
+    }
+
+    if (reaction.data.actionMapping.value && command.reactionActionData) {
+      for (const [key, value] of Object.entries(
+        reaction.data.actionMapping.value,
+      )) {
+        if (value.required && !command.reactionActionData[key]) {
+          throw new DomainError(
+            'InvalidArgument',
+            'MISSING_REQUIRED_FIELD',
+            `Missing required field '${key}' in reactionActionData`,
+          );
+        }
+      }
+    }
+
     const applet = new Applet({
       id: this.idProvider.getId(),
       userId: command.userId,
