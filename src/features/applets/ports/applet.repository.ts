@@ -3,8 +3,8 @@
  * @mailto : contact@flaviomoreno.fr
  * @created : 2023-12-18
  **/
-import { Applet } from '../entities/applet.entity';
 import { Nullable } from '../../../shared/nullable';
+import { Applet } from '../entities/applet.entity';
 
 export const APPLET_REPOSITORY = Symbol('APPLET_REPOSITORY');
 
@@ -14,8 +14,6 @@ export interface AppletRepository {
   findByUserId(userId: string): Promise<Applet[]>;
 
   findByUserConnectionId(userConnectionId: string): Promise<Applet[]>;
-
-  findPollingApplets(): Promise<Applet[]>;
 
   findAll(): Promise<Applet[]>;
 

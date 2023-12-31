@@ -29,6 +29,10 @@ export namespace AppletAPI {
       ),
     );
 
+    export const userIdSchema = z.string().refine((value) => {
+      return value === '@me' || !isNaN(Number(value));
+    }, 'Invalid user id');
+
     export const schema = z.object({
       name: z.string().min(1),
       description: z.string().min(1),
@@ -77,5 +81,21 @@ export namespace AppletAPI {
     };
 
     export type Request = z.infer<typeof schema>;
+  }
+
+  export namespace GetUserApplet {
+    export const userIdSchema = z.string().refine((value) => {
+      return value === '@me' || !isNaN(Number(value));
+    }, 'Invalid user id');
+
+    export const appletIdSchema = z.string().refine((value) => {
+      return !isNaN(Number(value));
+    }, 'Invalid applet id');
+  }
+
+  export namespace GetUserApplets {
+    export const userIdSchema = z.string().refine((value) => {
+      return value === '@me' || !isNaN(Number(value));
+    }, 'Invalid user id');
   }
 }

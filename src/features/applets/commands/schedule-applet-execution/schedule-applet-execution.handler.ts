@@ -6,7 +6,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { AppletMessageQueue } from '../../ports/applet.message-queue';
 import { ScheduleAppletExecutionCommand } from './schedule-applet-execution.command';
-import { AppletRepository } from '../../ports/applet.repository';
+import { DetailedAppletRepository } from '../../ports/detailed-applet.repository';
 import { AppletDoesNotExistError } from '../../exceptions/applet-does-not-exist.error';
 
 @CommandHandler(ScheduleAppletExecutionCommand)
@@ -15,7 +15,7 @@ export class ScheduleAppletExecutionHandler
 {
   constructor(
     private readonly messageQueueProvider: AppletMessageQueue,
-    private readonly appletRepository: AppletRepository,
+    private readonly appletRepository: DetailedAppletRepository,
   ) {}
 
   async execute(command: ScheduleAppletExecutionCommand): Promise<void> {

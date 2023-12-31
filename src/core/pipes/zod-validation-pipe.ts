@@ -16,9 +16,14 @@ export class ZodValidationPipe implements PipeTransform {
     if (!result.success) {
       const errors = result.error.issues[0].message.split('.')[0];
       const path = result.error.issues[0].path[0];
-      throw new BadRequestException(
-        "Validation failed for '" + path + "' field: " + errors,
-      );
+
+      if (path) {
+        throw new BadRequestException(
+          "Validation failed for '" + path + "' field: " + errors,
+        );
+      } else {
+        throw new BadRequestException(errors);
+      }
     }
 
     return result.data;

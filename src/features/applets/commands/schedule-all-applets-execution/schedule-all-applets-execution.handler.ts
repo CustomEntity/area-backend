@@ -6,7 +6,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { AppletMessageQueue } from '../../ports/applet.message-queue';
 import { ScheduleAllAppletsExecutionCommand } from './schedule-all-applets-execution.command';
-import { AppletRepository } from '../../ports/applet.repository';
+import { DetailedAppletRepository } from '../../ports/detailed-applet.repository';
 
 @CommandHandler(ScheduleAllAppletsExecutionCommand)
 export class ScheduleAllAppletsExecutionHandler
@@ -14,7 +14,7 @@ export class ScheduleAllAppletsExecutionHandler
 {
   constructor(
     private readonly messageQueueProvider: AppletMessageQueue,
-    public readonly appletRepository: AppletRepository,
+    public readonly appletRepository: DetailedAppletRepository,
   ) {}
 
   async execute(command: ScheduleAllAppletsExecutionCommand): Promise<void> {

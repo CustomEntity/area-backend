@@ -50,7 +50,11 @@ export class UserConnectionController {
   async getUserConnections(
     @Req() request: Request,
     @Res() response: Response,
-    @Param('userId') userId: string,
+    @Param(
+      'userId',
+      new ZodValidationPipe(UserConnectionAPI.GetUserConnections.userIdSchema),
+    )
+    userId: string,
   ) {
     const user = request.user?.jwt;
 
@@ -75,8 +79,18 @@ export class UserConnectionController {
   async deleteConnection(
     @Req() request: Request,
     @Res() response: Response,
-    @Param('userId') userId: string,
-    @Param('connectionId') connectionId: string,
+    @Param(
+      'userId',
+      new ZodValidationPipe(UserConnectionAPI.GetUserConnections.userIdSchema),
+    )
+    userId: string,
+    @Param(
+      'connectionId',
+      new ZodValidationPipe(
+        UserConnectionAPI.DeleteUserConnection.connectionIdSchema,
+      ),
+    )
+    connectionId: string,
   ) {
     const user = request.user?.jwt;
 
@@ -113,8 +127,18 @@ export class UserConnectionController {
   async renameConnection(
     @Req() request: Request,
     @Res() response: Response,
-    @Param('userId') userId: string,
-    @Param('connectionId') connectionId: string,
+    @Param(
+      'userId',
+      new ZodValidationPipe(UserConnectionAPI.GetUserConnections.userIdSchema),
+    )
+    userId: string,
+    @Param(
+      'connectionId',
+      new ZodValidationPipe(
+        UserConnectionAPI.DeleteUserConnection.connectionIdSchema,
+      ),
+    )
+    connectionId: string,
     @Body(new ZodValidationPipe(UserConnectionAPI.Rename.schema))
     body: UserConnectionAPI.Rename.Request,
   ) {

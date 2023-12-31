@@ -5,8 +5,8 @@
  **/
 import { Injectable } from '@nestjs/common';
 import { Consumer } from '../../../../types/consumer.decorator';
-import { Applet } from '../entities/applet.entity';
-import { AppletRepository } from '../ports/applet.repository';
+import { DetailedApplet } from '../entities/detailed-applet.entity';
+import { DetailedAppletRepository } from '../ports/detailed-applet.repository';
 import { CommandBus } from '@nestjs/cqrs';
 import { ExecuteAppletCommand } from '../commands/execute-applet/execute-applet.command';
 

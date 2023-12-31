@@ -25,6 +25,8 @@ import { AppletAPI } from '../contract';
 import { ZodValidationPipe } from '../../../core/pipes/zod-validation-pipe';
 import { CreateAppletCommand } from '../commands/create-applet/create-applet.command';
 import { Request } from 'express';
+import { GetUserAppletsQuery } from '../queries/get-user-applets/get-user-applets.query';
+import { GetUserAppletQuery } from '../queries/get-user-applet/get-user-applet.query';
 
 @Controller('users/:userId/applets')
 @ApiTags('users/applets')
@@ -34,6 +36,42 @@ export class AppletController {
     private readonly queryBus: QueryBus,
   ) {}
 
+  @Get(':appletId')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Get an applet' })
+  @ApiResponse({
+    status: 200,
+    description: 'Get an applet',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Applet not found',
+  })
+  @ApiCookieAuth()
+  async getApplet(
+    @Param(
+      'userId',
+      new ZodValidationPipe(AppletAPI.GetUserApplet.userIdSchema),
+    )
+    userId: string,
+    @Param(
+      'appletId',
+      new ZodValidationPipe(AppletAPI.GetUserApplet.appletIdSchema),
+    )
+    appletId: string,
+    @Req() request: Request,
+  ) {
+    const user = request.user?.jwt;
+
+    if (userId === '@me') {
+      userId = user.id;
+    }
+
+    return await this.queryBus.execute(
+      new GetUserAppletQuery(userId, appletId),
+    );
+  }
+
   @Get()
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get all user applets' })
@@ -42,7 +80,22 @@ export class AppletController {
     description: 'Get all user applets',
   })
   @ApiCookieAuth()
-  async getUserApplets(@Param('userId') userId: string) {}
+  async getUserApplets(
+    @Param(
+      'userId',
+      new ZodValidationPipe(AppletAPI.GetUserApplets.userIdSchema),
+    )
+    userId: string,
+    @Req() request: Request,
+  ) {
+    const user = request.user?.jwt;
+
+    if (userId === '@me') {
+      userId = user.id;
+    }
+
+    return await this.queryBus.execute(new GetUserAppletsQuery(userId));
+  }
 
   @Post()
   @UseGuards(JwtAuthGuard)
@@ -50,6 +103,10 @@ export class AppletController {
   @ApiResponse({
     status: 201,
     description: 'Applet created',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad request',
   })
   @ApiCookieAuth()
   @ApiBody({
@@ -60,7 +117,8 @@ export class AppletController {
     },
   })
   async createApplet(
-    @Param('userId') userId: string,
+    @Param('userId', new ZodValidationPipe(AppletAPI.CreateApplet.userIdSchema))
+    userId: string,
     @Req() request: Request,
     @Body(new ZodValidationPipe(AppletAPI.CreateApplet.schema))
     data: AppletAPI.CreateApplet.Request,

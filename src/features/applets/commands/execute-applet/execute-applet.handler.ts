@@ -4,7 +4,7 @@
  * @created : 2023-12-18
  **/
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { AppletRepository } from '../../ports/applet.repository';
+import { DetailedAppletRepository } from '../../ports/detailed-applet.repository';
 import { ExecuteAppletCommand } from './execute-applet.command';
 import { EventService } from '../../../events/core/ports/event.service';
 
@@ -13,7 +13,7 @@ export class ExecuteAppletHandler
   implements ICommandHandler<ExecuteAppletCommand>
 {
   constructor(
-    public readonly appletRepository: AppletRepository,
+    public readonly appletRepository: DetailedAppletRepository,
     public readonly eventService: EventService,
   ) {}
 

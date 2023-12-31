@@ -8,7 +8,7 @@ import { AppletMessageQueue } from '../ports/applet.message-queue';
 import { Kafka, Producer } from 'kafkajs';
 import { undefined } from 'zod';
 import { ConfigService } from '@nestjs/config';
-import { Applet } from '../entities/applet.entity';
+import { DetailedApplet } from '../entities/detailed-applet.entity';
 import { Mapper } from '../../../shared/mapper';
 import { TriggerData } from '../value-objects/trigger-data.vo';
 import { ReactionActionData } from '../value-objects/reaction-action-data.vo';

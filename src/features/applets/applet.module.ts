@@ -15,8 +15,11 @@ import {
   AppletMessageQueue,
 } from './ports/applet.message-queue';
 import { ScheduleAllAppletsExecutionHandler } from './commands/schedule-all-applets-execution/schedule-all-applets-execution.handler';
-import { APPLET_REPOSITORY, AppletRepository } from './ports/applet.repository';
-import { KnexAppletRepository } from './adapters/knex.applet.repository';
+import {
+  DETAILED_APPLET_REPOSITORY,
+  DetailedAppletRepository,
+} from './ports/detailed-applet.repository';
+import { KnexDetailedAppletRepository } from './adapters/knex.detailed-applet.repository';
 import { KnexService } from '../../core/adapters/knex/knex.service';
 import { AppletConsumer } from './consumers/applet.consumer';
 import { KafkaService } from '../../core/adapters/kafka/kafka.service';
@@ -48,6 +51,15 @@ import {
 } from '../user-connections/ports/user-connection.repository';
 import { ID_PROVIDER, IdProvider } from '../../system/id/id.provider';
 import { ReactionModule } from '../reactions/reaction.module';
+import { APPLET_REPOSITORY, AppletRepository } from './ports/applet.repository';
+import { KnexAppletRepository } from './adapters/knex.applet.repository';
+import {
+  APPLET_QUERY_REPOSITORY,
+  AppletQueryRepository,
+} from './ports/applet.query-repository';
+import { GetUserAppletsHandler } from './queries/get-user-applets/get-user-applets.handler';
+import { KnexAppletQueryRepository } from './adapters/knex.applet.query-repository';
+import { GetUserAppletHandler } from './queries/get-user-applet/get-user-applet.handler';
 
 @Module({
   imports: [
@@ -77,6 +89,13 @@ import { ReactionModule } from '../reactions/reaction.module';
       inject: [KafkaService, ConfigService],
     },
     {
+      provide: DETAILED_APPLET_REPOSITORY,
+      useFactory: (knexService: KnexService) => {
+        return new KnexDetailedAppletRepository(knexService.connection);
+      },
+      inject: [KnexService],
+    },
+    {
       provide: APPLET_REPOSITORY,
       useFactory: (knexService: KnexService) => {
         return new KnexAppletRepository(knexService.connection);
@@ -84,40 +103,47 @@ import { ReactionModule } from '../reactions/reaction.module';
       inject: [KnexService],
     },
     {
+      provide: APPLET_QUERY_REPOSITORY,
+      useFactory: (knexService: KnexService) => {
+        return new KnexAppletQueryRepository(knexService.connection);
+      },
+      inject: [KnexService],
+    },
+    {
       provide: ScheduleAppletExecutionHandler,
       useFactory: (
         messageQueueProvider: AppletMessageQueue,
-        appletRepository: AppletRepository,
+        appletRepository: DetailedAppletRepository,
       ) => {
         return new ScheduleAppletExecutionHandler(
           messageQueueProvider,
           appletRepository,
         );
       },
-      inject: [APPLET_MESSAGE_QUEUE_PROVIDER, APPLET_REPOSITORY],
+      inject: [APPLET_MESSAGE_QUEUE_PROVIDER, DETAILED_APPLET_REPOSITORY],
     },
     {
       provide: ScheduleAllAppletsExecutionHandler,
       useFactory: (
         messageQueueProvider: AppletMessageQueue,
-        appletRepository: AppletRepository,
+        appletRepository: DetailedAppletRepository,
       ) => {
         return new ScheduleAllAppletsExecutionHandler(
           messageQueueProvider,
           appletRepository,
         );
       },
-      inject: [APPLET_MESSAGE_QUEUE_PROVIDER, APPLET_REPOSITORY],
+      inject: [APPLET_MESSAGE_QUEUE_PROVIDER, DETAILED_APPLET_REPOSITORY],
     },
     {
       provide: ExecuteAppletHandler,
       useFactory: (
-        appletRepository: AppletRepository,
+        appletRepository: DetailedAppletRepository,
         eventService: EventService,
       ) => {
         return new ExecuteAppletHandler(appletRepository, eventService);
       },
-      inject: [APPLET_REPOSITORY, EVENT_SERVICE],
+      inject: [DETAILED_APPLET_REPOSITORY, EVENT_SERVICE],
     },
     {
       provide: RemoveUserConnectionHandler,
@@ -151,9 +177,27 @@ import { ReactionModule } from '../reactions/reaction.module';
         ID_PROVIDER,
       ],
     },
+    {
+      provide: GetUserAppletsHandler,
+      useFactory: (appletQueryRepository: AppletQueryRepository) => {
+        return new GetUserAppletsHandler(appletQueryRepository);
+      },
+      inject: [APPLET_QUERY_REPOSITORY],
+    },
+    {
+      provide: GetUserAppletHandler,
+      useFactory: (appletQueryRepository: AppletQueryRepository) => {
+        return new GetUserAppletHandler(appletQueryRepository);
+      },
+      inject: [APPLET_QUERY_REPOSITORY],
+    },
     AppletConsumer,
   ],
   controllers: [AppletController],
-  exports: [],
+  exports: [
+    DETAILED_APPLET_REPOSITORY,
+    APPLET_REPOSITORY,
+    APPLET_QUERY_REPOSITORY,
+  ],
 })
 export class AppletModule {}
