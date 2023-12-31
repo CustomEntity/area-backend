@@ -83,7 +83,7 @@ export namespace AppletAPI {
     export type Request = z.infer<typeof schema>;
   }
 
-  export namespace GetUserApplet {
+  export namespace GetApplet {
     export const userIdSchema = z.string().refine((value) => {
       return value === '@me' || !isNaN(Number(value));
     }, 'Invalid user id');
@@ -97,5 +97,15 @@ export namespace AppletAPI {
     export const userIdSchema = z.string().refine((value) => {
       return value === '@me' || !isNaN(Number(value));
     }, 'Invalid user id');
+  }
+
+  export namespace DeleteApplet {
+    export const userIdSchema = z.string().refine((value) => {
+      return value === '@me' || !isNaN(Number(value));
+    }, 'Invalid user id');
+
+    export const appletIdSchema = z.string().refine((value) => {
+      return !isNaN(Number(value));
+    }, 'Invalid applet id');
   }
 }

@@ -6,7 +6,5 @@
 import { ICommand } from '@nestjs/cqrs';
 
 export class RemoveUserConnectionCommand implements ICommand {
-  constructor(
-    public readonly userConnectionId: string,
-  ) {}
+  constructor(public readonly userConnectionId: string) {}
 }

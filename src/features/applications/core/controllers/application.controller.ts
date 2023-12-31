@@ -7,7 +7,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
 import { FindAllApplicationsQuery } from '../queries/find-all-applications/find-all-applications.query';
-import {ApiTags} from "@nestjs/swagger";
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('applications')
 @ApiTags('applications')

@@ -12,7 +12,7 @@ import {
 import { z } from 'zod';
 import { EventApplicationService } from '../interfaces/event-application-service';
 import githubEventApplicationServices from '../../github';
-import {Injectable} from "@nestjs/common";
+import { Injectable } from '@nestjs/common';
 
 const services = new Map<string, EventApplicationService[]>();
 services.set('github', githubEventApplicationServices);

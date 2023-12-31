@@ -4,12 +4,19 @@
  * @created : 2023-12-14
  **/
 
-import {Controller, Get, HttpCode, Req, Res, UseGuards} from '@nestjs/common';
+import { Controller, Get, HttpCode, Req, Res, UseGuards } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
 import { JwtAuthGuard } from '../../auth/jwt/jwt-auth.guard';
 import { Request, Response } from 'express';
 import { FindUserByIdQuery } from '../queries/find-user-by-id/find-user-by-id.query';
-import {ApiBearerAuth, ApiCookieAuth, ApiOperation, ApiResponse, ApiSecurity, ApiTags} from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiCookieAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiSecurity,
+  ApiTags,
+} from '@nestjs/swagger';
 
 @Controller('users')
 @ApiTags('users')

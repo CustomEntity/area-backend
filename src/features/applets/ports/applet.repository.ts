@@ -18,4 +18,6 @@ export interface AppletRepository {
   findAll(): Promise<Applet[]>;
 
   save(applet: Applet): Promise<void>;
+
+  delete(applet: Applet): Promise<void>;
 }

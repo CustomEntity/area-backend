@@ -5,13 +5,8 @@
  **/
 import { Injectable } from '@nestjs/common';
 import { AppletMessageQueue } from '../ports/applet.message-queue';
-import { Kafka, Producer } from 'kafkajs';
-import { undefined } from 'zod';
+import { Producer } from 'kafkajs';
 import { ConfigService } from '@nestjs/config';
-import { DetailedApplet } from '../entities/detailed-applet.entity';
-import { Mapper } from '../../../shared/mapper';
-import { TriggerData } from '../value-objects/trigger-data.vo';
-import { ReactionActionData } from '../value-objects/reaction-action-data.vo';
 
 @Injectable()
 export class KafkaMessageQueueProvider implements AppletMessageQueue {

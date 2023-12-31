@@ -11,6 +11,8 @@ import { Nullable } from '../../../shared/nullable';
 import { Knex } from 'knex';
 import { TriggerData } from '../value-objects/trigger-data.vo';
 import { ReactionActionData } from '../value-objects/reaction-action-data.vo';
+import * as console from 'console';
+import { undefined } from 'zod';
 
 const APPLET_TABLE = 'applets';
 
@@ -30,6 +32,10 @@ export class KnexAppletRepository implements AppletRepository {
       .select()
       .where('id', id)
       .first();
+
+    if (!row) {
+      return null;
+    }
     return this.mapper.toEntity(row);
   }
 
@@ -48,11 +54,14 @@ export class KnexAppletRepository implements AppletRepository {
   }
 
   async save(applet: Applet): Promise<void> {
-    console.log('cccc', this.mapper.toPersistence(applet));
     await this.connection(APPLET_TABLE)
       .insert(this.mapper.toPersistence(applet))
       .onConflict('id')
       .merge();
+  }
+
+  delete(applet: Applet): Promise<void> {
+    return this.connection(APPLET_TABLE).where('id', applet.id).del();
   }
 }
 

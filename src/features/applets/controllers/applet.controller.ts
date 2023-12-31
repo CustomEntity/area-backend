@@ -6,6 +6,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -27,6 +28,7 @@ import { CreateAppletCommand } from '../commands/create-applet/create-applet.com
 import { Request } from 'express';
 import { GetUserAppletsQuery } from '../queries/get-user-applets/get-user-applets.query';
 import { GetUserAppletQuery } from '../queries/get-user-applet/get-user-applet.query';
+import { DeleteAppletCommand } from '../commands/delete-applet/delete-applet.command';
 
 @Controller('users/:userId/applets')
 @ApiTags('users/applets')
@@ -49,14 +51,11 @@ export class AppletController {
   })
   @ApiCookieAuth()
   async getApplet(
-    @Param(
-      'userId',
-      new ZodValidationPipe(AppletAPI.GetUserApplet.userIdSchema),
-    )
+    @Param('userId', new ZodValidationPipe(AppletAPI.GetApplet.userIdSchema))
     userId: string,
     @Param(
       'appletId',
-      new ZodValidationPipe(AppletAPI.GetUserApplet.appletIdSchema),
+      new ZodValidationPipe(AppletAPI.GetApplet.appletIdSchema),
     )
     appletId: string,
     @Req() request: Request,
@@ -144,5 +143,38 @@ export class AppletController {
     );
 
     return { message: 'Applet created' };
+  }
+
+  @Delete(':appletId')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Delete an applet' })
+  @ApiResponse({
+    status: 200,
+    description: 'Applet deleted',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Applet not found',
+  })
+  @ApiCookieAuth()
+  async deleteApplet(
+    @Param('userId', new ZodValidationPipe(AppletAPI.DeleteApplet.userIdSchema))
+    userId: string,
+    @Param(
+      'appletId',
+      new ZodValidationPipe(AppletAPI.DeleteApplet.appletIdSchema),
+    )
+    appletId: string,
+    @Req() request: Request,
+  ) {
+    const user = request.user?.jwt;
+
+    if (userId === '@me') {
+      userId = user.id;
+    }
+
+    await this.commandBus.execute(new DeleteAppletCommand(userId, appletId));
+
+    return { message: 'Applet deleted' };
   }
 }
