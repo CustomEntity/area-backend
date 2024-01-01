@@ -28,12 +28,14 @@ async function bootstrap() {
       const domainRegex = /^[a-z]+:\/\/(?:[^\/]*\.+)*lfdp\.eu/;
       const ngrokRegex = /^[a-z]+:\/\/(?:[^\/]*\.+)*ngrok-free\.app/;
       const serveoRegex = /^[a-z]+:\/\/(?:[^\/]*\.+)*serveo\.net/;
+      const gcpRegex = /^[a-z]+:\/\/(?:[^\/]*\.+)*run\.app/;
       if (
         !origin ||
         allowedOrigins.includes(origin) ||
         domainRegex.test(origin) ||
         ngrokRegex.test(origin) ||
-        serveoRegex.test(origin)
+        serveoRegex.test(origin) ||
+        gcpRegex.test(origin)
       ) {
         callback(null, true);
       } else {
