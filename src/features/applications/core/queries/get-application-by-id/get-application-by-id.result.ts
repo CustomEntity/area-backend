@@ -13,13 +13,13 @@ const AuthenticationParametersSchema = z.record(
   z.union([z.string(), z.number(), z.array(z.string()), z.boolean()]),
 );
 
-export class FindAllApplicationsResult implements IQueryResult {
-  readonly applications: {
+export class GetApplicationByIdResult implements IQueryResult {
+  readonly application?: {
     id: string;
     name: string;
     iconUrl: string;
     authenticationType: z.infer<typeof AuthenticationTypeSchema>;
     authenticationParameters: z.infer<typeof AuthenticationParametersSchema>;
     createdAt: Date;
-  }[];
+  };
 }

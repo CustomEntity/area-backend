@@ -11,7 +11,10 @@ import { SystemModule } from '../../system/system.module';
 import { APPLICATION_REPOSITORY } from './core/ports/application.repository';
 import { KnexApplicationRepository } from './core/adapters/knex.application.repository';
 import { KnexService } from '../../core/adapters/knex/knex.service';
-import { APPLICATION_QUERY_REPOSITORY } from './core/ports/application.query-repository';
+import {
+  APPLICATION_QUERY_REPOSITORY,
+  ApplicationQueryRepository,
+} from './core/ports/application.query-repository';
 import { FindAllApplicationsHandler } from './core/queries/find-all-applications/find-all-applications.handler';
 import { KnexApplicationQueryRepository } from './core/adapters/knex.application.query-repository';
 import { ApplicationController } from './core/controllers/application.controller';
@@ -19,6 +22,7 @@ import { JwtAuthModule } from '../auth/jwt/jwt-auth.module';
 import { GithubController } from './github/github.controller';
 import { GithubStrategy } from './github/github.strategy';
 import { GithubService } from './github/github.service';
+import { GetApplicationByIdHandler } from './core/queries/get-application-by-id/get-application-by-id.handler';
 
 @Module({
   imports: [KnexModule, CqrsModule, SystemModule, JwtAuthModule],
@@ -40,10 +44,15 @@ import { GithubService } from './github/github.service';
     },
     {
       provide: FindAllApplicationsHandler,
-      useFactory: (
-        applicationQueryRepository: KnexApplicationQueryRepository,
-      ) => {
+      useFactory: (applicationQueryRepository: ApplicationQueryRepository) => {
         return new FindAllApplicationsHandler(applicationQueryRepository);
+      },
+      inject: [APPLICATION_QUERY_REPOSITORY],
+    },
+    {
+      provide: GetApplicationByIdHandler,
+      useFactory: (applicationQueryRepository: ApplicationQueryRepository) => {
+        return new GetApplicationByIdHandler(applicationQueryRepository);
       },
       inject: [APPLICATION_QUERY_REPOSITORY],
     },
@@ -54,6 +63,7 @@ import { GithubService } from './github/github.service';
     APPLICATION_REPOSITORY,
     APPLICATION_QUERY_REPOSITORY,
     FindAllApplicationsHandler,
+    GetApplicationByIdHandler,
   ],
 })
 export class ApplicationModule {}

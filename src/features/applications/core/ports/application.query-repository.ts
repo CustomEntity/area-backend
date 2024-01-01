@@ -5,6 +5,7 @@
  **/
 
 import { FindAllApplicationsResult } from '../queries/find-all-applications/find-all-applications.result';
+import { GetApplicationByIdResult } from '../queries/get-application-by-id/get-application-by-id.result';
 
 export const APPLICATION_QUERY_REPOSITORY = Symbol(
   'APPLICATION_QUERY_REPOSITORY',
@@ -12,4 +13,6 @@ export const APPLICATION_QUERY_REPOSITORY = Symbol(
 
 export interface ApplicationQueryRepository {
   findAll(): Promise<FindAllApplicationsResult>;
+
+  findById(id: string): Promise<GetApplicationByIdResult>;
 }
