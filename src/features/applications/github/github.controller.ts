@@ -30,6 +30,14 @@ export class GithubController {
     const jwtPayload = req.user?.jwt as unknown as JwtPayload;
     const githubPayload = req.user?.github as unknown as GithubAuthPayload;
 
+    if (req.query.state) {
+      const state = Buffer.from(req.query.state as string, 'base64').toString(
+        'ascii',
+      );
+
+      await this.githubService.connectUser(jwtPayload, githubPayload);
+      return res.redirect(state);
+    }
     await this.githubService.connectUser(jwtPayload, githubPayload);
     return res.status(200).send();
   }

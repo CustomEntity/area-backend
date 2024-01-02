@@ -8,6 +8,8 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-github2';
+import e from "express";
+import passport from "passport";
 
 export type GithubAuthPayload = {
   provider: string;
@@ -19,21 +21,26 @@ export type GithubAuthPayload = {
 @Injectable()
 export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
   constructor(configService: ConfigService) {
-    console.log('clientID', configService.get<string>('oauth.github.clientId'));
-    console.log(
-      'clientSecret',
-      configService.get<string>('oauth.github.clientSecret'),
-    );
-    console.log(
-      'callbackURL',
-      configService.get<string>('oauth.github.callbackURL'),
-    );
     super({
       clientID: configService.get<string>('oauth.github.clientId'),
       clientSecret: configService.get<string>('oauth.github.clientSecret'),
       callbackURL: configService.get<string>('oauth.github.callbackURL'),
       scope: ['repo', 'read:user', 'user:email'],
     });
+  }
+
+  authenticate(req: e.Request, options?: any) {
+    const returnTo = req.query.returnTo as string;
+
+    if (returnTo) {
+      const cryptedReturnTo = Buffer.from(returnTo).toString('base64');
+
+      super.authenticate(req, {
+        ...options,
+        state: cryptedReturnTo,
+      });
+      return;
+    }
   }
 
   async validate(
