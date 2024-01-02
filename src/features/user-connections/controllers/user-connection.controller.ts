@@ -30,6 +30,7 @@ import { RenameUserConnectionCommand } from '../commands/rename-user-connection/
 import { ZodValidationPipe } from '../../../core/pipes/zod-validation-pipe';
 import { UserConnectionAPI } from '../contract';
 import { GetUserConnectionsQuery } from '../queries/get-user-connections/get-user-connections.query';
+import { GetUserConnectionQuery } from '../queries/get-user-connection/get-user-connections.query';
 
 @Controller('users/:userId/connections')
 @ApiTags('users/connections')
@@ -66,6 +67,42 @@ export class UserConnectionController {
     );
 
     return response.status(200).send(userConnections);
+  }
+
+  @Get(':connectionId')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Get a user connection' })
+  @ApiResponse({
+    status: 200,
+    description: 'Get a user connection',
+  })
+  @ApiCookieAuth()
+  async getUserConnection(
+    @Req() request: Request,
+    @Res() response: Response,
+    @Param(
+      'userId',
+      new ZodValidationPipe(UserConnectionAPI.GetUserConnection.userIdSchema),
+    )
+    userId: string,
+    @Param(
+      'connectionId',
+      new ZodValidationPipe(
+        UserConnectionAPI.GetUserConnection.connectionIdSchema,
+      ),
+    )
+    connectionId: string,
+  ) {
+    const user = request.user?.jwt;
+
+    if (userId === '@me') {
+      userId = user.id;
+    }
+    const userConnection = await this.queryBus.execute(
+      new GetUserConnectionQuery(userId, connectionId),
+    );
+
+    return response.status(200).send(userConnection);
   }
 
   @Delete(':connectionId')

@@ -28,6 +28,11 @@ export class CreateAppletHandler
   ) {}
 
   async execute(command: CreateAppletCommand) {
+    const user = await this.userConnectionRepository.findById(command.userId);
+
+    if (!user) {
+      throw new DomainError('NotFound', 'USER_NOT_FOUND', 'User not found');
+    }
     const event = await this.eventRepository.findById(command.eventId);
     if (!event) {
       throw new DomainError('NotFound', 'EVENT_NOT_FOUND', 'Event not found');
@@ -77,7 +82,10 @@ export class CreateAppletHandler
       }
     }
 
-    if (reaction.data.parametersMapping.value && command.reactionParametersData) {
+    if (
+      reaction.data.parametersMapping.value &&
+      command.reactionParametersData
+    ) {
       for (const [key, value] of Object.entries(
         reaction.data.parametersMapping.value,
       )) {

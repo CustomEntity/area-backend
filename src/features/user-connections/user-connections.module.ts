@@ -32,6 +32,7 @@ import {
 } from './ports/user-connection.query-repository';
 import { GetUserConnectionsHandler } from './queries/get-user-connections/get-user-connections.handler';
 import { KnexUserConnectionQueryRepository } from './adapters/knex.user-connection.query-repository';
+import { GetUserConnectionHandler } from './queries/get-user-connection/get-user-connection.handler';
 
 @Module({
   imports: [KnexModule, CqrsModule, SystemModule],
@@ -107,6 +108,15 @@ import { KnexUserConnectionQueryRepository } from './adapters/knex.user-connecti
         );
       },
       inject: [USER_CONNECTION_REPOSITORY, EVENT_DISPATCHER],
+    },
+    {
+      provide: GetUserConnectionHandler,
+      useFactory: (
+        userConnectionQueryRepository: UserConnectionQueryRepository,
+      ) => {
+        return new GetUserConnectionHandler(userConnectionQueryRepository);
+      },
+      inject: [USER_CONNECTION_QUERY_REPOSITORY],
     },
   ],
   exports: [USER_CONNECTION_REPOSITORY],
