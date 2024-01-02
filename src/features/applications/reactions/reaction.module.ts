@@ -5,12 +5,12 @@
  **/
 
 import { Module } from '@nestjs/common';
-import { KnexModule } from '../../core/adapters/knex/knex.module';
+import { KnexModule } from '../../../core/adapters/knex/knex.module';
 import { CqrsModule } from '@nestjs/cqrs';
-import { SystemModule } from '../../system/system.module';
-import { KnexService } from '../../core/adapters/knex/knex.service';
-import { REACTION_REPOSITORY } from './core/ports/reaction.repository';
-import { KnexReactionRepository } from './core/adapters/knex.reaction.repository';
+import { SystemModule } from '../../../system/system.module';
+import { KnexService } from '../../../core/adapters/knex/knex.service';
+import { REACTION_REPOSITORY } from './ports/reaction.repository';
+import { KnexReactionRepository } from './adapters/knex.reaction.repository';
 
 @Module({
   imports: [KnexModule, CqrsModule, SystemModule],

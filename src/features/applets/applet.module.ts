@@ -30,27 +30,27 @@ import { UserConnectionsModule } from '../user-connections/user-connections.modu
 import { ExecuteAppletHandler } from './commands/execute-applet/execute-applet.handler';
 import { AppletEventListener } from './adapters/applet.event-listener';
 import { RemoveUserConnectionHandler } from './commands/remove-user-connection/remove-user-connection.handler';
-import { EventModule } from '../events/event.module';
+import { EventModule } from '../applications/events/event.module';
 import {
   EVENT_SERVICE,
   EventService,
-} from '../events/core/ports/event.service';
+} from '../applications/events/ports/event.service';
 import { AppletController } from './controllers/applet.controller';
 import { CreateAppletHandler } from './commands/create-applet/create-applet.handler';
 import {
   REACTION_REPOSITORY,
   ReactionRepository,
-} from '../reactions/core/ports/reaction.repository';
+} from '../applications/reactions/ports/reaction.repository';
 import {
-  EVENT_REPOSITORY,
-  EventRepository,
-} from '../events/core/ports/event.repository';
+  APPLICATION_EVENT_REPOSITORY,
+  ApplicationEventRepository,
+} from '../applications/events/ports/application-event.repository';
 import {
   USER_CONNECTION_REPOSITORY,
   UserConnectionRepository,
 } from '../user-connections/ports/user-connection.repository';
 import { ID_PROVIDER, IdProvider } from '../../system/id/id.provider';
-import { ReactionModule } from '../reactions/reaction.module';
+import { ReactionModule } from '../applications/reactions/reaction.module';
 import { APPLET_REPOSITORY, AppletRepository } from './ports/applet.repository';
 import { KnexAppletRepository } from './adapters/knex.applet.repository';
 import {
@@ -157,7 +157,7 @@ import { DeleteAppletHandler } from './commands/delete-applet/delete-applet.hand
       provide: CreateAppletHandler,
       useFactory: (
         appletRepository: AppletRepository,
-        eventRepository: EventRepository,
+        eventRepository: ApplicationEventRepository,
         reactionRepository: ReactionRepository,
         userConnectionRepository: UserConnectionRepository,
         idProvider: IdProvider,
@@ -172,7 +172,7 @@ import { DeleteAppletHandler } from './commands/delete-applet/delete-applet.hand
       },
       inject: [
         APPLET_REPOSITORY,
-        EVENT_REPOSITORY,
+        APPLICATION_EVENT_REPOSITORY,
         REACTION_REPOSITORY,
         USER_CONNECTION_REPOSITORY,
         ID_PROVIDER,

@@ -5,8 +5,8 @@
  **/
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { CreateAppletCommand } from './create-applet.command';
-import { EventRepository } from '../../../events/core/ports/event.repository';
-import { ReactionRepository } from '../../../reactions/core/ports/reaction.repository';
+import { ApplicationEventRepository } from '../../../applications/events/ports/application-event.repository';
+import { ReactionRepository } from '../../../applications/reactions/ports/reaction.repository';
 import { UserConnectionRepository } from '../../../user-connections/ports/user-connection.repository';
 import { DomainError } from '../../../../shared/domain-error';
 import { IdProvider } from '../../../../system/id/id.provider';
@@ -21,7 +21,7 @@ export class CreateAppletHandler
 {
   constructor(
     private readonly appletRepository: AppletRepository,
-    private readonly eventRepository: EventRepository,
+    private readonly eventRepository: ApplicationEventRepository,
     private readonly reactionRepository: ReactionRepository,
     private readonly userConnectionRepository: UserConnectionRepository,
     private readonly idProvider: IdProvider,

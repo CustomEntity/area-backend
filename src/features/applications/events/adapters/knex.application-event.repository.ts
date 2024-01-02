@@ -5,7 +5,7 @@
  **/
 
 import { Injectable } from '@nestjs/common';
-import { EventRepository } from '../ports/event.repository';
+import { ApplicationEventRepository } from '../ports/application-event.repository';
 import { Knex } from 'knex';
 import { Nullable } from '../../../../shared/nullable';
 import { Mapper } from '../../../../shared/mapper';
@@ -17,7 +17,9 @@ import { Event } from '../entities/event.entity';
 const EVENT_TABLE = 'application_events';
 
 @Injectable()
-export class KnexEventRepository implements EventRepository {
+export class KnexApplicationEventRepository
+  implements ApplicationEventRepository
+{
   private readonly mapper: KnexEventMapper = new KnexEventMapper();
 
   constructor(private readonly connection: Knex) {}

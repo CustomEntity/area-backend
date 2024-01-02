@@ -6,7 +6,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { DetailedAppletRepository } from '../../ports/detailed-applet.repository';
 import { ExecuteAppletCommand } from './execute-applet.command';
-import { EventService } from '../../../events/core/ports/event.service';
+import { EventService } from '../../../applications/events/ports/event.service';
 
 @CommandHandler(ExecuteAppletCommand)
 export class ExecuteAppletHandler

@@ -11,4 +11,10 @@ export namespace ApplicationAPI {
       return !isNaN(Number(value));
     }, 'Invalid application id');
   }
+
+  export namespace GetApplicationEvents {
+    export const applicationIdSchema = z.string().refine((value) => {
+      return !isNaN(Number(value));
+    }, 'Invalid application id');
+  }
 }

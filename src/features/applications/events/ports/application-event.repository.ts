@@ -6,9 +6,11 @@
 import { Nullable } from '../../../../shared/nullable';
 import { Event } from '../entities/event.entity';
 
-export const EVENT_REPOSITORY = Symbol('EVENT_REPOSITORY');
+export const APPLICATION_EVENT_REPOSITORY = Symbol(
+  'APPLICATION_EVENT_REPOSITORY',
+);
 
-export interface EventRepository {
+export interface ApplicationEventRepository {
   findById(id: string): Promise<Nullable<Event>>;
 
   findByApplicationId(applicationId: string): Promise<Event[]>;

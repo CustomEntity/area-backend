@@ -17,8 +17,8 @@ import { UserConnectionsModule } from '../features/user-connections/user-connect
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ScheduleModule } from '@nestjs/schedule';
 import { AppletModule } from '../features/applets/applet.module';
-import { EventModule } from '../features/events/event.module';
-import { ReactionModule } from '../features/reactions/reaction.module';
+import { EventModule } from '../features/applications/events/event.module';
+import { ReactionModule } from '../features/applications/reactions/reaction.module';
 
 @Global()
 @Module({
