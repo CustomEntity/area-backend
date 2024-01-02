@@ -52,6 +52,10 @@ import { GetApplicationEventsHandler } from './queries/get-application-events.ha
       inject: [APPLICATION_EVENT_QUERY_REPOSITORY],
     },
   ],
-  exports: [EVENT_SERVICE, APPLICATION_EVENT_REPOSITORY],
+  exports: [
+    EVENT_SERVICE,
+    APPLICATION_EVENT_REPOSITORY,
+    APPLICATION_EVENT_QUERY_REPOSITORY,
+  ],
 })
 export class EventModule {}

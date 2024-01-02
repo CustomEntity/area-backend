@@ -19,7 +19,7 @@ export class AppController {
     status: 200,
     description: 'Get about.json',
   })
-  getAboutJson(@Req() req: Request, @Res() res: Response) {
-    return this.appService.getAboutJson(req);
+  async getAboutJson(@Req() req: Request, @Res() res: Response) {
+    return res.json(await this.appService.getAboutJson(req));
   }
 }

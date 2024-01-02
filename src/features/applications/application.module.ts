@@ -73,6 +73,8 @@ import { EventModule } from './events/event.module';
     APPLICATION_QUERY_REPOSITORY,
     FindAllApplicationsHandler,
     GetApplicationByIdHandler,
+    EventModule,
+    ReactionModule,
   ],
 })
 export class ApplicationModule {}

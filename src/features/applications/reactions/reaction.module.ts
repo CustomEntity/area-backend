@@ -14,6 +14,7 @@ import { KnexApplicationReactionQueryRepository } from './adapters/knex.applicat
 import { GetApplicationReactionsHandler } from './queries/get-application-reactions.handler';
 import { APPLICATION_REACTION_REPOSITORY } from './ports/application-reaction.repository';
 import { ReactionController } from './controllers/reaction.controller';
+import { KnexApplicationReactionRepository } from './adapters/knex.application-reaction.repository';
 
 @Module({
   imports: [KnexModule, CqrsModule, SystemModule],
@@ -22,9 +23,7 @@ import { ReactionController } from './controllers/reaction.controller';
     {
       provide: APPLICATION_REACTION_REPOSITORY,
       useFactory: (knexService: KnexService) => {
-        return new KnexApplicationReactionQueryRepository(
-          knexService.connection,
-        );
+        return new KnexApplicationReactionRepository(knexService.connection);
       },
       inject: [KnexService],
     },

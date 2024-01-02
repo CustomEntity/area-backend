@@ -57,7 +57,7 @@ class KnexReactionMapper extends Mapper<Reaction> {
       applicationId: data.application_id,
       name: data.name,
       description: data.description,
-      parametersMapping: ParametersMapping.create(data.action_mapping),
+      parametersMapping: ParametersMapping.create(data.parameters_mapping),
       createdAt: data.created_at,
     });
   }
