@@ -53,5 +53,7 @@ export class EditAppletHandler implements ICommandHandler<EditAppletCommand> {
         params.reactionParametersData,
       );
     }
+
+    await this.appletRepository.save(applet);
   }
 }

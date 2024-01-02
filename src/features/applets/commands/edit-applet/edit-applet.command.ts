@@ -32,7 +32,6 @@ type EditAppletCommandParams = {
   id: string;
   name?: string;
   description?: string;
-  userId?: string;
   eventId?: string;
   reactionId?: string;
   eventConnectionId?: string;

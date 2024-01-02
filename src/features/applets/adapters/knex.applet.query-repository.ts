@@ -43,7 +43,6 @@ export class KnexAppletQueryRepository implements AppletQueryRepository {
         `${APPLET_TABLE}.created_at`,
         `${USERS_TABLE}.id as user_id`,
       )
-
       .where('users.id', '=', userId);
 
     if (!results || results.length === 0 || results[0].user_id === null) {
