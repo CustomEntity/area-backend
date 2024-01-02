@@ -9,6 +9,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Req,
   UseGuards,
@@ -29,6 +30,7 @@ import { Request } from 'express';
 import { GetUserAppletsQuery } from '../queries/get-user-applets/get-user-applets.query';
 import { GetUserAppletQuery } from '../queries/get-user-applet/get-user-applet.query';
 import { DeleteAppletCommand } from '../commands/delete-applet/delete-applet.command';
+import { EditAppletCommand } from '../commands/edit-applet/edit-applet.command';
 
 @Controller('users/:userId/applets')
 @ApiTags('users/applets')
@@ -176,5 +178,59 @@ export class AppletController {
     await this.commandBus.execute(new DeleteAppletCommand(userId, appletId));
 
     return { message: 'Applet deleted' };
+  }
+
+  @Patch(':appletId')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Edit an applet' })
+  @ApiResponse({
+    status: 200,
+    description: 'Applet edited',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Applet not found',
+  })
+  @ApiBody({
+    schema: {
+      type: AppletAPI.EditApplet.openApiSchema.type,
+      properties: AppletAPI.EditApplet.openApiSchema.properties,
+      example: AppletAPI.EditApplet.openApiSchema.example,
+    },
+  })
+  @ApiCookieAuth()
+  async editApplet(
+    @Param('userId', new ZodValidationPipe(AppletAPI.EditApplet.userIdSchema))
+    userId: string,
+    @Param(
+      'appletId',
+      new ZodValidationPipe(AppletAPI.EditApplet.appletIdSchema),
+    )
+    appletId: string,
+    @Req() request: Request,
+    @Body(new ZodValidationPipe(AppletAPI.EditApplet.schema))
+    data: AppletAPI.EditApplet.Request,
+  ) {
+    const user = request.user?.jwt;
+
+    if (userId === '@me') {
+      userId = user.id;
+    }
+
+    await this.commandBus.execute(
+      new EditAppletCommand({
+        id: appletId,
+        name: data.name,
+        description: data.description,
+        eventId: data.eventId,
+        reactionId: data.reactionId,
+        eventConnectionId: data.eventConnectionId,
+        reactionConnectionId: data.reactionConnectionId,
+        eventTriggerData: data.eventTriggerData,
+        reactionParametersData: data.reactionParametersData,
+      }),
+    );
+
+    return { message: 'Applet edited' };
   }
 }

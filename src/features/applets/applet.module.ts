@@ -61,6 +61,7 @@ import { GetUserAppletsHandler } from './queries/get-user-applets/get-user-apple
 import { KnexAppletQueryRepository } from './adapters/knex.applet.query-repository';
 import { GetUserAppletHandler } from './queries/get-user-applet/get-user-applet.handler';
 import { DeleteAppletHandler } from './commands/delete-applet/delete-applet.handler';
+import { EditAppletHandler } from './commands/edit-applet/edit-applet.handler';
 
 @Module({
   imports: [
@@ -196,6 +197,13 @@ import { DeleteAppletHandler } from './commands/delete-applet/delete-applet.hand
       provide: DeleteAppletHandler,
       useFactory: (appletRepository: AppletRepository) => {
         return new DeleteAppletHandler(appletRepository);
+      },
+      inject: [APPLET_REPOSITORY],
+    },
+    {
+      provide: EditAppletHandler,
+      useFactory: (appletRepository: AppletRepository) => {
+        return new EditAppletHandler(appletRepository);
       },
       inject: [APPLET_REPOSITORY],
     },
