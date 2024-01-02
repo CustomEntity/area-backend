@@ -6,9 +6,11 @@
 import { Nullable } from '../../../../shared/nullable';
 import { Reaction } from '../entities/reaction.entity';
 
-export const REACTION_REPOSITORY = Symbol('REACTION_REPOSITORY');
+export const APPLICATION_REACTION_REPOSITORY = Symbol(
+  'APPLICATION_REACTION_REPOSITORY',
+);
 
-export interface ReactionRepository {
+export interface ApplicationReactionRepository {
   findById(id: string): Promise<Nullable<Reaction>>;
 
   findByApplicationId(applicationId: string): Promise<Reaction[]>;

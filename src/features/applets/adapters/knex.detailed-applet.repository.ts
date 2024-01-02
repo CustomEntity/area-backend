@@ -10,7 +10,7 @@ import { Nullable } from '../../../shared/nullable';
 import { Mapper } from '../../../shared/mapper';
 import { Knex } from 'knex';
 import { TriggerData } from '../value-objects/trigger-data.vo';
-import { ReactionActionData } from '../value-objects/reaction-action-data.vo';
+import { ReactionParametersData } from '../value-objects/reaction-parameters-data.vo';
 import { Event } from '../value-objects/event.vo';
 import { UserConnection } from '../value-objects/user-connection.vo';
 import { Reaction } from '../value-objects/reaction.vo';
@@ -522,7 +522,7 @@ class KnexDetailedAppletMapper extends Mapper<DetailedApplet> {
     }
 
     const triggerData = TriggerData.create(data.eventTriggerData);
-    const reactionAction = ReactionActionData.create(data.reactionAction);
+    const reactionAction = ReactionParametersData.create(data.reactionAction);
 
     return new DetailedApplet({
       id: data.appletId,

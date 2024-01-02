@@ -23,9 +23,18 @@ import { GithubController } from './github/github.controller';
 import { GithubStrategy } from './github/github.strategy';
 import { GithubService } from './github/github.service';
 import { GetApplicationByIdHandler } from './core/queries/get-application-by-id/get-application-by-id.handler';
+import { ReactionModule } from './reactions/reaction.module';
+import { EventModule } from './events/event.module';
 
 @Module({
-  imports: [KnexModule, CqrsModule, SystemModule, JwtAuthModule],
+  imports: [
+    KnexModule,
+    CqrsModule,
+    SystemModule,
+    JwtAuthModule,
+    ReactionModule,
+    EventModule,
+  ],
   controllers: [ApplicationController, GithubController],
   providers: [
     {

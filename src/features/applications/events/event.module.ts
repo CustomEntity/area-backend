@@ -16,8 +16,8 @@ import { EventController } from './controllers/event.controller';
 import {
   APPLICATION_EVENT_QUERY_REPOSITORY,
   ApplicationEventQueryRepository,
-} from './ports/event.query-repository';
-import { KnexApplicationEventQueryRepository } from './adapters/knex.event.query-repository';
+} from './ports/application-event.query-repository';
+import { KnexApplicationEventQueryRepository } from './adapters/knex.application-event.query-repository';
 import { GetApplicationEventsHandler } from './queries/get-application-events.handler';
 
 @Module({

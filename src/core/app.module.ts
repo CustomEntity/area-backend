@@ -37,8 +37,6 @@ import { ReactionModule } from '../features/applications/reactions/reaction.modu
     ApplicationModule,
     UserConnectionsModule,
     AppletModule,
-    EventModule,
-    ReactionModule,
   ],
   providers: [AppService],
   controllers: [AppController],

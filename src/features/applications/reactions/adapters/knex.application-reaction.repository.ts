@@ -5,17 +5,19 @@
  **/
 
 import { Injectable } from '@nestjs/common';
-import { ReactionRepository } from '../ports/reaction.repository';
+import { ApplicationReactionRepository } from '../ports/application-reaction.repository';
 import { Knex } from 'knex';
 import { Reaction } from '../entities/reaction.entity';
 import { Nullable } from '../../../../shared/nullable';
-import { ActionMapping } from '../value-objects/action-mapping.vo';
+import { ParametersMapping } from '../value-objects/parameters-mapping.vo';
 import { Mapper } from '../../../../shared/mapper';
 
 const REACTION_TABLE = 'application_reactions';
 
 @Injectable()
-export class KnexReactionRepository implements ReactionRepository {
+export class KnexApplicationReactionRepository
+  implements ApplicationReactionRepository
+{
   private readonly mapper: KnexReactionMapper = new KnexReactionMapper();
 
   constructor(private readonly connection: Knex) {}
@@ -55,7 +57,7 @@ class KnexReactionMapper extends Mapper<Reaction> {
       applicationId: data.application_id,
       name: data.name,
       description: data.description,
-      actionMapping: ActionMapping.create(data.action_mapping),
+      parametersMapping: ParametersMapping.create(data.action_mapping),
       createdAt: data.created_at,
     });
   }
@@ -66,7 +68,7 @@ class KnexReactionMapper extends Mapper<Reaction> {
       application_id: entity.applicationId,
       name: entity.name,
       description: entity.description,
-      action_mapping: entity.actionMapping,
+      action_mapping: entity.parametersMapping.value,
       created_at: entity.createdAt,
     };
   }

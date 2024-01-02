@@ -20,17 +20,6 @@ export class AppController {
     description: 'Get about.json',
   })
   getAboutJson(@Req() req: Request, @Res() res: Response) {
-    // TODO: Fill the dynamic content of about.json
-    const dynamicContent = {
-      client: {
-        host: req.headers.host,
-      },
-      server: {
-        current_time: Date.now(),
-        services: [],
-      },
-    };
-
-    res.json(dynamicContent);
+    return this.appService.getAboutJson(req);
   }
 }

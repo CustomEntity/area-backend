@@ -6,7 +6,7 @@
 import { GetApplicationEventsQuery } from './get-application-events.query';
 import { GetApplicationEventsResult } from './get-application-events.result';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
-import { ApplicationEventQueryRepository } from '../ports/event.query-repository';
+import { ApplicationEventQueryRepository } from '../ports/application-event.query-repository';
 import { DomainError } from '../../../../shared/domain-error';
 
 @QueryHandler(GetApplicationEventsQuery)

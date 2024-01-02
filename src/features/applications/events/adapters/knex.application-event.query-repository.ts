@@ -5,7 +5,7 @@
  **/
 
 import { Injectable } from '@nestjs/common';
-import { ApplicationEventQueryRepository } from '../ports/event.query-repository';
+import { ApplicationEventQueryRepository } from '../ports/application-event.query-repository';
 import { GetApplicationEventsResult } from '../queries/get-application-events.result';
 import { Knex } from 'knex';
 

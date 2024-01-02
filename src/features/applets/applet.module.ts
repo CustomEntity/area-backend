@@ -38,9 +38,9 @@ import {
 import { AppletController } from './controllers/applet.controller';
 import { CreateAppletHandler } from './commands/create-applet/create-applet.handler';
 import {
-  REACTION_REPOSITORY,
-  ReactionRepository,
-} from '../applications/reactions/ports/reaction.repository';
+  APPLICATION_REACTION_REPOSITORY,
+  ApplicationReactionRepository,
+} from '../applications/reactions/ports/application-reaction.repository';
 import {
   APPLICATION_EVENT_REPOSITORY,
   ApplicationEventRepository,
@@ -158,7 +158,7 @@ import { DeleteAppletHandler } from './commands/delete-applet/delete-applet.hand
       useFactory: (
         appletRepository: AppletRepository,
         eventRepository: ApplicationEventRepository,
-        reactionRepository: ReactionRepository,
+        reactionRepository: ApplicationReactionRepository,
         userConnectionRepository: UserConnectionRepository,
         idProvider: IdProvider,
       ) => {
@@ -173,7 +173,7 @@ import { DeleteAppletHandler } from './commands/delete-applet/delete-applet.hand
       inject: [
         APPLET_REPOSITORY,
         APPLICATION_EVENT_REPOSITORY,
-        REACTION_REPOSITORY,
+        APPLICATION_REACTION_REPOSITORY,
         USER_CONNECTION_REPOSITORY,
         ID_PROVIDER,
       ],

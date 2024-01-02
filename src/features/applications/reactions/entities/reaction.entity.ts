@@ -4,14 +4,14 @@
  * @created : 2023-12-30
  **/
 import { Entity } from '../../../../shared/entity';
-import { ActionMapping } from '../value-objects/action-mapping.vo';
+import { ParametersMapping } from '../value-objects/parameters-mapping.vo';
 
 export type ReactionData = {
   id: string;
   applicationId: string;
   name: string;
   description: string;
-  actionMapping: ActionMapping;
+  parametersMapping: ParametersMapping;
   createdAt: Date;
 };
 
@@ -32,8 +32,8 @@ export class Reaction extends Entity<ReactionData> {
     return this.data.description;
   }
 
-  get actionMapping(): ActionMapping {
-    return this.data.actionMapping;
+  get parametersMapping(): ParametersMapping {
+    return this.data.parametersMapping;
   }
 
   get createdAt(): Date {

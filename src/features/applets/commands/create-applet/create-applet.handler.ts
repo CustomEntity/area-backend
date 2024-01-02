@@ -6,14 +6,14 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { CreateAppletCommand } from './create-applet.command';
 import { ApplicationEventRepository } from '../../../applications/events/ports/application-event.repository';
-import { ReactionRepository } from '../../../applications/reactions/ports/reaction.repository';
 import { UserConnectionRepository } from '../../../user-connections/ports/user-connection.repository';
 import { DomainError } from '../../../../shared/domain-error';
 import { IdProvider } from '../../../../system/id/id.provider';
 import { TriggerData } from '../../value-objects/trigger-data.vo';
-import { ReactionActionData } from '../../value-objects/reaction-action-data.vo';
+import { ReactionParametersData } from '../../value-objects/reaction-parameters-data.vo';
 import { AppletRepository } from '../../ports/applet.repository';
 import { Applet } from '../../entities/applet.entity';
+import { ApplicationReactionRepository } from '../../../applications/reactions/ports/application-reaction.repository';
 
 @CommandHandler(CreateAppletCommand)
 export class CreateAppletHandler
@@ -22,7 +22,7 @@ export class CreateAppletHandler
   constructor(
     private readonly appletRepository: AppletRepository,
     private readonly eventRepository: ApplicationEventRepository,
-    private readonly reactionRepository: ReactionRepository,
+    private readonly reactionRepository: ApplicationReactionRepository,
     private readonly userConnectionRepository: UserConnectionRepository,
     private readonly idProvider: IdProvider,
   ) {}
@@ -77,9 +77,9 @@ export class CreateAppletHandler
       }
     }
 
-    if (reaction.data.actionMapping.value && command.reactionActionData) {
+    if (reaction.data.parametersMapping.value && command.reactionActionData) {
       for (const [key, value] of Object.entries(
-        reaction.data.actionMapping.value,
+        reaction.data.parametersMapping.value,
       )) {
         if (value.required && !command.reactionActionData[key]) {
           throw new DomainError(
@@ -98,7 +98,9 @@ export class CreateAppletHandler
       eventTriggerData: TriggerData.create(command.eventTriggerData),
       eventConnectionId: command.eventConnectionId,
       reactionId: command.reactionId,
-      reactionActionData: ReactionActionData.create(command.reactionActionData),
+      reactionActionData: ReactionParametersData.create(
+        command.reactionActionData,
+      ),
       reactionConnectionId: command.reactionConnectionId,
       name: command.name,
       description: command.description,

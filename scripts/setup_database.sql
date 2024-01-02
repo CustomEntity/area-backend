@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS application_reactions
     application_event_id bigint       NOT NULL,
     name                 varchar(255) NOT NULL,
     description          text         NOT NULL,
-    action_mapping           jsonb,
+    parameters_mapping           jsonb,
     created_at           timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
     --FOREIGN KEY (application_event_id) REFERENCES application_events (id),

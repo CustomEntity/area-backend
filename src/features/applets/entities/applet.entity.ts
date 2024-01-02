@@ -4,7 +4,7 @@
  * @created : 2023-12-17
  **/
 import { TriggerData } from '../value-objects/trigger-data.vo';
-import { ReactionActionData } from '../value-objects/reaction-action-data.vo';
+import { ReactionParametersData } from '../value-objects/reaction-parameters-data.vo';
 import { Entity } from '../../../shared/entity';
 
 export type AppletData = {
@@ -14,7 +14,7 @@ export type AppletData = {
   eventTriggerData?: TriggerData;
   eventConnectionId?: string;
   reactionId: string;
-  reactionActionData?: ReactionActionData;
+  reactionActionData?: ReactionParametersData;
   reactionConnectionId?: string;
   name: string;
   description: string;
@@ -47,7 +47,7 @@ export class Applet extends Entity<AppletData> {
     return this.data.reactionId;
   }
 
-  get reactionActionData(): ReactionActionData | undefined {
+  get reactionActionData(): ReactionParametersData | undefined {
     return this.data.reactionActionData;
   }
 

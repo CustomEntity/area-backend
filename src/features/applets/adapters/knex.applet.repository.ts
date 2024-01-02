@@ -10,7 +10,7 @@ import { Injectable } from '@nestjs/common';
 import { Nullable } from '../../../shared/nullable';
 import { Knex } from 'knex';
 import { TriggerData } from '../value-objects/trigger-data.vo';
-import { ReactionActionData } from '../value-objects/reaction-action-data.vo';
+import { ReactionParametersData } from '../value-objects/reaction-parameters-data.vo';
 import * as console from 'console';
 import { undefined } from 'zod';
 
@@ -74,7 +74,9 @@ class KnexAppletMapper extends Mapper<Applet> {
       eventTriggerData: TriggerData.create(data.event_trigger_data),
       eventConnectionId: data.event_connection_id,
       reactionId: data.reaction_id,
-      reactionActionData: ReactionActionData.create(data.reaction_action_data),
+      reactionActionData: ReactionParametersData.create(
+        data.reaction_action_data,
+      ),
       reactionConnectionId: data.reaction_connection_id,
       name: data.name,
       description: data.description,
