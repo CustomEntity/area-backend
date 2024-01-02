@@ -37,7 +37,7 @@ export class KnexDetailedAppletRepository implements DetailedAppletRepository {
         eventTriggerData: `${APPLET_TABLE}.event_trigger_data`,
         eventConnectionId: `${APPLET_TABLE}.event_connection_id`,
         reactionId: `${APPLET_TABLE}.reaction_id`,
-        reactionAction: `${APPLET_TABLE}.reaction_action`,
+        reactionParameters: `${APPLET_TABLE}.reaction_parameters`,
         reactionConnectionId: `${APPLET_TABLE}.reaction_connection_id`,
         appletName: `${APPLET_TABLE}.name`,
         appletDescription: `${APPLET_TABLE}.description`,
@@ -62,7 +62,7 @@ export class KnexDetailedAppletRepository implements DetailedAppletRepository {
         reactionApplicationId: `${REACTIONS_TABLE}.application_id`,
         reactionName: `${REACTIONS_TABLE}.name`,
         reactionDescription: `${REACTIONS_TABLE}.description`,
-        reactionParameters: `${REACTIONS_TABLE}.parameters`,
+        reactionParametersMapping: `${REACTIONS_TABLE}.parameters_mapping`,
         reactionCreatedAt: `${REACTIONS_TABLE}.created_at`,
 
         reactionConnectionUserId: 'reaction_connection.user_id',
@@ -122,7 +122,7 @@ export class KnexDetailedAppletRepository implements DetailedAppletRepository {
         eventTriggerData: `${APPLET_TABLE}.event_trigger_data`,
         eventConnectionId: `${APPLET_TABLE}.event_connection_id`,
         reactionId: `${APPLET_TABLE}.reaction_id`,
-        reactionAction: `${APPLET_TABLE}.reaction_action`,
+        reactionParametersData: `${APPLET_TABLE}.reaction_parameters_data`,
         reactionConnectionId: `${APPLET_TABLE}.reaction_connection_id`,
         appletName: `${APPLET_TABLE}.name`,
         appletDescription: `${APPLET_TABLE}.description`,
@@ -147,7 +147,7 @@ export class KnexDetailedAppletRepository implements DetailedAppletRepository {
         reactionApplicationId: `${REACTIONS_TABLE}.application_id`,
         reactionName: `${REACTIONS_TABLE}.name`,
         reactionDescription: `${REACTIONS_TABLE}.description`,
-        reactionParameters: `${REACTIONS_TABLE}.parameters`,
+        reactionParametersMapping: `${REACTIONS_TABLE}.parameters_mapping`,
         reactionCreatedAt: `${REACTIONS_TABLE}.created_at`,
 
         reactionConnectionUserId: 'reaction_connection.user_id',
@@ -213,7 +213,7 @@ export class KnexDetailedAppletRepository implements DetailedAppletRepository {
         eventTriggerData: `${APPLET_TABLE}.event_trigger_data`,
         eventConnectionId: `${APPLET_TABLE}.event_connection_id`,
         reactionId: `${APPLET_TABLE}.reaction_id`,
-        reactionAction: `${APPLET_TABLE}.reaction_action`,
+        reactionParametersData: `${APPLET_TABLE}.reaction_parameters_data`,
         reactionConnectionId: `${APPLET_TABLE}.reaction_connection_id`,
         appletName: `${APPLET_TABLE}.name`,
         appletDescription: `${APPLET_TABLE}.description`,
@@ -238,7 +238,7 @@ export class KnexDetailedAppletRepository implements DetailedAppletRepository {
         reactionApplicationId: `${REACTIONS_TABLE}.application_id`,
         reactionName: `${REACTIONS_TABLE}.name`,
         reactionDescription: `${REACTIONS_TABLE}.description`,
-        reactionParameters: `${REACTIONS_TABLE}.parameters`,
+        reactionParametersMapping: `${REACTIONS_TABLE}.parameters_mapping`,
         reactionCreatedAt: `${REACTIONS_TABLE}.created_at`,
 
         reactionConnectionUserId: 'reaction_connection.user_id',
@@ -299,7 +299,7 @@ export class KnexDetailedAppletRepository implements DetailedAppletRepository {
         eventTriggerData: `${APPLET_TABLE}.event_trigger_data`,
         eventConnectionId: `${APPLET_TABLE}.event_connection_id`,
         reactionId: `${APPLET_TABLE}.reaction_id`,
-        reactionAction: `${APPLET_TABLE}.reaction_action`,
+        reactionParametersData: `${APPLET_TABLE}.reaction_parameters_data`,
         reactionConnectionId: `${APPLET_TABLE}.reaction_connection_id`,
         appletName: `${APPLET_TABLE}.name`,
         appletDescription: `${APPLET_TABLE}.description`,
@@ -324,7 +324,7 @@ export class KnexDetailedAppletRepository implements DetailedAppletRepository {
         reactionApplicationId: `${REACTIONS_TABLE}.application_id`,
         reactionName: `${REACTIONS_TABLE}.name`,
         reactionDescription: `${REACTIONS_TABLE}.description`,
-        reactionParameters: `${REACTIONS_TABLE}.parameters`,
+        reactionParametersMapping: `${REACTIONS_TABLE}.parameters_mapping`,
         reactionCreatedAt: `${REACTIONS_TABLE}.created_at`,
 
         reactionConnectionUserId: 'reaction_connection.user_id',
@@ -388,7 +388,7 @@ export class KnexDetailedAppletRepository implements DetailedAppletRepository {
         eventTriggerData: `${APPLET_TABLE}.event_trigger_data`,
         eventConnectionId: `${APPLET_TABLE}.event_connection_id`,
         reactionId: `${APPLET_TABLE}.reaction_id`,
-        reactionAction: `${APPLET_TABLE}.reaction_action`,
+        reactionParametersData: `${APPLET_TABLE}.reaction_parameters_data`,
         reactionConnectionId: `${APPLET_TABLE}.reaction_connection_id`,
         appletName: `${APPLET_TABLE}.name`,
         appletDescription: `${APPLET_TABLE}.description`,
@@ -413,7 +413,7 @@ export class KnexDetailedAppletRepository implements DetailedAppletRepository {
         reactionApplicationId: `${REACTIONS_TABLE}.application_id`,
         reactionName: `${REACTIONS_TABLE}.name`,
         reactionDescription: `${REACTIONS_TABLE}.description`,
-        reactionParameters: `${REACTIONS_TABLE}.parameters`,
+        reactionParametersMapping: `${REACTIONS_TABLE}.parameters_mapping`,
         reactionCreatedAt: `${REACTIONS_TABLE}.created_at`,
 
         reactionConnectionUserId: 'reaction_connection.user_id',
@@ -501,7 +501,7 @@ class KnexDetailedAppletMapper extends Mapper<DetailedApplet> {
       applicationId: data.reactionApplicationId,
       name: data.reactionName,
       description: data.reactionDescription,
-      parameters: data.reactionParameters,
+      parametersMapping: data.reactionParametersMapping,
       createdAt: new Date(data.reactionCreatedAt),
     });
 
@@ -522,7 +522,9 @@ class KnexDetailedAppletMapper extends Mapper<DetailedApplet> {
     }
 
     const triggerData = TriggerData.create(data.eventTriggerData);
-    const reactionAction = ReactionParametersData.create(data.reactionAction);
+    const reactionParameters = ReactionParametersData.create(
+      data.reactionParametersData,
+    );
 
     return new DetailedApplet({
       id: data.appletId,
@@ -531,7 +533,7 @@ class KnexDetailedAppletMapper extends Mapper<DetailedApplet> {
       eventTriggerData: triggerData,
       eventConnection: eventConnection,
       reaction: reaction,
-      reactionActionData: reactionAction,
+      reactionParametersData: reactionParameters,
       reactionConnection: reactionConnection,
       name: data.appletName,
       description: data.appletDescription,

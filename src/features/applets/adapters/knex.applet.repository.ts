@@ -11,8 +11,6 @@ import { Nullable } from '../../../shared/nullable';
 import { Knex } from 'knex';
 import { TriggerData } from '../value-objects/trigger-data.vo';
 import { ReactionParametersData } from '../value-objects/reaction-parameters-data.vo';
-import * as console from 'console';
-import { undefined } from 'zod';
 
 const APPLET_TABLE = 'applets';
 
@@ -74,8 +72,8 @@ class KnexAppletMapper extends Mapper<Applet> {
       eventTriggerData: TriggerData.create(data.event_trigger_data),
       eventConnectionId: data.event_connection_id,
       reactionId: data.reaction_id,
-      reactionActionData: ReactionParametersData.create(
-        data.reaction_action_data,
+      reactionParametersData: ReactionParametersData.create(
+        data.reaction_parameters_data,
       ),
       reactionConnectionId: data.reaction_connection_id,
       name: data.name,
@@ -93,7 +91,7 @@ class KnexAppletMapper extends Mapper<Applet> {
       event_trigger_data: entity.eventTriggerData?.value,
       event_connection_id: entity.eventConnectionId,
       reaction_id: entity.reactionId,
-      reaction_action_data: entity.reactionActionData?.value,
+      reaction_parameters_data: entity.reactionParametersData?.value,
       reaction_connection_id: entity.reactionConnectionId,
       name: entity.name,
       description: entity.description,

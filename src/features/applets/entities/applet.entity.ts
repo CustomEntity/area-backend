@@ -14,7 +14,7 @@ export type AppletData = {
   eventTriggerData?: TriggerData;
   eventConnectionId?: string;
   reactionId: string;
-  reactionActionData?: ReactionParametersData;
+  reactionParametersData?: ReactionParametersData;
   reactionConnectionId?: string;
   name: string;
   description: string;
@@ -35,36 +35,72 @@ export class Applet extends Entity<AppletData> {
     return this.data.eventId;
   }
 
+  set eventId(eventId: string) {
+    this.data.eventId = eventId;
+  }
+
   get eventTriggerData(): TriggerData | undefined {
     return this.data.eventTriggerData;
+  }
+
+  set eventTriggerData(eventTriggerData: TriggerData) {
+    this.data.eventTriggerData = eventTriggerData;
   }
 
   get eventConnectionId(): string | undefined {
     return this.data.eventConnectionId;
   }
 
+  set eventConnectionId(eventConnectionId: string | undefined) {
+    this.data.eventConnectionId = eventConnectionId;
+  }
+
   get reactionId(): string {
     return this.data.reactionId;
   }
 
-  get reactionActionData(): ReactionParametersData | undefined {
-    return this.data.reactionActionData;
+  set reactionId(reactionId: string) {
+    this.data.reactionId = reactionId;
+  }
+
+  get reactionParametersData(): ReactionParametersData | undefined {
+    return this.data.reactionParametersData;
+  }
+
+  set reactionParametersData(reactionParametersData: ReactionParametersData) {
+    this.data.reactionParametersData = reactionParametersData;
   }
 
   get reactionConnectionId(): string | undefined {
     return this.data.reactionConnectionId;
   }
 
+  set reactionConnectionId(reactionConnectionId: string | undefined) {
+    this.data.reactionConnectionId = reactionConnectionId;
+  }
+
   get name(): string {
     return this.data.name;
+  }
+
+  set name(name: string) {
+    this.data.name = name;
   }
 
   get description(): string {
     return this.data.description;
   }
 
+  set description(description: string) {
+    this.data.description = description;
+  }
+
   get active(): boolean {
     return this.data.active;
+  }
+
+  set active(active: boolean) {
+    this.data.active = active;
   }
 
   get createdAt(): Date {

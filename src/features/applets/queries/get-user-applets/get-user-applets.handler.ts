@@ -7,6 +7,7 @@ import { GetUserAppletsQuery } from './get-user-applets.query';
 import { GetUserAppletsResult } from './get-user-applets.result';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { AppletQueryRepository } from '../../ports/applet.query-repository';
+import { DomainError } from '../../../../shared/domain-error';
 
 @QueryHandler(GetUserAppletsQuery)
 export class GetUserAppletsHandler
@@ -17,6 +18,16 @@ export class GetUserAppletsHandler
   async execute(query: GetUserAppletsQuery): Promise<GetUserAppletsResult> {
     const { userId } = query;
 
-    return await this.appletQueryRepository.getUserApplets(userId);
+    const applets = await this.appletQueryRepository.getUserApplets(userId);
+
+    if (!applets.applets) {
+      throw new DomainError(
+        'NotFound',
+        'USER_NOT_FOUND',
+        `User with id '${userId}' not found`,
+      );
+    }
+
+    return applets;
   }
 }

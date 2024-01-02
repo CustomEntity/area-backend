@@ -138,7 +138,7 @@ export class AppletController {
         data.eventConnectionId,
         data.reactionConnectionId,
         data.eventTriggerData,
-        data.reactionActionData,
+        data.reactionParametersData,
       ),
     );
 

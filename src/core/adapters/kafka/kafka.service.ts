@@ -37,18 +37,27 @@ export class KafkaService implements OnModuleInit {
     );
 
     try {
-      this.kafka = new Kafka({
+      const kafkaConfig: any = {
         brokers: this.configService.get<string[]>('kafka.brokers') || [
           'localhost:9092',
         ],
-        sasl: {
+        ssl: false,
+      };
+
+      if (this.configService.get<boolean>('kafka.sasl')) {
+        kafkaConfig.sasl = {
           mechanism: 'scram-sha-256',
           username: this.configService.get<string>('kafka.username')!,
           password: this.configService.get<string>('kafka.password')!,
-        },
-        ssl: true,
-      });
-      console.log('KafkaService: Connected to Kafka');
+        };
+      }
+
+      if (this.configService.get<boolean>('kafka.ssl')) {
+        kafkaConfig.ssl = true;
+      }
+
+      this.kafka = new Kafka(kafkaConfig);
+      console.log('KafkaService: Connected to Kafka', kafkaConfig.brokers);
       this._producer = this.kafka.producer();
       this._consumer = this.kafka.consumer({
         groupId: this.configService.get<string>('kafka.groupId') || 'my-group',
@@ -61,8 +70,8 @@ export class KafkaService implements OnModuleInit {
 
   async onModuleInit() {
     /*await this.init();
-    await this.discoverAndSetupConsumers();
-    await this.startConsuming();*/
+        await this.discoverAndSetupConsumers();
+        await this.startConsuming();*/
   }
 
   async discoverAndSetupConsumers() {

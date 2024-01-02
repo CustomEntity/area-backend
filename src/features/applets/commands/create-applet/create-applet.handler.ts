@@ -77,15 +77,15 @@ export class CreateAppletHandler
       }
     }
 
-    if (reaction.data.parametersMapping.value && command.reactionActionData) {
+    if (reaction.data.parametersMapping.value && command.reactionParametersData) {
       for (const [key, value] of Object.entries(
         reaction.data.parametersMapping.value,
       )) {
-        if (value.required && !command.reactionActionData[key]) {
+        if (value.required && !command.reactionParametersData[key]) {
           throw new DomainError(
             'InvalidArgument',
             'MISSING_REQUIRED_FIELD',
-            `Missing required field '${key}' in reactionActionData`,
+            `Missing required field '${key}' in reactionParametersData`,
           );
         }
       }
@@ -98,8 +98,8 @@ export class CreateAppletHandler
       eventTriggerData: TriggerData.create(command.eventTriggerData),
       eventConnectionId: command.eventConnectionId,
       reactionId: command.reactionId,
-      reactionActionData: ReactionParametersData.create(
-        command.reactionActionData,
+      reactionParametersData: ReactionParametersData.create(
+        command.reactionParametersData,
       ),
       reactionConnectionId: command.reactionConnectionId,
       name: command.name,

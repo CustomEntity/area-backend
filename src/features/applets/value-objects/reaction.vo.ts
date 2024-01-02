@@ -11,7 +11,7 @@ export const ReactionSchema = z.object({
   applicationId: z.string(),
   name: z.string(),
   description: z.string(),
-  actionMapping: z.record(
+  parametersMapping: z.record(
     z.object({
       type: z.string(),
       required: z.boolean(),

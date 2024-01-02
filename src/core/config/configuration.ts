@@ -12,7 +12,8 @@ export default () => ({
   sessionSecret: process.env.SESSION_SECRET,
   kafka: {
     brokers: process.env.KAFKA_BROKERS?.split(',') || [],
-    mechanism: process.env.KAFKA_MECHANISM,
+    sasl: process.env.KAFKA_SASL_MECHANISM === 'true',
+    ssl: process.env.KAFKA_SSL === 'true',
     username: process.env.KAFKA_USERNAME,
     password: process.env.KAFKA_PASSWORD,
     groupId: process.env.KAFKA_GROUP_ID,

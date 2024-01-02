@@ -18,7 +18,7 @@ export namespace AppletAPI {
       ),
     );
 
-    const ReactionActionDataSchema = z.nullable(
+    const ReactionParametersDataSchema = z.nullable(
       z.record(
         z.union([
           z.string(),
@@ -41,7 +41,7 @@ export namespace AppletAPI {
       eventConnectionId: z.string(),
       reactionConnectionId: z.string(),
       eventTriggerData: TriggerDataSchema,
-      reactionActionData: ReactionActionDataSchema,
+      reactionParametersData: ReactionParametersDataSchema,
     });
 
     export const openApiSchema = {
@@ -57,7 +57,7 @@ export namespace AppletAPI {
           type: 'object',
           additionalProperties: true,
         },
-        reactionActionData: {
+        reactionParametersData: {
           type: 'object',
           additionalProperties: true,
         },
@@ -72,7 +72,7 @@ export namespace AppletAPI {
         eventTriggerData: {
           repository: 'CustomEntity/MyRepository',
         },
-        reactionActionData: {
+        reactionParametersData: {
           repository: 'CustomEntity/MyRepository',
           title: 'My issue title',
           body: 'My issue body',

@@ -17,7 +17,7 @@ const TriggerDataSchema = z.nullable(
   ),
 );
 
-const ReactionActionDataSchema = z.nullable(
+const ReactionParametersDataSchema = z.nullable(
   z.record(
     z.union([
       z.string(),
@@ -38,8 +38,8 @@ export class CreateAppletCommand implements ICommand {
     public readonly eventConnectionId: string,
     public readonly reactionConnectionId: string,
     public readonly eventTriggerData: z.infer<typeof TriggerDataSchema>,
-    public readonly reactionActionData: z.infer<
-      typeof ReactionActionDataSchema
+    public readonly reactionParametersData: z.infer<
+      typeof ReactionParametersDataSchema
     >,
   ) {}
 }

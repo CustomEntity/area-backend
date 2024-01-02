@@ -20,28 +20,39 @@ export class KnexApplicationReactionQueryRepository
   async findReactionsByApplicationId(
     applicationId: string,
   ): Promise<GetApplicationReactionsResult> {
-    const application = await this.connection(APPLICATION_TABLE)
-      .select()
-      .where('id', applicationId)
-      .first();
+    const results = await this.connection(APPLICATION_TABLE)
+      .leftJoin(
+        APPLICATION_REACTION_TABLE,
+        `${APPLICATION_TABLE}.id`,
+        '=',
+        `${APPLICATION_REACTION_TABLE}.application_id`,
+      )
+      .select(
+        `${APPLICATION_TABLE}.id as application_id`,
+        `${APPLICATION_REACTION_TABLE}.id`,
+        `${APPLICATION_REACTION_TABLE}.name`,
+        `${APPLICATION_REACTION_TABLE}.description`,
+        `${APPLICATION_REACTION_TABLE}.parameters_mapping`,
+        `${APPLICATION_REACTION_TABLE}.created_at`,
+      )
+      .where(`${APPLICATION_TABLE}.id`, applicationId);
 
-    if (!application) {
+    if (!results || results.length === 0 || !results[0].application_id) {
       return {
         reactions: undefined,
       };
     }
-    const events = await this.connection(APPLICATION_REACTION_TABLE)
-      .select()
-      .where('application_id', applicationId);
+
+    const reactions = results.filter((result) => result.id != null);
 
     return {
-      reactions: events.map((event) => ({
-        id: event.id,
-        applicationId: event.application_id,
-        name: event.name,
-        description: event.description,
-        parametersMapping: event.parameters_mapping,
-        createdAt: event.created_at,
+      reactions: reactions.map((reaction) => ({
+        id: reaction.id,
+        applicationId: reaction.application_id,
+        name: reaction.name,
+        description: reaction.description,
+        parametersMapping: reaction.parameters_mapping,
+        createdAt: reaction.created_at,
       })),
     };
   }

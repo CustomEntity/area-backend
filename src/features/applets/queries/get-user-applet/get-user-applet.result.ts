@@ -17,7 +17,7 @@ export const TriggerDataSchema = z.nullable(
   ),
 );
 
-export const ReactionActionDataSchema = z.nullable(
+export const ReactionParametersDataSchema = z.nullable(
   z.record(
     z.union([
       z.string(),
@@ -83,7 +83,7 @@ export class GetUserAppletResult implements IQueryResult {
     eventTriggerData?: z.infer<typeof TriggerDataSchema>;
     eventConnection: z.infer<typeof UserConnectionSchema>;
     reaction: z.infer<typeof ReactionSchema>;
-    reactionActionData?: z.infer<typeof ReactionActionDataSchema>;
+    reactionParametersData?: z.infer<typeof ReactionParametersDataSchema>;
     reactionConnection: z.infer<typeof UserConnectionSchema>;
     name: string;
     description: string;
