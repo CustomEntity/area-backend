@@ -14,6 +14,7 @@ import { ReactionParametersData } from '../../value-objects/reaction-parameters-
 import { AppletRepository } from '../../ports/applet.repository';
 import { Applet } from '../../entities/applet.entity';
 import { ApplicationReactionRepository } from '../../../applications/reactions/ports/application-reaction.repository';
+import {UserRepository} from "../../../users/ports/user.repository";
 
 @CommandHandler(CreateAppletCommand)
 export class CreateAppletHandler
@@ -25,10 +26,11 @@ export class CreateAppletHandler
     private readonly reactionRepository: ApplicationReactionRepository,
     private readonly userConnectionRepository: UserConnectionRepository,
     private readonly idProvider: IdProvider,
+    private readonly userRepository: UserRepository,
   ) {}
 
   async execute(command: CreateAppletCommand) {
-    const user = await this.userConnectionRepository.findById(command.userId);
+    const user = await this.userRepository.findById(command.userId);
 
     if (!user) {
       throw new DomainError('NotFound', 'USER_NOT_FOUND', 'User not found');

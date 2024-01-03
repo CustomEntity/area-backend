@@ -62,6 +62,11 @@ import { KnexAppletQueryRepository } from './adapters/knex.applet.query-reposito
 import { GetUserAppletHandler } from './queries/get-user-applet/get-user-applet.handler';
 import { DeleteAppletHandler } from './commands/delete-applet/delete-applet.handler';
 import { EditAppletHandler } from './commands/edit-applet/edit-applet.handler';
+import {
+  USER_REPOSITORY,
+  UserRepository,
+} from '../users/ports/user.repository';
+import { UserModule } from '../users/user.module';
 
 @Module({
   imports: [
@@ -72,6 +77,7 @@ import { EditAppletHandler } from './commands/edit-applet/edit-applet.handler';
     UserConnectionsModule,
     EventModule,
     ReactionModule,
+    UserModule,
   ],
   providers: [
     ScheduleAppletExecutionTask,
@@ -162,6 +168,7 @@ import { EditAppletHandler } from './commands/edit-applet/edit-applet.handler';
         reactionRepository: ApplicationReactionRepository,
         userConnectionRepository: UserConnectionRepository,
         idProvider: IdProvider,
+        userRepository: UserRepository,
       ) => {
         return new CreateAppletHandler(
           appletRepository,
@@ -169,6 +176,7 @@ import { EditAppletHandler } from './commands/edit-applet/edit-applet.handler';
           reactionRepository,
           userConnectionRepository,
           idProvider,
+          userRepository,
         );
       },
       inject: [
@@ -177,6 +185,7 @@ import { EditAppletHandler } from './commands/edit-applet/edit-applet.handler';
         APPLICATION_REACTION_REPOSITORY,
         USER_CONNECTION_REPOSITORY,
         ID_PROVIDER,
+        USER_REPOSITORY,
       ],
     },
     {
