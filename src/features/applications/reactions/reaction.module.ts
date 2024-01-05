@@ -15,11 +15,19 @@ import { GetApplicationReactionsHandler } from './queries/get-application-reacti
 import { APPLICATION_REACTION_REPOSITORY } from './ports/application-reaction.repository';
 import { ReactionController } from './controllers/reaction.controller';
 import { KnexApplicationReactionRepository } from './adapters/knex.application-reaction.repository';
+import { EVENT_SERVICE } from '../events/ports/event.service';
+import { ConcreteEventService } from '../events/adapters/concrete.event.service';
+import { REACTION_SERVICE } from './ports/reaction.service';
+import { ConcreteReactionService } from './adapters/concrete.event.service';
 
 @Module({
   imports: [KnexModule, CqrsModule, SystemModule],
   controllers: [ReactionController],
   providers: [
+    {
+      provide: REACTION_SERVICE,
+      useClass: ConcreteReactionService,
+    },
     {
       provide: APPLICATION_REACTION_REPOSITORY,
       useFactory: (knexService: KnexService) => {
@@ -46,6 +54,6 @@ import { KnexApplicationReactionRepository } from './adapters/knex.application-r
       inject: [APPLICATION_REACTION_QUERY_REPOSITORY],
     },
   ],
-  exports: [APPLICATION_REACTION_REPOSITORY],
+  exports: [APPLICATION_REACTION_REPOSITORY, REACTION_SERVICE],
 })
 export class ReactionModule {}

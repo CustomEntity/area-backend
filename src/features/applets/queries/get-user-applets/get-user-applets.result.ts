@@ -6,15 +6,13 @@
 import { IQueryResult } from '@nestjs/cqrs';
 import { z } from 'zod';
 
-export const TriggerDataSchema = z.nullable(
-  z.record(
-    z.union([
-      z.string(),
-      z.number(),
-      z.boolean(),
-      z.array(z.union([z.string(), z.number(), z.boolean()])),
-    ]),
-  ),
+export const TriggerDataSchema = z.record(
+  z.union([
+    z.string(),
+    z.number(),
+    z.boolean(),
+    z.array(z.union([z.string(), z.number(), z.boolean()])),
+  ]),
 );
 
 export const ReactionParametersDataSchema = z.nullable(
@@ -28,14 +26,24 @@ export const ReactionParametersDataSchema = z.nullable(
   ),
 );
 
+export const EventSchema = z.object({
+  id: z.string(),
+  applicationId: z.string(),
+});
+
+export const ReactionSchema = z.object({
+  id: z.string(),
+  applicationId: z.string(),
+});
+
 export class GetUserAppletsResult implements IQueryResult {
   readonly applets?: {
     id: string;
     userId: string;
-    eventId: string;
+    event: z.infer<typeof EventSchema>;
     eventTriggerData?: z.infer<typeof TriggerDataSchema>;
     eventConnectionId?: string;
-    reactionId: string;
+    reaction: z.infer<typeof ReactionSchema>;
     reactionParametersData?: z.infer<typeof ReactionParametersDataSchema>;
     reactionConnectionId?: string;
     name: string;

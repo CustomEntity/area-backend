@@ -24,9 +24,10 @@ import { KnexApplicationEventQueryRepository } from './adapters/knex.application
 import { GetApplicationEventsHandler } from './queries/get-application-events.handler';
 import { DiscoveryModule } from '@nestjs/core';
 import { GithubApplicationEventService } from '../github/github.application-event-service';
+import {RedisModule} from "../../../core/adapters/redis/redis.module";
 
 @Module({
-  imports: [KnexModule, CqrsModule, SystemModule, DiscoveryModule],
+  imports: [KnexModule, CqrsModule, SystemModule, DiscoveryModule, RedisModule],
   controllers: [EventController],
   providers: [
     {

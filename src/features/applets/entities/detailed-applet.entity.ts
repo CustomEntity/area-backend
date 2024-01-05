@@ -14,7 +14,7 @@ export type DetailedAppletData = {
   id: string;
   userId: string;
   event: Event;
-  eventTriggerData?: TriggerData;
+  eventTriggerData: TriggerData;
   eventConnection?: UserConnection;
   reaction: Reaction;
   reactionParametersData?: ReactionParametersData;
@@ -38,7 +38,7 @@ export class DetailedApplet extends Entity<DetailedAppletData> {
     return this.data.event;
   }
 
-  get eventTriggerData(): TriggerData | undefined {
+  get eventTriggerData(): TriggerData {
     return this.data.eventTriggerData;
   }
 

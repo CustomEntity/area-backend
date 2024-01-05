@@ -59,9 +59,20 @@ export class KafkaService implements OnModuleInit {
       console.log('KafkaService: Connecting to Kafka', kafkaConfig);
       this.kafka = new Kafka(kafkaConfig);
       console.log('KafkaService: Connected to Kafka', kafkaConfig.brokers);
-      this._producer = this.kafka.producer();
+      this._producer = this.kafka.producer({
+        allowAutoTopicCreation: true,
+        retry: {
+          initialRetryTime: 100,
+          retries: 8,
+        },
+      });
       this._consumer = this.kafka.consumer({
         groupId: this.configService.get<string>('kafka.groupId') || 'my-group',
+        retry: {
+          initialRetryTime: 100,
+          retries: 8,
+        },
+
       });
     } catch (error) {
       console.error(error);
@@ -101,6 +112,7 @@ export class KafkaService implements OnModuleInit {
   }
 
   private async setupConsumer(topic: string, handler: Function) {
+    console.log(`KafkaService: Subscribing to topic ${topic}`);
     if (!this.topicHandlers.has(topic)) {
       await this._consumer.subscribe({ topic, fromBeginning: true });
       this.topicHandlers.set(topic, handler);

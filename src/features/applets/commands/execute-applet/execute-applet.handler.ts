@@ -7,6 +7,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { DetailedAppletRepository } from '../../ports/detailed-applet.repository';
 import { ExecuteAppletCommand } from './execute-applet.command';
 import { EventService } from '../../../applications/events/ports/event.service';
+import { ReactionService } from '../../../applications/reactions/ports/reaction.service';
 
 @CommandHandler(ExecuteAppletCommand)
 export class ExecuteAppletHandler
@@ -15,6 +16,7 @@ export class ExecuteAppletHandler
   constructor(
     public readonly appletRepository: DetailedAppletRepository,
     public readonly eventService: EventService,
+    public readonly reactionService: ReactionService,
   ) {}
 
   async execute(command: ExecuteAppletCommand): Promise<void> {
@@ -27,13 +29,25 @@ export class ExecuteAppletHandler
 
     if (!applet.eventConnection) return;
     const eventsData = await this.eventService.retrieveNewEventsData(
+      applet.id,
       applet.eventConnection.value.application.name,
       applet.event.value.name,
-      applet.eventTriggerData?.value || null,
+      applet.eventTriggerData.value,
       applet.eventConnection.value.connectionCredentials,
     );
-    console.log(eventsData);
 
-    // For each new events, call reaction with data
+    if (!applet.reactionConnection) return;
+
+    const reactionPromises = [];
+    for (const eventData of eventsData) {
+      const reactionExecution = this.reactionService.executeReaction(
+        applet.reactionConnection.value.application.name,
+        applet.reaction.value.name,
+        eventData,
+        applet.reactionConnection.value.connectionCredentials,
+      );
+      reactionPromises.push(reactionExecution);
+    }
+    await Promise.all(reactionPromises);
   }
 }

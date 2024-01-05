@@ -67,6 +67,10 @@ import {
   UserRepository,
 } from '../users/ports/user.repository';
 import { UserModule } from '../users/user.module';
+import {
+  REACTION_SERVICE,
+  ReactionService,
+} from '../applications/reactions/ports/reaction.service';
 
 @Module({
   imports: [
@@ -148,10 +152,15 @@ import { UserModule } from '../users/user.module';
       useFactory: (
         appletRepository: DetailedAppletRepository,
         eventService: EventService,
+        reactionService: ReactionService,
       ) => {
-        return new ExecuteAppletHandler(appletRepository, eventService);
+        return new ExecuteAppletHandler(
+          appletRepository,
+          eventService,
+          reactionService,
+        );
       },
-      inject: [DETAILED_APPLET_REPOSITORY, EVENT_SERVICE],
+      inject: [DETAILED_APPLET_REPOSITORY, EVENT_SERVICE, REACTION_SERVICE],
     },
     {
       provide: RemoveUserConnectionHandler,

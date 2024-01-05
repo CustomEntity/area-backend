@@ -17,6 +17,7 @@ export class RedisService {
       host: this.configService.get<string>('redis.host'),
       port: this.configService.get<number>('redis.port'),
       password: this.configService.get<string>('redis.password'),
+      tls: {},
     });
     console.log('RedisService: Connected to Redis');
   }

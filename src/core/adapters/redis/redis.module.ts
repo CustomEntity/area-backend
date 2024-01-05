@@ -10,6 +10,7 @@ import { RedisService } from './redis.service';
 @Global()
 @Module({
   providers: [RedisService],
-  controllers: [RedisService],
+  controllers: [],
+  exports: [RedisService],
 })
 export class RedisModule {}

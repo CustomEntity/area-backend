@@ -14,9 +14,13 @@ import { CurrentDateProvider } from './date/current-date.provider';
 import { ConfigService } from '@nestjs/config';
 import { EVENT_DISPATCHER } from './event/event-dispatcher.provider';
 import { NodeEventDispatcher } from './event/node-event-dispatcher.provider';
+import { KEY_VALUE_STORE_PROVIDER } from './keyvaluestore/key-value-store.provider';
+import { RedisModule } from '../core/adapters/redis/redis.module';
+import { RedisKeyValueStore } from './keyvaluestore/redis.key-value-store.provider';
+import { RedisService } from '../core/adapters/redis/redis.service';
 
 @Module({
-  imports: [],
+  imports: [RedisModule],
   controllers: [],
   providers: [
     {
@@ -57,7 +61,20 @@ import { NodeEventDispatcher } from './event/node-event-dispatcher.provider';
       provide: EVENT_DISPATCHER,
       useClass: NodeEventDispatcher,
     },
+    {
+      provide: KEY_VALUE_STORE_PROVIDER,
+      useFactory: (redisService: RedisService) => {
+        return new RedisKeyValueStore(redisService.connection);
+      },
+      inject: [RedisService],
+    },
   ],
-  exports: [DATE_PROVIDER, ID_PROVIDER, HASH_PROVIDER, EVENT_DISPATCHER],
+  exports: [
+    DATE_PROVIDER,
+    ID_PROVIDER,
+    HASH_PROVIDER,
+    EVENT_DISPATCHER,
+    KEY_VALUE_STORE_PROVIDER,
+  ],
 })
 export class SystemModule {}

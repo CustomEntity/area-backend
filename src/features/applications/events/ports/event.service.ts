@@ -5,15 +5,13 @@
  **/
 import { z } from 'zod';
 
-export const TriggerDataSchema = z.nullable(
-  z.record(
-    z.union([
-      z.string(),
-      z.number(),
-      z.boolean(),
-      z.array(z.union([z.string(), z.number(), z.boolean()])),
-    ]),
-  ),
+export const TriggerDataSchema = z.record(
+  z.union([
+    z.string(),
+    z.number(),
+    z.boolean(),
+    z.array(z.union([z.string(), z.number(), z.boolean()])),
+  ]),
 );
 
 export const EventDataSchema = z.record(
@@ -33,6 +31,7 @@ export const EVENT_SERVICE = Symbol('EVENT_SERVICE');
 
 export interface EventService {
   retrieveNewEventsData(
+    appletId: string,
     applicationName: string,
     eventName: string,
     eventTriggerData: z.infer<typeof TriggerDataSchema>,

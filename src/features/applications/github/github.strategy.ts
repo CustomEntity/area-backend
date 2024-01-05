@@ -9,7 +9,6 @@ import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-github2';
 import e from 'express';
-import passport from 'passport';
 
 export type GithubAuthPayload = {
   provider: string;

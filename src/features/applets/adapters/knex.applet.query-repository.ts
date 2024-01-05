@@ -41,7 +41,21 @@ export class KnexAppletQueryRepository implements AppletQueryRepository {
         `${APPLET_TABLE}.description`,
         `${APPLET_TABLE}.active`,
         `${APPLET_TABLE}.created_at`,
+        `${EVENTS_TABLE}.application_id as event_application_id`,
+        `${REACTIONS_TABLE}.application_id as reaction_application_id`,
         `${USERS_TABLE}.id as user_id`,
+      )
+      .join(
+        `${EVENTS_TABLE}`,
+        `${EVENTS_TABLE}.id`,
+        '=',
+        `${APPLET_TABLE}.event_id`,
+      )
+      .join(
+        `${REACTIONS_TABLE}`,
+        `${REACTIONS_TABLE}.id`,
+        '=',
+        `${APPLET_TABLE}.reaction_id`,
       )
       .where('users.id', '=', userId);
 
@@ -58,10 +72,16 @@ export class KnexAppletQueryRepository implements AppletQueryRepository {
         return {
           id: applet.id,
           userId: applet.user_id,
-          eventId: applet.event_id,
+          event: {
+            id: applet.event_id,
+            applicationId: applet.event_application_id,
+          },
           eventTriggerData: applet.event_trigger_data,
           eventConnectionId: applet.event_connection_id,
-          reactionId: applet.reaction_id,
+          reaction: {
+            id: applet.reaction_id,
+            applicationId: applet.reaction_application_id,
+          },
           reactionParametersData: applet.reaction_parameters_data,
           reactionConnectionId: applet.reaction_connection_id,
           name: applet.name,
