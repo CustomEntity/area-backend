@@ -4,7 +4,7 @@
  * @created : 2023-12-18
  **/
 import { Injectable } from '@nestjs/common';
-import { Consumer } from '../../../../types/consumer.decorator';
+import { Consumer } from '../../../core/decorators/consumer.decorator';
 import { DetailedApplet } from '../entities/detailed-applet.entity';
 import { DetailedAppletRepository } from '../ports/detailed-applet.repository';
 import { CommandBus } from '@nestjs/cqrs';

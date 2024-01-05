@@ -9,7 +9,7 @@ import { Consumer, Kafka, Producer } from 'kafkajs';
 import { ConfigService } from '@nestjs/config';
 import * as assert from 'assert';
 import { DiscoveryService } from '@nestjs/core';
-import { KAFKA_CONSUMER_METHOD_METADATA } from '../../../../types/consumer.decorator';
+import { KAFKA_CONSUMER_METHOD_METADATA } from '../../decorators/consumer.decorator';
 
 @Injectable()
 export class KafkaService implements OnModuleInit {
@@ -56,6 +56,7 @@ export class KafkaService implements OnModuleInit {
         kafkaConfig.ssl = true;
       }
 
+      console.log('KafkaService: Connecting to Kafka', kafkaConfig);
       this.kafka = new Kafka(kafkaConfig);
       console.log('KafkaService: Connected to Kafka', kafkaConfig.brokers);
       this._producer = this.kafka.producer();
@@ -69,9 +70,9 @@ export class KafkaService implements OnModuleInit {
   }
 
   async onModuleInit() {
-    /*await this.init();
-        await this.discoverAndSetupConsumers();
-        await this.startConsuming();*/
+    await this.init();
+    await this.discoverAndSetupConsumers();
+    await this.startConsuming();
   }
 
   async discoverAndSetupConsumers() {

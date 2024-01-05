@@ -8,8 +8,8 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-github2';
-import e from "express";
-import passport from "passport";
+import e from 'express';
+import passport from 'passport';
 
 export type GithubAuthPayload = {
   provider: string;
@@ -41,6 +41,8 @@ export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
       });
       return;
     }
+
+    super.authenticate(req, options);
   }
 
   async validate(

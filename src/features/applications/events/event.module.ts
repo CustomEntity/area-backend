@@ -6,7 +6,10 @@
 import { Module } from '@nestjs/common';
 import { EVENT_SERVICE } from './ports/event.service';
 import { ConcreteEventService } from './adapters/concrete.event.service';
-import { APPLICATION_EVENT_REPOSITORY } from './ports/application-event.repository';
+import {
+  APPLICATION_EVENT_REPOSITORY,
+  ApplicationEventRepository,
+} from './ports/application-event.repository';
 import { KnexService } from '../../../core/adapters/knex/knex.service';
 import { KnexModule } from '../../../core/adapters/knex/knex.module';
 import { CqrsModule } from '@nestjs/cqrs';
@@ -19,9 +22,11 @@ import {
 } from './ports/application-event.query-repository';
 import { KnexApplicationEventQueryRepository } from './adapters/knex.application-event.query-repository';
 import { GetApplicationEventsHandler } from './queries/get-application-events.handler';
+import { DiscoveryModule } from '@nestjs/core';
+import { GithubApplicationEventService } from '../github/github.application-event-service';
 
 @Module({
-  imports: [KnexModule, CqrsModule, SystemModule],
+  imports: [KnexModule, CqrsModule, SystemModule, DiscoveryModule],
   controllers: [EventController],
   providers: [
     {
@@ -51,6 +56,7 @@ import { GetApplicationEventsHandler } from './queries/get-application-events.ha
       },
       inject: [APPLICATION_EVENT_QUERY_REPOSITORY],
     },
+    GithubApplicationEventService,
   ],
   exports: [
     EVENT_SERVICE,
