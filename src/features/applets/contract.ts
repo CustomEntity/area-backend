@@ -145,6 +145,7 @@ export namespace AppletAPI {
       reactionConnectionId: z.string().optional(),
       eventTriggerData: TriggerDataSchema.optional(),
       reactionParametersData: ReactionParametersDataSchema.optional(),
+      active: z.boolean().optional(),
     });
 
     export const openApiSchema = {
@@ -164,6 +165,7 @@ export namespace AppletAPI {
           type: 'object',
           additionalProperties: true,
         },
+        active: { type: 'boolean' },
       },
       example: {
         name: 'My new applet name',
@@ -180,6 +182,7 @@ export namespace AppletAPI {
           title: 'My new issue title',
           body: 'My new issue body',
         },
+        active: true,
       },
     };
 

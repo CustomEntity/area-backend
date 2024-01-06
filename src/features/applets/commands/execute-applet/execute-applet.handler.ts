@@ -43,6 +43,7 @@ export class ExecuteAppletHandler
       const reactionExecution = this.reactionService.executeReaction(
         applet.reactionConnection.value.application.name,
         applet.reaction.value.name,
+        applet.reactionParametersData?.value,
         eventData,
         applet.reactionConnection.value.connectionCredentials,
       );

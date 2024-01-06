@@ -36,6 +36,7 @@ type EditAppletCommandParams = {
   reactionConnectionId?: string;
   eventTriggerData?: z.infer<typeof TriggerDataSchema>;
   reactionParametersData?: z.infer<typeof ReactionParametersDataSchema>;
+  active?: boolean;
 };
 
 export class EditAppletCommand implements ICommand {

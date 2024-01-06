@@ -18,10 +18,12 @@ import { KnexApplicationReactionRepository } from './adapters/knex.application-r
 import { EVENT_SERVICE } from '../events/ports/event.service';
 import { ConcreteEventService } from '../events/adapters/concrete.event.service';
 import { REACTION_SERVICE } from './ports/reaction.service';
-import { ConcreteReactionService } from './adapters/concrete.event.service';
+import { ConcreteReactionService } from './adapters/concrete.reaction.service';
+import { DiscoveryModule } from '@nestjs/core';
+import { GithubApplicationReactionService } from '../github/github.application-reaction-service';
 
 @Module({
-  imports: [KnexModule, CqrsModule, SystemModule],
+  imports: [KnexModule, CqrsModule, SystemModule, DiscoveryModule],
   controllers: [ReactionController],
   providers: [
     {
@@ -53,6 +55,7 @@ import { ConcreteReactionService } from './adapters/concrete.event.service';
       },
       inject: [APPLICATION_REACTION_QUERY_REPOSITORY],
     },
+    GithubApplicationReactionService,
   ],
   exports: [APPLICATION_REACTION_REPOSITORY, REACTION_SERVICE],
 })

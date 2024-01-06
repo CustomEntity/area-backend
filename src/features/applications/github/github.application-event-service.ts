@@ -55,7 +55,12 @@ export class GithubApplicationEventService {
         since: lastPolledAt,
       });
 
-      console.log(data);
+      await this.keyValueStore.set(appletId, new Date().toISOString(), 60 * 60 * 24);
+
+      return data.map((commit) => ({
+        commit: commit.sha,
+        commit_message: commit.commit.message,
+      }));
     } catch (e) {
       console.error(e);
     }
