@@ -7,6 +7,7 @@ import { Entity } from 'src/shared/entity';
 import { TriggerMapping } from '../value-objects/trigger-mapping.vo';
 import { NotificationParameters } from '../value-objects/notification-parameters.vo';
 import { NotificationMethod } from '../value-objects/notification-method.vo';
+import { DataMapping } from '../value-objects/data-mapping.vo';
 
 export type EventData = {
   id: string;
@@ -16,6 +17,7 @@ export type EventData = {
   notificationMethod: NotificationMethod;
   notificationParameters: NotificationParameters;
   triggerMapping: TriggerMapping;
+  dataMapping: DataMapping;
   createdAt: Date;
 };
 
@@ -46,6 +48,10 @@ export class Event extends Entity<EventData> {
 
   get triggerMapping(): TriggerMapping {
     return this.data.triggerMapping;
+  }
+
+  get dataMapping(): DataMapping {
+    return this.data.dataMapping;
   }
 
   get createdAt(): Date {

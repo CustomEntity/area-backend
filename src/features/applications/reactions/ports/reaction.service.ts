@@ -18,6 +18,8 @@ export const ReactionParametersDataSchema = z.nullable(
   ),
 );
 
+export const EventDataSchema = z.record(z.string().optional().nullable());
+
 export interface ReactionService {
   executeReaction(
     applicationName: string,
@@ -25,7 +27,7 @@ export interface ReactionService {
     reactionParametersData:
       | z.infer<typeof ReactionParametersDataSchema>
       | undefined,
-    reactionData: Record<string, unknown>,
+    eventData: z.infer<typeof EventDataSchema>,
     reactionConnectionCredentials: Record<string, unknown>,
   ): Promise<void>;
 }

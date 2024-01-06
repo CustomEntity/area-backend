@@ -15,7 +15,7 @@ export const TriggerDataSchema = z.record(
 );
 
 export const EventDataSchema = z.record(
-  z.union([z.string(), z.number(), z.array(z.string()), z.boolean()]),
+  z.string().optional().nullable(),
 );
 
 export const ConnectionCredentialsSchema = z.record(

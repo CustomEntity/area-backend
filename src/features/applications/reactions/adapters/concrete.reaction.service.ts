@@ -75,17 +75,13 @@ export class ConcreteReactionService implements ReactionService, OnModuleInit {
     reactionParametersData:
       | z.infer<typeof ReactionParametersDataSchema>
       | undefined,
-    reactionData: Record<string, unknown>,
+    eventData: Record<string, unknown>,
     reactionConnectionCredentials: Record<string, unknown>,
   ): Promise<void> {
     const key = `${applicationName}:${reactionName}`;
     const method = this.reactionMethodMap.get(key);
     if (method) {
-      method(
-        reactionParametersData,
-        reactionData,
-        reactionConnectionCredentials,
-      );
+      method(reactionParametersData, eventData, reactionConnectionCredentials);
     } else {
       console.error(`No method found for key: ${key}`);
     }

@@ -36,6 +36,7 @@ export class KnexApplicationEventQueryRepository
         `${APPLICATION_EVENT_TABLE}.notification_method`,
         `${APPLICATION_EVENT_TABLE}.notification_parameters`,
         `${APPLICATION_EVENT_TABLE}.trigger_mapping`,
+        `${APPLICATION_EVENT_TABLE}.data_mapping`,
         `${APPLICATION_EVENT_TABLE}.created_at`,
       )
       .where(`${APPLICATION_TABLE}.id`, applicationId);
@@ -57,6 +58,7 @@ export class KnexApplicationEventQueryRepository
         notificationMethod: event.notification_method,
         notificationParameters: event.notification_parameters,
         triggerMapping: event.trigger_mapping,
+        dataMapping: event.data_mapping,
         createdAt: event.created_at,
       })),
     };

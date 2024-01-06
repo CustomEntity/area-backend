@@ -6,21 +6,18 @@
 import { ApplicationReactionService } from '../reactions/decorators/application-reaction-service.decorator';
 import { ApplicationReaction } from '../reactions/decorators/application-reaction.decorator';
 import { Octokit } from '@octokit/rest';
+import { EventDataSchema } from '../events/ports/event.service';
+import { z } from 'zod';
+import { interpolateString } from '../utils/interpolation';
 
 @ApplicationReactionService('github')
 export class GithubApplicationReactionService {
   @ApplicationReaction('Create issue')
   async createIssue(
     reactionParametersData: Record<string, unknown>,
-    reactionData: Record<string, unknown>,
+    eventData: z.infer<typeof EventDataSchema>,
     reactionConnectionCredentials: Record<string, unknown>,
   ): Promise<void> {
-    console.log(
-      'Create issue',
-      reactionParametersData,
-      reactionData,
-      reactionConnectionCredentials,
-    );
     const octokit = new Octokit({
       auth: reactionConnectionCredentials.access_token,
     });
@@ -32,14 +29,18 @@ export class GithubApplicationReactionService {
       '/',
     )[1];
 
-    console.log('repositoryOwner', repositoryOwner);
-    console.log('repositoryName', repositoryName);
     try {
       await octokit.issues.create({
         owner: repositoryOwner,
         repo: repositoryName,
-        title: reactionParametersData.title as string,
-        body: reactionParametersData.body as string,
+        title: interpolateString(
+          reactionParametersData.title as string,
+          eventData as Record<string, string>,
+        ),
+        body: interpolateString(
+          reactionParametersData.body as string,
+          eventData as Record<string, string>,
+        ),
       });
     } catch (e) {
       console.error(e);

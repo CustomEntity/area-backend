@@ -13,6 +13,7 @@ import { NotificationParameters } from '../value-objects/notification-parameters
 import { NotificationMethod } from '../value-objects/notification-method.vo';
 import { TriggerMapping } from '../value-objects/trigger-mapping.vo';
 import { Event } from '../entities/event.entity';
+import { DataMapping } from '../value-objects/data-mapping.vo';
 
 const EVENT_TABLE = 'application_events';
 
@@ -64,6 +65,7 @@ class KnexEventMapper extends Mapper<Event> {
         data.notification_parameters,
       ),
       triggerMapping: TriggerMapping.create(data.trigger_mapping),
+      dataMapping: DataMapping.create(data.data_mapping),
       createdAt: data.created_at,
     });
   }
@@ -77,6 +79,7 @@ class KnexEventMapper extends Mapper<Event> {
       notification_method: entity.notificationMethod.value,
       notification_parameters: entity.notificationParameters.value,
       trigger_mapping: entity.triggerMapping.value,
+      data_mapping: entity.dataMapping.value,
       created_at: entity.createdAt,
     };
   }

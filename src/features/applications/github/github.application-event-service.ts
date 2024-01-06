@@ -55,11 +55,51 @@ export class GithubApplicationEventService {
         since: lastPolledAt,
       });
 
-      await this.keyValueStore.set(appletId, new Date().toISOString(), 60 * 60 * 24);
+      await this.keyValueStore.set(
+        appletId,
+        new Date().toISOString(),
+        60 * 60 * 24,
+      );
 
       return data.map((commit) => ({
-        commit: commit.sha,
+        sha: commit.sha,
         commit_message: commit.commit.message,
+        commit_author: commit.commit.author?.name,
+        commit_author_email: commit.commit.author?.email,
+        commit_author_date: commit.commit.author?.date,
+        commit_committer: commit.commit.committer?.name,
+        commit_committer_email: commit.commit.committer?.email,
+        commit_committer_date: commit.commit.committer?.date,
+        commit_tree_sha: commit.commit.tree.sha,
+        commit_url: commit.commit.url,
+        commit_comment_count: commit.commit.comment_count.toString(),
+        commit_verification_verified:
+          commit.commit.verification?.verified.toString(),
+        commit_verification_reason: commit.commit.verification?.reason,
+        commit_verification_signature: commit.commit.verification?.signature,
+        commit_verification_payload: commit.commit.verification?.payload,
+        author_login: commit.author?.login,
+        author_id: commit.author?.id.toString(),
+        author_node_id: commit.author?.node_id,
+        author_avatar_url: commit.author?.avatar_url,
+        author_gravatar_id: commit.author?.gravatar_id,
+        author_url: commit.author?.url,
+        author_html_url: commit.author?.html_url,
+        author_followers_url: commit.author?.followers_url,
+        author_following_url: commit.author?.following_url,
+        author_gists_url: commit.author?.gists_url,
+        author_starred_url: commit.author?.starred_url,
+        author_subscriptions_url: commit.author?.subscriptions_url,
+        author_organizations_url: commit.author?.organizations_url,
+        author_repos_url: commit.author?.repos_url,
+        author_events_url: commit.author?.events_url,
+        author_received_events_url: commit.author?.received_events_url,
+        author_type: commit.author?.type,
+        author_site_admin: commit.author?.site_admin.toString(),
+        committer_login: commit.committer?.login,
+        committer_id: commit.committer?.id.toString(),
+        committer_node_id: commit.committer?.node_id,
+        committer_avatar_url: commit.committer?.avatar_url,
       }));
     } catch (e) {
       console.error(e);

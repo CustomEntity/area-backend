@@ -21,6 +21,12 @@ export const TriggerMappingSchema = z.nullable(
   ),
 );
 
+export const DataMappingSchema = z.record(
+  z.object({
+    displayName: z.string(),
+  }),
+);
+
 export class GetApplicationEventsResult implements IQueryResult {
   readonly events?: {
     id: string;
@@ -30,6 +36,7 @@ export class GetApplicationEventsResult implements IQueryResult {
     notificationMethod: z.infer<typeof NotificationMethodSchema>;
     notificationParameters: z.infer<typeof NotificationParametersSchema>;
     triggerMapping: z.infer<typeof TriggerMappingSchema>;
+    dataMapping: z.infer<typeof DataMappingSchema>;
     createdAt: Date;
   }[];
 }
