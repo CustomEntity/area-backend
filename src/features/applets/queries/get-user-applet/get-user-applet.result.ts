@@ -87,10 +87,10 @@ export class GetUserAppletResult implements IQueryResult {
     userId: string;
     event: z.infer<typeof EventSchema>;
     eventTriggerData?: z.infer<typeof TriggerDataSchema>;
-    eventConnection: z.infer<typeof UserConnectionSchema>;
+    eventConnection?: z.infer<typeof UserConnectionSchema>;
     reaction: z.infer<typeof ReactionSchema>;
     reactionParametersData?: z.infer<typeof ReactionParametersDataSchema>;
-    reactionConnection: z.infer<typeof UserConnectionSchema>;
+    reactionConnection?: z.infer<typeof UserConnectionSchema>;
     name: string;
     description: string;
     active: boolean;

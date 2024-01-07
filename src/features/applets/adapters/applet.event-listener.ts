@@ -16,6 +16,7 @@ export class AppletEventListener {
 
   @OnEvent(UserConnectionDeletedEvent.name)
   async handleUserConnectionDeletedEvent(event: UserConnectionDeletedEvent) {
+    console.log('UserConnectionDeletedEvent', event);
     await this.commandBus.execute(new RemoveUserConnectionCommand(event.id));
   }
 }

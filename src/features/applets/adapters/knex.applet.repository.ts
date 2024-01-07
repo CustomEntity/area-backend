@@ -40,7 +40,8 @@ export class KnexAppletRepository implements AppletRepository {
   async findByUserConnectionId(userConnectionId: string): Promise<Applet[]> {
     const rows = await this.connection<Applet>(APPLET_TABLE)
       .select()
-      .where('user_connection_id', userConnectionId);
+      .where('event_connection_id', userConnectionId)
+      .orWhere('reaction_connection_id', userConnectionId);
     return rows.map((row) => this.mapper.toEntity(row));
   }
 
