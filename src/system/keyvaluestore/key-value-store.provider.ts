@@ -7,7 +7,11 @@
 export const KEY_VALUE_STORE_PROVIDER = Symbol('KEY_VALUE_STORE_PROVIDER');
 
 export interface KeyValueStore {
-  set(key: string, value: string, ttl?: number): Promise<void>;
+  set(
+    key: string,
+    value: string | Buffer | number,
+    ttl?: number,
+  ): Promise<void>;
 
   get(key: string): Promise<string | null>;
 

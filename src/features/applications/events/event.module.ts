@@ -24,7 +24,8 @@ import { KnexApplicationEventQueryRepository } from './adapters/knex.application
 import { GetApplicationEventsHandler } from './queries/get-application-events.handler';
 import { DiscoveryModule } from '@nestjs/core';
 import { GithubApplicationEventService } from '../github/github.application-event-service';
-import {RedisModule} from "../../../core/adapters/redis/redis.module";
+import { RedisModule } from '../../../core/adapters/redis/redis.module';
+import { SpotifyApplicationEventService } from '../spotify/spotify.application-event-service';
 
 @Module({
   imports: [KnexModule, CqrsModule, SystemModule, DiscoveryModule, RedisModule],
@@ -58,6 +59,7 @@ import {RedisModule} from "../../../core/adapters/redis/redis.module";
       inject: [APPLICATION_EVENT_QUERY_REPOSITORY],
     },
     GithubApplicationEventService,
+    SpotifyApplicationEventService,
   ],
   exports: [
     EVENT_SERVICE,

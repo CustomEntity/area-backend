@@ -37,6 +37,13 @@ export class GithubApplicationEventService {
       await this.keyValueStore.set(appletId, lastPolledAt, 60 * 60 * 24);
       return [];
     }
+
+    await this.keyValueStore.set(
+      appletId,
+      new Date().toISOString(),
+      60 * 60 * 24,
+    );
+
     const octokit = new Octokit({
       auth: eventConnectionCredentials.access_token,
     });
@@ -49,17 +56,16 @@ export class GithubApplicationEventService {
     )[1];
 
     try {
-      const { data } = await octokit.repos.listCommits({
+      const listCommitsParams = {
         owner: repositoryOwner,
         repo: repositoryName,
         since: lastPolledAt,
-      });
+      } as any;
 
-      await this.keyValueStore.set(
-        appletId,
-        new Date().toISOString(),
-        60 * 60 * 24,
-      );
+      if (eventTriggerData.branch) {
+        listCommitsParams.sha = eventTriggerData.branch;
+      }
+      const { data } = await octokit.repos.listCommits(listCommitsParams);
 
       return data.map((commit) => ({
         sha: commit.sha,
@@ -101,9 +107,7 @@ export class GithubApplicationEventService {
         committer_node_id: commit.committer?.node_id,
         committer_avatar_url: commit.committer?.avatar_url,
       }));
-    } catch (e) {
-      console.error(e);
-    }
+    } catch (e) {}
 
     return [];
   }

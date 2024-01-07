@@ -40,6 +40,7 @@ export class ExecuteAppletHandler
 
     const reactionPromises = [];
     for (const eventData of eventsData) {
+      console.log('eventData', eventData);
       const reactionExecution = this.reactionService.executeReaction(
         applet.reactionConnection.value.application.name,
         applet.reaction.value.name,

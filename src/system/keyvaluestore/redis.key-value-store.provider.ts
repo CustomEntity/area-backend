@@ -23,7 +23,11 @@ export class RedisKeyValueStore implements KeyValueStore {
     return this.connection.get(key);
   }
 
-  async set(key: string, value: string, ttl?: number): Promise<void> {
+  async set(
+    key: string,
+    value: string | Buffer | number,
+    ttl?: number,
+  ): Promise<void> {
     if (ttl) {
       await this.connection.set(key, value, 'EX', ttl);
     } else {

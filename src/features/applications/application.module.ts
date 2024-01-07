@@ -25,6 +25,9 @@ import { GithubService } from './github/github.service';
 import { GetApplicationByIdHandler } from './core/queries/get-application-by-id/get-application-by-id.handler';
 import { ReactionModule } from './reactions/reaction.module';
 import { EventModule } from './events/event.module';
+import { SpotifyController } from './spotify/spotify.controller';
+import { SpotifyService } from './spotify/spotify.service';
+import {SpotifyStrategy} from "./spotify/spotify.strategy";
 
 @Module({
   imports: [
@@ -35,7 +38,7 @@ import { EventModule } from './events/event.module';
     ReactionModule,
     EventModule,
   ],
-  controllers: [ApplicationController, GithubController],
+  controllers: [ApplicationController, GithubController, SpotifyController],
   providers: [
     {
       provide: APPLICATION_REPOSITORY,
@@ -67,6 +70,8 @@ import { EventModule } from './events/event.module';
     },
     GithubStrategy,
     GithubService,
+    SpotifyStrategy,
+    SpotifyService,
   ],
   exports: [
     APPLICATION_REPOSITORY,

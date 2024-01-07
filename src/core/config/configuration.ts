@@ -39,6 +39,11 @@ export default () => ({
       clientSecret: process.env.OAUTH_GITHUB_CLIENT_SECRET,
       callbackURL: process.env.OAUTH_GITHUB_CALLBACK_URL,
     },
+    spotify: {
+      clientId: process.env.OAUTH_SPOTIFY_CLIENT_ID,
+      clientSecret: process.env.OAUTH_SPOTIFY_CLIENT_SECRET,
+      callbackURL: process.env.OAUTH_SPOTIFY_CALLBACK_URL,
+    },
   },
   instance: {
     datacenterId: parseInt(process.env.INSTANCE_DATACENTER_ID || '0', 10),
