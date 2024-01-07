@@ -128,6 +128,7 @@ export class KnexAppletQueryRepository implements AppletQueryRepository {
         reactionApplicationId: `${REACTIONS_TABLE}.application_id`,
         reactionName: `${REACTIONS_TABLE}.name`,
         reactionDescription: `${REACTIONS_TABLE}.description`,
+        reactionParametersMapping: `${REACTIONS_TABLE}.parameters_mapping`,
         reactionCreatedAt: `${REACTIONS_TABLE}.created_at`,
 
         reactionConnectionUserId: 'reaction_connection.user_id',
@@ -210,6 +211,7 @@ export class KnexAppletQueryRepository implements AppletQueryRepository {
           applicationId: applet.reactionApplicationId,
           name: applet.reactionName,
           description: applet.reactionDescription,
+          parametersMapping: applet.reactionParametersMapping,
           createdAt: applet.reactionCreatedAt,
         },
         reactionParametersData: applet.reactionParametersData,

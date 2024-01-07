@@ -17,7 +17,6 @@ export const ReactionSchema = z.object({
       required: z.boolean(),
     }),
   ),
-
   createdAt: z.date(),
 });
 

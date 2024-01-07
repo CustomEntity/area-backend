@@ -60,6 +60,12 @@ export const ReactionSchema = z.object({
   applicationId: z.string(),
   name: z.string(),
   description: z.string(),
+  parametersMapping: z.record(
+    z.object({
+      type: z.string(),
+      required: z.boolean(),
+    }),
+  ),
   createdAt: z.date(),
 });
 
