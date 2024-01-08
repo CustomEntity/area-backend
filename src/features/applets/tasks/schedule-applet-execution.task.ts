@@ -14,6 +14,6 @@ export class ScheduleAppletExecutionTask {
 
   @Cron(CronExpression.EVERY_10_SECONDS)
   async handleCron() {
-    await this.commandBus.execute(new ScheduleAllAppletsExecutionCommand());
+    //await this.commandBus.execute(new ScheduleAllAppletsExecutionCommand());
   }
 }

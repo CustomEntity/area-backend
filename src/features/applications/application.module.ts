@@ -27,11 +27,10 @@ import { ReactionModule } from './reactions/reaction.module';
 import { EventModule } from './events/event.module';
 import { SpotifyController } from './external/spotify/spotify.controller';
 import { SpotifyService } from './external/spotify/spotify.service';
-import {SpotifyStrategy} from "./external/spotify/spotify.strategy";
-import {DiscoveryModule} from "@nestjs/core";
-import {GithubApplicationEventService} from "./external/github/github.application-event-service";
-import {SpotifyApplicationEventService} from "./external/spotify/spotify.application-event-service";
-import {SteamController} from "./external/steam/steam.controller";
+import { SpotifyStrategy } from './external/spotify/spotify.strategy';
+import { DiscoveryModule } from '@nestjs/core';
+import { GithubApplicationEventService } from './external/github/github.application-event-service';
+import { SpotifyApplicationEventService } from './external/spotify/spotify.application-event-service';
 
 @Module({
   imports: [
@@ -41,9 +40,13 @@ import {SteamController} from "./external/steam/steam.controller";
     JwtAuthModule,
     ReactionModule,
     EventModule,
-      DiscoveryModule
+    DiscoveryModule,
   ],
-  controllers: [ApplicationController, GithubController, SpotifyController, SteamController],
+  controllers: [
+    ApplicationController,
+    GithubController,
+    SpotifyController,
+  ],
   providers: [
     {
       provide: APPLICATION_REPOSITORY,
