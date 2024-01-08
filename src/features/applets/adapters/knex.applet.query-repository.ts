@@ -29,6 +29,18 @@ export class KnexAppletQueryRepository implements AppletQueryRepository {
         '=',
         `${APPLET_TABLE}.user_id`,
       )
+      .leftJoin(
+        `${EVENTS_TABLE}`,
+        `${EVENTS_TABLE}.id`,
+        '=',
+        `${APPLET_TABLE}.event_id`,
+      )
+      .leftJoin(
+        `${REACTIONS_TABLE}`,
+        `${REACTIONS_TABLE}.id`,
+        '=',
+        `${APPLET_TABLE}.reaction_id`,
+      )
       .select(
         `${APPLET_TABLE}.id`,
         `${APPLET_TABLE}.event_id`,
@@ -44,18 +56,6 @@ export class KnexAppletQueryRepository implements AppletQueryRepository {
         `${EVENTS_TABLE}.application_id as event_application_id`,
         `${REACTIONS_TABLE}.application_id as reaction_application_id`,
         `${USERS_TABLE}.id as user_id`,
-      )
-      .join(
-        `${EVENTS_TABLE}`,
-        `${EVENTS_TABLE}.id`,
-        '=',
-        `${APPLET_TABLE}.event_id`,
-      )
-      .join(
-        `${REACTIONS_TABLE}`,
-        `${REACTIONS_TABLE}.id`,
-        '=',
-        `${APPLET_TABLE}.reaction_id`,
       )
       .where('users.id', '=', userId);
 
