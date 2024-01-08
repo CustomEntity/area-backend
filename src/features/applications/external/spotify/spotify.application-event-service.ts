@@ -4,21 +4,21 @@
  * @created : 2024-01-07
  **/
 
-import { ApplicationEventService } from '../events/decorators/application-event-service.decorator';
+import { ApplicationEventService } from '../../events/decorators/application-event-service.decorator';
 import {
   KEY_VALUE_STORE_PROVIDER,
   KeyValueStore,
-} from '../../../system/keyvaluestore/key-value-store.provider';
+} from '../../../../system/keyvaluestore/key-value-store.provider';
 import { Inject } from '@nestjs/common';
-import { ApplicationEvent } from '../events/decorators/application-event.decorator';
-import {Playlist, SpotifyApi} from '@spotify/web-api-ts-sdk';
+import { ApplicationEvent } from '../../events/decorators/application-event.decorator';
+import { Playlist, SpotifyApi } from '@spotify/web-api-ts-sdk';
 import { ConfigService } from '@nestjs/config';
 import { z } from 'zod';
 import {
   ConnectionCredentialsSchema,
   EventDataSchema,
   TriggerDataSchema,
-} from '../events/ports/event.service';
+} from '../../events/ports/event.service';
 import * as querystring from 'querystring';
 
 @ApplicationEventService('spotify')
@@ -68,7 +68,7 @@ export class SpotifyApplicationEventService {
   async checkNewPlaylistWasCreated(
     appletId: string,
     eventTriggerData: z.infer<typeof TriggerDataSchema>,
-    eventConnectionCredentials: z.infer<typeof ConnectionCredentialsSchema>,
+    eventConnectionCredentials: { access_token: string; refresh_token: string },
   ): Promise<z.infer<typeof EventDataSchema>[]> {
     let lastPolledAt = await this.keyValueStore.get(appletId);
     if (lastPolledAt === null) {

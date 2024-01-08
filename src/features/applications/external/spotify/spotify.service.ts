@@ -6,12 +6,12 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
-import { CreateUserConnectionCommand } from '../../user-connections/commands/create-user-connection/create-user-connection.command';
-import { JwtPayload } from '../../auth/jwt/jwt-auth.strategy';
+import { CreateUserConnectionCommand } from '../../../user-connections/commands/create-user-connection/create-user-connection.command';
+import { JwtPayload } from '../../../auth/jwt/jwt-auth.strategy';
 import {
   APPLICATION_REPOSITORY,
   ApplicationRepository,
-} from '../core/ports/application.repository';
+} from '../../core/ports/application.repository';
 import { SpotifyAuthPayload } from './spotify.strategy';
 
 @Injectable()

@@ -192,7 +192,7 @@ export class KnexAppletQueryRepository implements AppletQueryRepository {
           name: applet.eventConnectionName,
           createdAt: applet.eventConnectionCreatedAt,
         }
-      : undefined;
+      : null;
 
     const reactionConnection = applet.reactionConnectionId
       ? {
@@ -206,7 +206,7 @@ export class KnexAppletQueryRepository implements AppletQueryRepository {
           name: applet.reactionConnectionName,
           createdAt: applet.reactionConnectionCreatedAt,
         }
-      : undefined;
+      : null;
 
     return {
       applet: {

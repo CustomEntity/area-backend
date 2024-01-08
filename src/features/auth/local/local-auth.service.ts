@@ -50,8 +50,11 @@ export class LocalAuthService {
       lastName: user.lastName,
       email: user.email.value,
     };
-    this.authService.login(jwtPayload, res);
-    return res.status(200).send({ message: 'Login successful' });
+    const credentials = this.authService.login(jwtPayload, res);
+    return res.status(200).send({
+      message: 'Login successful',
+      access_token: credentials.access_token,
+    });
   }
 
   async register(request: AuthAPI.Local.Register.Request, res: Response) {
@@ -74,7 +77,10 @@ export class LocalAuthService {
       lastName: request.lastName,
       email: request.email,
     };
-    this.authService.login(jwtPayload, res);
-    return res.status(201).send({ message: 'User created successfully' });
+    const credentials = this.authService.login(jwtPayload, res);
+    return res.status(201).send({
+      message: 'User created successfully',
+      access_token: credentials.access_token,
+    });
   }
 }

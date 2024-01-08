@@ -4,18 +4,17 @@
  * @created : 2023-12-25
  **/
 import {
-  ConnectionCredentialsSchema,
   EventDataSchema,
   TriggerDataSchema,
-} from '../events/ports/event.service';
+} from '../../events/ports/event.service';
 import { z } from 'zod';
-import { ApplicationEventService } from '../events/decorators/application-event-service.decorator';
-import { ApplicationEvent } from '../events/decorators/application-event.decorator';
+import { ApplicationEventService } from '../../events/decorators/application-event-service.decorator';
+import { ApplicationEvent } from '../../events/decorators/application-event.decorator';
 import { Octokit } from '@octokit/rest';
 import {
   KEY_VALUE_STORE_PROVIDER,
   KeyValueStore,
-} from '../../../system/keyvaluestore/key-value-store.provider';
+} from '../../../../system/keyvaluestore/key-value-store.provider';
 import { Inject } from '@nestjs/common';
 
 @ApplicationEventService('github')
@@ -29,7 +28,7 @@ export class GithubApplicationEventService {
   async checkIfNewCommitOccurred(
     appletId: string,
     eventTriggerData: z.infer<typeof TriggerDataSchema>,
-    eventConnectionCredentials: z.infer<typeof ConnectionCredentialsSchema>,
+    eventConnectionCredentials: { access_token: string; refresh_token: string },
   ): Promise<z.infer<typeof EventDataSchema>[]> {
     let lastPolledAt = await this.keyValueStore.get(appletId);
     if (lastPolledAt === null) {

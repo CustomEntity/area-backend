@@ -15,14 +15,13 @@ export const UserConnectionSchema = z.object({
     name: z.string(),
   }),
   name: z.string(),
-  connectionCredentials: z.record(
-    z.union([
-      z.string(),
-      z.number(),
-      z.boolean(),
-      z.array(z.union([z.string(), z.number(), z.boolean()])),
-    ]),
-  ),
+  connectionCredentials: z.union([
+    z.string(),
+    z.object({
+      access_token: z.string(),
+      refresh_token: z.string().optional(),
+    }),
+  ]),
   createdAt: z.date(),
 });
 

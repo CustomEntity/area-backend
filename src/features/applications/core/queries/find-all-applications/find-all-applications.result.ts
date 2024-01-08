@@ -7,7 +7,7 @@
 import { IQueryResult } from '@nestjs/cqrs';
 import { z } from 'zod';
 
-const AuthenticationTypeSchema = z.enum(['oauth2', 'basic']);
+const AuthenticationTypeSchema = z.enum(['oauth2', 'basic', 'apikey']);
 
 const AuthenticationParametersSchema = z.record(
   z.union([z.string(), z.number(), z.array(z.string()), z.boolean()]),

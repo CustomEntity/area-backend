@@ -9,8 +9,8 @@ import { Request, Response } from 'express';
 import { GithubGuard } from './github.guard';
 import { GithubAuthPayload } from './github.strategy';
 import { GithubService } from './github.service';
-import { JwtAuthGuard } from '../../auth/jwt/jwt-auth.guard';
-import { JwtPayload } from '../../auth/jwt/jwt-auth.strategy';
+import { JwtAuthGuard } from '../../../auth/jwt/jwt-auth.guard';
+import { JwtPayload } from '../../../auth/jwt/jwt-auth.strategy';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @Controller('auth/oauth/github')

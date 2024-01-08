@@ -69,17 +69,19 @@ export const ReactionSchema = z.object({
   createdAt: z.date(),
 });
 
-export const UserConnectionSchema = z.object({
-  id: z.string(),
-  userId: z.string(),
-  applicationId: z.string(),
-  application: z.object({
+export const UserConnectionSchema = z.nullable(
+  z.object({
     id: z.string(),
+    userId: z.string(),
+    applicationId: z.string(),
+    application: z.object({
+      id: z.string(),
+      name: z.string(),
+    }),
     name: z.string(),
+    createdAt: z.date(),
   }),
-  name: z.string(),
-  createdAt: z.date(),
-});
+);
 
 export class GetUserAppletResult implements IQueryResult {
   readonly applet: {

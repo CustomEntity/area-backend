@@ -14,18 +14,15 @@ export const TriggerDataSchema = z.record(
   ]),
 );
 
-export const EventDataSchema = z.record(
-  z.string().optional().nullable(),
-);
+export const EventDataSchema = z.record(z.string().optional().nullable());
 
-export const ConnectionCredentialsSchema = z.record(
-  z.union([
-    z.string(),
-    z.number(),
-    z.boolean(),
-    z.array(z.union([z.string(), z.number(), z.boolean()])),
-  ]),
-);
+export const ConnectionCredentialsSchema = z.union([
+  z.string(),
+  z.object({
+    access_token: z.string(),
+    refresh_token: z.string().optional(),
+  }),
+]);
 
 export const EVENT_SERVICE = Symbol('EVENT_SERVICE');
 

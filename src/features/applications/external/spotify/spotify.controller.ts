@@ -9,8 +9,8 @@ import { Request, Response } from 'express';
 import { SpotifyGuard } from './spotify.guard';
 import { SpotifyAuthPayload } from './spotify.strategy';
 import { SpotifyService } from './spotify.service';
-import { JwtAuthGuard } from '../../auth/jwt/jwt-auth.guard';
-import { JwtPayload } from '../../auth/jwt/jwt-auth.strategy';
+import { JwtAuthGuard } from '../../../auth/jwt/jwt-auth.guard';
+import { JwtPayload } from '../../../auth/jwt/jwt-auth.strategy';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @Controller('auth/oauth/spotify')

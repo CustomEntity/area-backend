@@ -6,6 +6,7 @@
 
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import {
+  ConnectionCredentialsSchema,
   ReactionParametersDataSchema,
   ReactionService,
 } from '../ports/reaction.service';
@@ -76,7 +77,7 @@ export class ConcreteReactionService implements ReactionService, OnModuleInit {
       | z.infer<typeof ReactionParametersDataSchema>
       | undefined,
     eventData: Record<string, unknown>,
-    reactionConnectionCredentials: Record<string, unknown>,
+    reactionConnectionCredentials: z.infer<typeof ConnectionCredentialsSchema>,
   ): Promise<void> {
     const key = `${applicationName}:${reactionName}`;
     const method = this.reactionMethodMap.get(key);

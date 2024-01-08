@@ -10,11 +10,7 @@ import { z } from 'zod';
 const ConnectionCredentialsSchema = z.union([
   z.string(),
   z.object({
-    username: z.string(),
-    password: z.string(),
-  }),
-  z.object({
-    access_token: z.string(),
+    access_token: z.string().optional(),
     refresh_token: z.string().optional(),
   }),
 ]);

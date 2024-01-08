@@ -7,7 +7,7 @@
 import { ValueObject } from '../../../../shared/value-object';
 import { z } from 'zod';
 
-export const AuthenticationTypeSchema = z.enum(['oauth2', 'basic']);
+export const AuthenticationTypeSchema = z.enum(['oauth2', 'basic', 'apikey']);
 
 export class AuthenticationType extends ValueObject<
   z.infer<typeof AuthenticationTypeSchema>

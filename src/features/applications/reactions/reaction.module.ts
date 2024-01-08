@@ -20,7 +20,7 @@ import { ConcreteEventService } from '../events/adapters/concrete.event.service'
 import { REACTION_SERVICE } from './ports/reaction.service';
 import { ConcreteReactionService } from './adapters/concrete.reaction.service';
 import { DiscoveryModule } from '@nestjs/core';
-import { GithubApplicationReactionService } from '../github/github.application-reaction-service';
+import { GithubApplicationReactionService } from '../external/github/github.application-reaction-service';
 
 @Module({
   imports: [KnexModule, CqrsModule, SystemModule, DiscoveryModule],
