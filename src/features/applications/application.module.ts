@@ -31,6 +31,7 @@ import { SpotifyStrategy } from './external/spotify/spotify.strategy';
 import { DiscoveryModule } from '@nestjs/core';
 import { GithubApplicationEventService } from './external/github/github.application-event-service';
 import { SpotifyApplicationEventService } from './external/spotify/spotify.application-event-service';
+import {SteamController} from "./external/steam/steam.controller";
 
 @Module({
   imports: [

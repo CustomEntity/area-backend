@@ -117,6 +117,7 @@ export class KnexAppletQueryRepository implements AppletQueryRepository {
         eventNotificationMethod: `${EVENTS_TABLE}.notification_method`,
         eventNotificationParameters: `${EVENTS_TABLE}.notification_parameters`,
         eventTriggerMapping: `${EVENTS_TABLE}.trigger_mapping`,
+        eventDataMapping: `${EVENTS_TABLE}.data_mapping`,
         eventCreatedAt: `${EVENTS_TABLE}.created_at`,
 
         eventConnectionUserId: 'event_connection.user_id',
@@ -220,6 +221,7 @@ export class KnexAppletQueryRepository implements AppletQueryRepository {
           notificationMethod: applet.eventNotificationMethod,
           notificationParameters: applet.eventNotificationParameters,
           triggerMapping: applet.eventTriggerMapping,
+          dataMapping: applet.eventDataMapping,
           createdAt: applet.eventCreatedAt,
         },
         eventTriggerData: applet.eventTriggerData,

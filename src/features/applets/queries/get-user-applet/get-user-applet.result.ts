@@ -52,6 +52,11 @@ export const EventSchema = z.object({
       }),
     ),
   ),
+  dataMapping: z.record(
+    z.object({
+      displayName: z.string(),
+    }),
+  ),
   createdAt: z.date(),
 });
 
