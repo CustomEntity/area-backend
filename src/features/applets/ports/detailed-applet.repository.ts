@@ -11,8 +11,6 @@ export const DETAILED_APPLET_REPOSITORY = Symbol('DETAILED_APPLET_REPOSITORY');
 export interface DetailedAppletRepository {
   findById(id: string): Promise<Nullable<DetailedApplet>>;
 
-  findByUserId(userId: string): Promise<DetailedApplet[]>;
-
   findByUserConnectionId(userConnectionId: string): Promise<DetailedApplet[]>;
 
   findPollingApplets(): Promise<DetailedApplet[]>;

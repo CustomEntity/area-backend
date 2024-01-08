@@ -20,7 +20,6 @@ export namespace UserConnectionAPI {
     export const connectionIdSchema = z.string().refine((value) => {
       return !isNaN(Number(value));
     }, 'Invalid connection id');
-
   }
 
   export namespace DeleteUserConnection {

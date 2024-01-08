@@ -73,11 +73,9 @@ export class ConcreteReactionService implements ReactionService, OnModuleInit {
   executeReaction(
     applicationName: string,
     reactionName: string,
-    reactionParametersData:
-      | z.infer<typeof ReactionParametersDataSchema>
-      | undefined,
     eventData: Record<string, unknown>,
-    reactionConnectionCredentials: z.infer<typeof ConnectionCredentialsSchema>,
+    reactionParametersData?: z.infer<typeof ReactionParametersDataSchema>,
+    reactionConnectionCredentials?: z.infer<typeof ConnectionCredentialsSchema>,
   ): Promise<void> {
     const key = `${applicationName}:${reactionName}`;
     const method = this.reactionMethodMap.get(key);

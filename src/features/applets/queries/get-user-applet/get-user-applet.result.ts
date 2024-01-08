@@ -30,7 +30,10 @@ export const ReactionParametersDataSchema = z.nullable(
 
 export const EventSchema = z.object({
   id: z.string(),
-  applicationId: z.string(),
+  application: z.object({
+    id: z.string(),
+    name: z.string(),
+  }),
   name: z.string(),
   description: z.string(),
   notificationMethod: z.enum(['webhook', 'polling']),
@@ -62,7 +65,10 @@ export const EventSchema = z.object({
 
 export const ReactionSchema = z.object({
   id: z.string(),
-  applicationId: z.string(),
+  application: z.object({
+    id: z.string(),
+    name: z.string(),
+  }),
   name: z.string(),
   description: z.string(),
   parametersMapping: z.record(
@@ -79,10 +85,6 @@ export const UserConnectionSchema = z.nullable(
     id: z.string(),
     userId: z.string(),
     applicationId: z.string(),
-    application: z.object({
-      id: z.string(),
-      name: z.string(),
-    }),
     name: z.string(),
     createdAt: z.date(),
   }),

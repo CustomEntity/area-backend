@@ -8,10 +8,12 @@ import { z } from 'zod';
 import { ValueObject } from '../../../shared/value-object';
 
 const ConnectionCredentialsSchema = z.union([
-  z.string(),
   z.object({
-    access_token: z.string().optional(),
+    access_token: z.string(),
     refresh_token: z.string().optional(),
+  }),
+  z.object({
+    api_key: z.string(),
   }),
 ]);
 

@@ -71,7 +71,7 @@ export class ConcreteEventService implements EventService, OnModuleInit {
     applicationName: string,
     eventName: string,
     eventTriggerData: z.infer<typeof TriggerDataSchema>,
-    eventConnectionCredentials: z.infer<typeof ConnectionCredentialsSchema>,
+    eventConnectionCredentials?: z.infer<typeof ConnectionCredentialsSchema>,
   ): Promise<z.infer<typeof EventDataSchema>[]> {
     const key = `${applicationName}:${eventName}`;
     const method = this.eventMethodMap.get(key);

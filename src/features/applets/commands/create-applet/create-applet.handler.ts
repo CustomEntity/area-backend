@@ -14,7 +14,7 @@ import { ReactionParametersData } from '../../value-objects/reaction-parameters-
 import { AppletRepository } from '../../ports/applet.repository';
 import { Applet } from '../../entities/applet.entity';
 import { ApplicationReactionRepository } from '../../../applications/reactions/ports/application-reaction.repository';
-import {UserRepository} from "../../../users/ports/user.repository";
+import { UserRepository } from '../../../users/ports/user.repository';
 
 @CommandHandler(CreateAppletCommand)
 export class CreateAppletHandler

@@ -8,7 +8,10 @@ import { ValueObject } from '../../../shared/value-object';
 
 export const ReactionSchema = z.object({
   id: z.string(),
-  applicationId: z.string(),
+  application: z.object({
+    id: z.string(),
+    name: z.string(),
+  }),
   name: z.string(),
   description: z.string(),
   parametersMapping: z.record(

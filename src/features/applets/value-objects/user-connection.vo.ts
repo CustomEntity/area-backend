@@ -10,16 +10,14 @@ export const UserConnectionSchema = z.object({
   id: z.string(),
   userId: z.string(),
   applicationId: z.string(),
-  application: z.object({
-    id: z.string(),
-    name: z.string(),
-  }),
   name: z.string(),
   connectionCredentials: z.union([
-    z.string(),
     z.object({
       access_token: z.string(),
       refresh_token: z.string().optional(),
+    }),
+    z.object({
+      api_key: z.string(),
     }),
   ]),
   createdAt: z.date(),

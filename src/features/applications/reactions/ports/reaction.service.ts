@@ -19,10 +19,12 @@ export const ReactionParametersDataSchema = z.nullable(
 );
 
 export const ConnectionCredentialsSchema = z.union([
-  z.string(),
   z.object({
     access_token: z.string(),
     refresh_token: z.string().optional(),
+  }),
+  z.object({
+    api_key: z.string(),
   }),
 ]);
 
@@ -32,10 +34,8 @@ export interface ReactionService {
   executeReaction(
     applicationName: string,
     reactionName: string,
-    reactionParametersData:
-      | z.infer<typeof ReactionParametersDataSchema>
-      | undefined,
     eventData: z.infer<typeof EventDataSchema>,
-    reactionConnectionCredentials: z.infer<typeof ConnectionCredentialsSchema>,
+    reactionParametersData?: z.infer<typeof ReactionParametersDataSchema>,
+    reactionConnectionCredentials?: z.infer<typeof ConnectionCredentialsSchema>,
   ): Promise<void>;
 }

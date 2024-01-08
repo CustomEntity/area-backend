@@ -31,7 +31,10 @@ import { SpotifyStrategy } from './external/spotify/spotify.strategy';
 import { DiscoveryModule } from '@nestjs/core';
 import { GithubApplicationEventService } from './external/github/github.application-event-service';
 import { SpotifyApplicationEventService } from './external/spotify/spotify.application-event-service';
-import {SteamController} from "./external/steam/steam.controller";
+import { SteamController } from './external/steam/steam.controller';
+import { SteamService } from './external/steam/steam.service';
+import { SteamApplicationEventService } from './external/steam/steam.applicaton-event-service';
+import { NYTimesApplicationEventService } from './external/nytimes/nytimes.application-event-service';
 
 @Module({
   imports: [
@@ -47,6 +50,7 @@ import {SteamController} from "./external/steam/steam.controller";
     ApplicationController,
     GithubController,
     SpotifyController,
+    SteamController,
   ],
   providers: [
     {
@@ -81,8 +85,11 @@ import {SteamController} from "./external/steam/steam.controller";
     GithubService,
     SpotifyStrategy,
     SpotifyService,
+    SteamService,
     GithubApplicationEventService,
     SpotifyApplicationEventService,
+    SteamApplicationEventService,
+    NYTimesApplicationEventService,
   ],
   exports: [
     APPLICATION_REPOSITORY,

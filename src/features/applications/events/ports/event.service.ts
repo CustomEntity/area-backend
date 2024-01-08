@@ -17,10 +17,12 @@ export const TriggerDataSchema = z.record(
 export const EventDataSchema = z.record(z.string().optional().nullable());
 
 export const ConnectionCredentialsSchema = z.union([
-  z.string(),
   z.object({
     access_token: z.string(),
     refresh_token: z.string().optional(),
+  }),
+  z.object({
+    api_key: z.string(),
   }),
 ]);
 
@@ -32,6 +34,6 @@ export interface EventService {
     applicationName: string,
     eventName: string,
     eventTriggerData: z.infer<typeof TriggerDataSchema>,
-    eventConnectionCredentials: z.infer<typeof ConnectionCredentialsSchema>,
+    eventConnectionCredentials?: z.infer<typeof ConnectionCredentialsSchema>,
   ): Promise<z.infer<typeof EventDataSchema>[]>;
 }

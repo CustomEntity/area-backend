@@ -45,6 +45,12 @@ export default () => ({
       callbackURL: process.env.OAUTH_SPOTIFY_CALLBACK_URL,
     },
   },
+  application: {
+    nytimes: {
+      apiKey: process.env.APPLICATION_NYTIMES_API_KEY,
+      secret: process.env.APPLICATION_NYTIMES_SECRET,
+    },
+  },
   instance: {
     datacenterId: parseInt(process.env.INSTANCE_DATACENTER_ID || '0', 10),
     workerId: parseInt(process.env.INSTANCE_WORKER_ID || '0', 10),

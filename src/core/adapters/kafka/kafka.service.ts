@@ -72,7 +72,6 @@ export class KafkaService implements OnModuleInit {
           initialRetryTime: 100,
           retries: 8,
         },
-
       });
     } catch (error) {
       console.error(error);

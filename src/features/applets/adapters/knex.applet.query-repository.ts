@@ -112,6 +112,7 @@ export class KnexAppletQueryRepository implements AppletQueryRepository {
         appletCreatedAt: `${APPLET_TABLE}.created_at`,
 
         eventApplicationId: `${EVENTS_TABLE}.application_id`,
+        eventApplicationName: 'event_application.name',
         eventName: `${EVENTS_TABLE}.name`,
         eventDescription: `${EVENTS_TABLE}.description`,
         eventNotificationMethod: `${EVENTS_TABLE}.notification_method`,
@@ -122,11 +123,11 @@ export class KnexAppletQueryRepository implements AppletQueryRepository {
 
         eventConnectionUserId: 'event_connection.user_id',
         eventConnectionApplicationId: 'event_connection.application_id',
-        eventConnectionApplicationName: 'event_application.name',
         eventConnectionName: 'event_connection.name',
         eventConnectionCreatedAt: 'event_connection.created_at',
 
         reactionApplicationId: `${REACTIONS_TABLE}.application_id`,
+        reactionApplicationName: 'reaction_application.name',
         reactionName: `${REACTIONS_TABLE}.name`,
         reactionDescription: `${REACTIONS_TABLE}.description`,
         reactionParametersMapping: `${REACTIONS_TABLE}.parameters_mapping`,
@@ -134,10 +135,33 @@ export class KnexAppletQueryRepository implements AppletQueryRepository {
 
         reactionConnectionUserId: 'reaction_connection.user_id',
         reactionConnectionApplicationId: 'reaction_connection.application_id',
-        reactionConnectionApplicationName: 'reaction_application.name',
         reactionConnectionName: 'reaction_connection.name',
         reactionConnectionCreatedAt: 'reaction_connection.created_at',
       })
+      .leftJoin(
+        `${EVENTS_TABLE}`,
+        `${EVENTS_TABLE}.id`,
+        '=',
+        `${APPLET_TABLE}.event_id`,
+      )
+      .leftJoin(
+        `${REACTIONS_TABLE}`,
+        `${REACTIONS_TABLE}.id`,
+        '=',
+        `${APPLET_TABLE}.reaction_id`,
+      )
+      .leftJoin(
+        `${APPLICATIONS_TABLE} as event_application`,
+        `${EVENTS_TABLE}.application_id`,
+        '=',
+        'event_application.id',
+      )
+      .leftJoin(
+        `${APPLICATIONS_TABLE} as reaction_application`,
+        `${REACTIONS_TABLE}.application_id`,
+        '=',
+        'reaction_application.id',
+      )
       .leftJoin(
         `${USER_CONNECTIONS_TABLE} as event_connection`,
         'event_connection.id',
@@ -145,34 +169,10 @@ export class KnexAppletQueryRepository implements AppletQueryRepository {
         `${APPLET_TABLE}.event_connection_id`,
       )
       .leftJoin(
-        `${APPLICATIONS_TABLE} as event_application`,
-        'event_connection.application_id',
-        '=',
-        'event_application.id',
-      )
-      .leftJoin(
         `${USER_CONNECTIONS_TABLE} as reaction_connection`,
         'reaction_connection.id',
         '=',
         `${APPLET_TABLE}.reaction_connection_id`,
-      )
-      .leftJoin(
-        `${APPLICATIONS_TABLE} as reaction_application`,
-        'reaction_connection.application_id',
-        '=',
-        'reaction_application.id',
-      )
-      .join(
-        `${EVENTS_TABLE}`,
-        `${EVENTS_TABLE}.id`,
-        '=',
-        `${APPLET_TABLE}.event_id`,
-      )
-      .join(
-        `${REACTIONS_TABLE}`,
-        `${REACTIONS_TABLE}.id`,
-        '=',
-        `${APPLET_TABLE}.reaction_id`,
       )
       .where(`${APPLET_TABLE}.id`, appletId)
       .first();
@@ -186,10 +186,6 @@ export class KnexAppletQueryRepository implements AppletQueryRepository {
           id: applet.eventConnectionId,
           userId: applet.eventConnectionUserId,
           applicationId: applet.eventConnectionApplicationId,
-          application: {
-            id: applet.eventConnectionApplicationId,
-            name: applet.eventConnectionApplicationName,
-          },
           name: applet.eventConnectionName,
           createdAt: applet.eventConnectionCreatedAt,
         }
@@ -200,10 +196,6 @@ export class KnexAppletQueryRepository implements AppletQueryRepository {
           id: applet.reactionConnectionId,
           userId: applet.reactionConnectionUserId,
           applicationId: applet.reactionConnectionApplicationId,
-          application: {
-            id: applet.reactionConnectionApplicationId,
-            name: applet.reactionConnectionApplicationName,
-          },
           name: applet.reactionConnectionName,
           createdAt: applet.reactionConnectionCreatedAt,
         }
@@ -215,7 +207,10 @@ export class KnexAppletQueryRepository implements AppletQueryRepository {
         userId: applet.userId,
         event: {
           id: applet.eventId,
-          applicationId: applet.eventApplicationId,
+          application: {
+            id: applet.eventApplicationId,
+            name: applet.eventApplicationName,
+          },
           name: applet.eventName,
           description: applet.eventDescription,
           notificationMethod: applet.eventNotificationMethod,
@@ -228,7 +223,10 @@ export class KnexAppletQueryRepository implements AppletQueryRepository {
         eventConnection: eventConnection,
         reaction: {
           id: applet.reactionId,
-          applicationId: applet.reactionApplicationId,
+          application: {
+            id: applet.reactionApplicationId,
+            name: applet.reactionApplicationName,
+          },
           name: applet.reactionName,
           description: applet.reactionDescription,
           parametersMapping: applet.reactionParametersMapping,

@@ -27,26 +27,23 @@ export class ExecuteAppletHandler
       throw new Error(`Applet with id ${appletId} not found`);
     }
 
-    if (!applet.eventConnection) return;
     const eventsData = await this.eventService.retrieveNewEventsData(
       applet.id,
-      applet.eventConnection.value.application.name,
+      applet.event.value.application.name,
       applet.event.value.name,
       applet.eventTriggerData.value,
-      applet.eventConnection.value.connectionCredentials,
+      applet.eventConnection?.value.connectionCredentials,
     );
-
-    if (!applet.reactionConnection) return;
 
     const reactionPromises = [];
     for (const eventData of eventsData) {
       console.log('eventData', eventData);
       const reactionExecution = this.reactionService.executeReaction(
-        applet.reactionConnection.value.application.name,
+        applet.reaction.value.application.name,
         applet.reaction.value.name,
-        applet.reactionParametersData?.value,
         eventData,
-        applet.reactionConnection.value.connectionCredentials,
+        applet.reactionParametersData?.value,
+        applet.reactionConnection?.value.connectionCredentials,
       );
       reactionPromises.push(reactionExecution);
     }

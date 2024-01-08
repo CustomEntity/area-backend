@@ -7,9 +7,7 @@
 import { ValueObject } from '../../../../shared/value-object';
 import { z } from 'zod';
 
-export const AuthenticationParametersSchema = z.record(
-  z.union([z.string(), z.number(), z.array(z.string()), z.boolean()]),
-);
+export const AuthenticationParametersSchema = z.nullable(z.record(z.any()));
 
 export class AuthenticationParameters extends ValueObject<
   z.infer<typeof AuthenticationParametersSchema>

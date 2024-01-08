@@ -7,11 +7,9 @@
 import { IQueryResult } from '@nestjs/cqrs';
 import { z } from 'zod';
 
-const AuthenticationTypeSchema = z.enum(['oauth2', 'basic', 'apikey']);
+const AuthenticationTypeSchema = z.enum(['oauth2', 'basic', 'apikey', 'none']);
 
-const AuthenticationParametersSchema = z.record(
-  z.union([z.string(), z.number(), z.array(z.string()), z.boolean()]),
-);
+const AuthenticationParametersSchema = z.nullable(z.record(z.any()));
 
 export class FindAllApplicationsResult implements IQueryResult {
   readonly applications: {
