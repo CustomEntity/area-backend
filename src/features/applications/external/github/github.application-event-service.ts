@@ -28,8 +28,15 @@ export class GithubApplicationEventService {
   async checkIfNewCommitOccurred(
     appletId: string,
     eventTriggerData: z.infer<typeof TriggerDataSchema>,
-    eventConnectionCredentials: { access_token: string; refresh_token: string },
+    eventConnectionCredentials?: {
+      access_token: string;
+      refresh_token: string;
+    },
   ): Promise<z.infer<typeof EventDataSchema>[]> {
+    if (!eventConnectionCredentials) {
+      return [];
+    }
+
     let lastPolledAt = await this.keyValueStore.get(appletId);
     if (lastPolledAt === null) {
       lastPolledAt = new Date().toISOString();

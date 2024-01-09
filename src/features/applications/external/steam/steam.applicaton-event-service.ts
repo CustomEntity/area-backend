@@ -30,6 +30,9 @@ export class SteamApplicationEventService {
     eventTriggerData: z.infer<typeof TriggerDataSchema>,
     eventConnectionCredentials: { api_key: string },
   ) {
+    if (!eventConnectionCredentials) {
+      return [];
+    }
     try {
       await this.updateLastPolledAt(appletId);
 

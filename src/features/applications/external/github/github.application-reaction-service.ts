@@ -16,11 +16,14 @@ export class GithubApplicationReactionService {
   async createIssue(
     reactionParametersData: Record<string, unknown>,
     eventData: z.infer<typeof EventDataSchema>,
-    reactionConnectionCredentials: {
+    reactionConnectionCredentials?: {
       access_token: string;
       refresh_token: string;
     },
   ): Promise<void> {
+    if (!reactionConnectionCredentials) {
+      return;
+    }
     const octokit = new Octokit({
       auth: reactionConnectionCredentials.access_token,
     });

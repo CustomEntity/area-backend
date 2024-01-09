@@ -35,6 +35,7 @@ import { SteamController } from './external/steam/steam.controller';
 import { SteamService } from './external/steam/steam.service';
 import { SteamApplicationEventService } from './external/steam/steam.applicaton-event-service';
 import { NYTimesApplicationEventService } from './external/nytimes/nytimes.application-event-service';
+import { EpitechApplicationReactionService } from './external/epitech/epitech.application-reaction-service';
 
 @Module({
   imports: [
@@ -90,6 +91,7 @@ import { NYTimesApplicationEventService } from './external/nytimes/nytimes.appli
     SpotifyApplicationEventService,
     SteamApplicationEventService,
     NYTimesApplicationEventService,
+    EpitechApplicationReactionService,
   ],
   exports: [
     APPLICATION_REPOSITORY,

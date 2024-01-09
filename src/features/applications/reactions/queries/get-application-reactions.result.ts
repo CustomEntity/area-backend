@@ -5,12 +5,20 @@
  **/
 import { IQueryResult } from '@nestjs/cqrs';
 import { z } from 'zod';
-import { ParametersMapping } from '../value-objects/parameters-mapping.vo';
 
 export const ParametersMappingSchema = z.record(
   z.object({
     type: z.string(),
     required: z.boolean(),
+    schema: z
+      .union([
+        z.string(),
+        z.number(),
+        z.boolean(),
+        z.array(z.string()),
+        z.array(z.number()),
+      ])
+      .optional(),
   }),
 );
 

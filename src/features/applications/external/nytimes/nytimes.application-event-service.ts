@@ -44,7 +44,7 @@ export class NYTimesApplicationEventService {
   async checkIfNewArticlePublished(
     appletId: string,
     eventTriggerData: z.infer<typeof TriggerDataSchema>,
-    eventConnectionCredentials: z.infer<typeof ConnectionCredentialsSchema>,
+    eventConnectionCredentials?: z.infer<typeof ConnectionCredentialsSchema>,
   ): Promise<z.infer<typeof EventDataSchema>[]> {
     await this.updateLastPolledAt(appletId);
 
