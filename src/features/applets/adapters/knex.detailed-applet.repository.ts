@@ -139,6 +139,7 @@ export class KnexDetailedAppletRepository implements DetailedAppletRepository {
         eventCreatedAt: `${EVENTS_TABLE}.created_at`,
 
         eventConnectionUserId: 'event_connection.user_id',
+        eventConnectionApplicationId: 'event_connection.application_id',
         eventConnectionName: 'event_connection.name',
         eventConnectionCredentials: 'event_connection.connection_credentials',
         eventConnectionCreatedAt: 'event_connection.created_at',
@@ -229,6 +230,7 @@ export class KnexDetailedAppletRepository implements DetailedAppletRepository {
         eventCreatedAt: `${EVENTS_TABLE}.created_at`,
 
         eventConnectionUserId: 'event_connection.user_id',
+        eventConnectionApplicationId: 'event_connection.application_id',
         eventConnectionName: 'event_connection.name',
         eventConnectionCredentials: 'event_connection.connection_credentials',
         eventConnectionCreatedAt: 'event_connection.created_at',
@@ -317,6 +319,7 @@ export class KnexDetailedAppletRepository implements DetailedAppletRepository {
         eventCreatedAt: `${EVENTS_TABLE}.created_at`,
 
         eventConnectionUserId: 'event_connection.user_id',
+        eventConnectionApplicationId: 'event_connection.application_id',
         eventConnectionName: 'event_connection.name',
         eventConnectionCredentials: 'event_connection.connection_credentials',
         eventConnectionCreatedAt: 'event_connection.created_at',
@@ -431,6 +434,7 @@ class KnexDetailedAppletMapper extends Mapper<DetailedApplet> {
     }
 
     const triggerData = TriggerData.create(data.eventTriggerData);
+
     const reactionParameters = ReactionParametersData.create(
       data.reactionParametersData,
     );

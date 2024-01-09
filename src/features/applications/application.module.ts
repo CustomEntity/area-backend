@@ -36,6 +36,8 @@ import { SteamService } from './external/steam/steam.service';
 import { SteamApplicationEventService } from './external/steam/steam.applicaton-event-service';
 import { NYTimesApplicationEventService } from './external/nytimes/nytimes.application-event-service';
 import { EpitechApplicationReactionService } from './external/epitech/epitech.application-reaction-service';
+import { EpitechController } from './external/epitech/epitech.controller';
+import { EpitechService } from './external/epitech/epitech.service';
 
 @Module({
   imports: [
@@ -52,6 +54,7 @@ import { EpitechApplicationReactionService } from './external/epitech/epitech.ap
     GithubController,
     SpotifyController,
     SteamController,
+    EpitechController,
   ],
   providers: [
     {
@@ -87,6 +90,7 @@ import { EpitechApplicationReactionService } from './external/epitech/epitech.ap
     SpotifyStrategy,
     SpotifyService,
     SteamService,
+    EpitechService,
     GithubApplicationEventService,
     SpotifyApplicationEventService,
     SteamApplicationEventService,

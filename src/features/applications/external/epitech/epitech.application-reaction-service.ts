@@ -36,5 +36,6 @@ export class EpitechApplicationReactionService {
     if (response.status !== 200) {
       throw new Error('Epitech door open failed');
     }
+    console.log('Epitech door open success');
   }
 }
