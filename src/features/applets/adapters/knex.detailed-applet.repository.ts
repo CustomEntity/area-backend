@@ -422,7 +422,7 @@ class KnexDetailedAppletMapper extends Mapper<DetailedApplet> {
     });
 
     let reactionConnection = undefined;
-    if (data.eventConnectionUserId) {
+    if (data.reactionConnectionUserId) {
       reactionConnection = UserConnection.create({
         id: data.reactionConnectionId,
         userId: data.reactionConnectionUserId,

@@ -33,6 +33,7 @@
     "@nestjs/schedule": "^4.0.0",
     "@nestjs/swagger": "^7.1.17",
     "@octokit/rest": "^20.0.2",
+    "@petfinder/petfinder-js": "^1.0.6",
     "@spotify/web-api-ts-sdk": "^1.1.2",
     "@types/passport-google-oauth20": "^2.0.14",
     "argon2": "^0.31.2",

@@ -12,8 +12,8 @@ import { ScheduleAllAppletsExecutionCommand } from '../commands/schedule-all-app
 export class ScheduleAppletExecutionTask {
   constructor(private readonly commandBus: CommandBus) {}
 
-  @Cron(CronExpression.EVERY_10_SECONDS)
+  @Cron(CronExpression.EVERY_MINUTE)
   async handleCron() {
-    //await this.commandBus.execute(new ScheduleAllAppletsExecutionCommand());
+    await this.commandBus.execute(new ScheduleAllAppletsExecutionCommand());
   }
 }

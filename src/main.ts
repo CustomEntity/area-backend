@@ -19,7 +19,6 @@ let server: { close: (arg0: (err: any) => void) => void };
 BigInt.prototype.toJSON = function (): string {
   return this.toString();
 };
-
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
@@ -27,15 +26,15 @@ async function bootstrap() {
       const allowedOrigins = ['http://localhost:5173', 'http://localhost:3000'];
       const domainRegex = /^[a-z]+:\/\/(?:[^\/]*\.+)*lfdp\.eu/;
       const ngrokRegex = /^[a-z]+:\/\/(?:[^\/]*\.+)*ngrok-free\.app/;
-      const serveoRegex = /^[a-z]+:\/\/(?:[^\/]*\.+)*serveo\.net/;
       const gcpRegex = /^[a-z]+:\/\/(?:[^\/]*\.+)*run\.app/;
+      const vercelRegex = /^[a-z]+:\/\/(?:[^\/]*\.+)*vercel\.app/;
       if (
         !origin ||
         allowedOrigins.includes(origin) ||
         domainRegex.test(origin) ||
         ngrokRegex.test(origin) ||
-        serveoRegex.test(origin) ||
-        gcpRegex.test(origin)
+        gcpRegex.test(origin) ||
+        vercelRegex.test(origin)
       ) {
         callback(null, true);
       } else {

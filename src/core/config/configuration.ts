@@ -50,6 +50,10 @@ export default () => ({
       apiKey: process.env.APPLICATION_NYTIMES_API_KEY,
       secret: process.env.APPLICATION_NYTIMES_SECRET,
     },
+    petfinder: {
+      apiKey: process.env.APPLICATION_PETFINDER_API_KEY,
+      secret: process.env.APPLICATION_PETFINDER_SECRET,
+    },
   },
   instance: {
     datacenterId: parseInt(process.env.INSTANCE_DATACENTER_ID || '0', 10),

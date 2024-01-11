@@ -38,6 +38,7 @@ import { NYTimesApplicationEventService } from './external/nytimes/nytimes.appli
 import { EpitechApplicationReactionService } from './external/epitech/epitech.application-reaction-service';
 import { EpitechController } from './external/epitech/epitech.controller';
 import { EpitechService } from './external/epitech/epitech.service';
+import { PetfinderApplicationEventService } from './external/petfinder/petfinder.application-event-service';
 
 @Module({
   imports: [
@@ -96,6 +97,7 @@ import { EpitechService } from './external/epitech/epitech.service';
     SteamApplicationEventService,
     NYTimesApplicationEventService,
     EpitechApplicationReactionService,
+    PetfinderApplicationEventService,
   ],
   exports: [
     APPLICATION_REPOSITORY,
