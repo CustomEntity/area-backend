@@ -48,26 +48,33 @@ export class CreateAppletHandler
       );
     }
 
-    const eventConnection = await this.userConnectionRepository.findById(
-      command.eventConnectionId,
-    );
-    if (!eventConnection) {
-      throw new DomainError(
-        'NotFound',
-        'EVENT_CONNECTION_NOT_FOUND',
-        'Event connection not found',
+    let eventConnection = null;
+    if (command.eventConnectionId) {
+      eventConnection = await this.userConnectionRepository.findById(
+        command.eventConnectionId,
       );
+      if (!eventConnection) {
+        throw new DomainError(
+          'NotFound',
+          'EVENT_CONNECTION_NOT_FOUND',
+          'Event connection not found',
+        );
+      }
     }
 
-    const reactionConnection = await this.userConnectionRepository.findById(
-      command.reactionConnectionId,
-    );
-    if (!reactionConnection) {
-      throw new DomainError(
-        'NotFound',
-        'REACTION_CONNECTION_NOT_FOUND',
-        'Reaction connection not found',
+    let reactionConnection = null;
+
+    if (command.reactionConnectionId) {
+      reactionConnection = await this.userConnectionRepository.findById(
+        command.reactionConnectionId,
       );
+      if (!reactionConnection) {
+        throw new DomainError(
+          'NotFound',
+          'REACTION_CONNECTION_NOT_FOUND',
+          'Reaction connection not found',
+        );
+      }
     }
 
     if (event.data.triggerMapping.value && command.eventTriggerData) {

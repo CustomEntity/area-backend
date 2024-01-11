@@ -137,10 +137,10 @@ export class AppletController {
         userId,
         data.eventId,
         data.reactionId,
-        data.eventConnectionId,
-        data.reactionConnectionId,
         data.eventTriggerData,
         data.reactionParametersData,
+          data.eventConnectionId,
+          data.reactionConnectionId,
       ),
     );
 

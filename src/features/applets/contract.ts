@@ -36,8 +36,8 @@ export namespace AppletAPI {
       description: z.string().min(1),
       eventId: z.string(),
       reactionId: z.string(),
-      eventConnectionId: z.string(),
-      reactionConnectionId: z.string(),
+      eventConnectionId: z.string().optional(),
+      reactionConnectionId: z.string().optional(),
       eventTriggerData: TriggerDataSchema,
       reactionParametersData: ReactionParametersDataSchema,
     });

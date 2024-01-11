@@ -33,11 +33,11 @@ export class CreateAppletCommand implements ICommand {
     public readonly userId: string,
     public readonly eventId: string,
     public readonly reactionId: string,
-    public readonly eventConnectionId: string,
-    public readonly reactionConnectionId: string,
     public readonly eventTriggerData: z.infer<typeof TriggerDataSchema>,
     public readonly reactionParametersData: z.infer<
       typeof ReactionParametersDataSchema
     >,
+    public readonly eventConnectionId?: string,
+    public readonly reactionConnectionId?: string,
   ) {}
 }
