@@ -155,14 +155,17 @@ export class PetfinderApplicationEventService {
     });
 
     try {
-      const { type, size, gender, age, location } = eventTriggerData;
-      const response = await client.animal.search({
-        type: type,
-        size: size,
-        gender: gender,
-        age: age,
-        location: location,
-      });
+      const params = {} as any;
+      if (eventTriggerData) {
+        const { type, size, gender, age, location } = eventTriggerData;
+        params.type = type;
+        params.size = size;
+        params.gender = gender;
+        params.age = age;
+        params.location = location;
+      }
+
+      const response = await client.animal.search(params);
 
       if (response.data.animals.length === 0) {
         return [];

@@ -33,7 +33,7 @@ export class GithubApplicationEventService {
       refresh_token: string;
     },
   ): Promise<z.infer<typeof EventDataSchema>[]> {
-    if (!eventConnectionCredentials) {
+    if (!eventConnectionCredentials || !eventTriggerData) {
       return [];
     }
 

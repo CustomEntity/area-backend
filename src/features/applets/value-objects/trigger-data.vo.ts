@@ -6,13 +6,15 @@
 import { z } from 'zod';
 import { ValueObject } from '../../../shared/value-object';
 
-export const TriggerDataSchema = z.record(
-  z.union([
-    z.string(),
-    z.number(),
-    z.boolean(),
-    z.array(z.union([z.string(), z.number(), z.boolean()])),
-  ]),
+export const TriggerDataSchema = z.nullable(
+  z.record(
+    z.union([
+      z.string(),
+      z.number(),
+      z.boolean(),
+      z.array(z.union([z.string(), z.number(), z.boolean()])),
+    ]),
+  ),
 );
 
 export class TriggerData extends ValueObject<

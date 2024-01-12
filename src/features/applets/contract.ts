@@ -7,14 +7,16 @@ import { z } from 'zod';
 
 export namespace AppletAPI {
   export namespace CreateApplet {
-    const TriggerDataSchema = z.record(
-      z.union([
-        z.string(),
-        z.number(),
-        z.boolean(),
-        z.array(z.union([z.string(), z.number(), z.boolean()])),
-      ]),
-    ).optional();
+    const TriggerDataSchema = z
+      .record(
+        z.union([
+          z.string(),
+          z.number(),
+          z.boolean(),
+          z.array(z.union([z.string(), z.number(), z.boolean()])),
+        ]),
+      )
+      .optional();
 
     const ReactionParametersDataSchema = z.nullable(
       z.record(
@@ -108,13 +110,15 @@ export namespace AppletAPI {
   }
 
   export namespace EditApplet {
-    const TriggerDataSchema = z.record(
-      z.union([
-        z.string(),
-        z.number(),
-        z.boolean(),
-        z.array(z.union([z.string(), z.number(), z.boolean()])),
-      ]),
+    const TriggerDataSchema = z.nullable(
+      z.record(
+        z.union([
+          z.string(),
+          z.number(),
+          z.boolean(),
+          z.array(z.union([z.string(), z.number(), z.boolean()])),
+        ]),
+      ),
     );
 
     const ReactionParametersDataSchema = z.nullable(

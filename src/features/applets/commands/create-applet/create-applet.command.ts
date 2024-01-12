@@ -6,13 +6,15 @@
 import { ICommand } from '@nestjs/cqrs';
 import { z } from 'zod';
 
-const TriggerDataSchema = z.record(
-  z.union([
-    z.string(),
-    z.number(),
-    z.boolean(),
-    z.array(z.union([z.string(), z.number(), z.boolean()])),
-  ]),
+const TriggerDataSchema = z.nullable(
+  z.record(
+    z.union([
+      z.string(),
+      z.number(),
+      z.boolean(),
+      z.array(z.union([z.string(), z.number(), z.boolean()])),
+    ]),
+  ),
 );
 
 const ReactionParametersDataSchema = z.nullable(
@@ -33,10 +35,10 @@ export class CreateAppletCommand implements ICommand {
     public readonly userId: string,
     public readonly eventId: string,
     public readonly reactionId: string,
-    public readonly eventTriggerData: z.infer<typeof TriggerDataSchema>,
     public readonly reactionParametersData: z.infer<
       typeof ReactionParametersDataSchema
     >,
+    public readonly eventTriggerData?: z.infer<typeof TriggerDataSchema>,
     public readonly eventConnectionId?: string,
     public readonly reactionConnectionId?: string,
   ) {}

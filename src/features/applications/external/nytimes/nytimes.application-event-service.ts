@@ -46,6 +46,9 @@ export class NYTimesApplicationEventService {
     eventTriggerData: z.infer<typeof TriggerDataSchema>,
     eventConnectionCredentials?: z.infer<typeof ConnectionCredentialsSchema>,
   ): Promise<z.infer<typeof EventDataSchema>[]> {
+    if (!eventTriggerData) {
+      return [];
+    }
     await this.updateLastPolledAt(appletId);
 
     const { section } = eventTriggerData;

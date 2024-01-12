@@ -30,7 +30,7 @@ export class SteamApplicationEventService {
     eventTriggerData: z.infer<typeof TriggerDataSchema>,
     eventConnectionCredentials: { api_key: string },
   ) {
-    if (!eventConnectionCredentials) {
+    if (!eventConnectionCredentials || !eventTriggerData) {
       return [];
     }
     try {
