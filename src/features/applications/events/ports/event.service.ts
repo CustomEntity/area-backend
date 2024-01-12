@@ -14,7 +14,7 @@ export const TriggerDataSchema = z.nullable(
       z.array(z.union([z.string(), z.number(), z.boolean()])),
     ]),
   ),
-);
+).optional();
 
 export const EventDataSchema = z.record(z.string().optional().nullable());
 

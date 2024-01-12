@@ -119,7 +119,7 @@ export namespace AppletAPI {
           z.array(z.union([z.string(), z.number(), z.boolean()])),
         ]),
       ),
-    );
+    ).optional();
 
     const ReactionParametersDataSchema = z.nullable(
       z.record(

@@ -15,7 +15,7 @@ export const TriggerDataSchema = z.nullable(
       z.array(z.union([z.string(), z.number(), z.boolean()])),
     ]),
   ),
-);
+).optional();
 
 export class TriggerData extends ValueObject<
   z.infer<typeof TriggerDataSchema>

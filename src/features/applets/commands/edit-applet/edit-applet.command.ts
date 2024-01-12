@@ -6,16 +6,18 @@
 import { ICommand } from '@nestjs/cqrs';
 import { z } from 'zod';
 
-const TriggerDataSchema = z.nullable(
-  z.record(
-    z.union([
-      z.string(),
-      z.number(),
-      z.boolean(),
-      z.array(z.union([z.string(), z.number(), z.boolean()])),
-    ]),
-  ),
-);
+const TriggerDataSchema = z
+  .nullable(
+    z.record(
+      z.union([
+        z.string(),
+        z.number(),
+        z.boolean(),
+        z.array(z.union([z.string(), z.number(), z.boolean()])),
+      ]),
+    ),
+  )
+  .optional();
 
 const ReactionParametersDataSchema = z.nullable(
   z.record(
