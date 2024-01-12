@@ -198,11 +198,11 @@ export class PetfinderApplicationEventService {
     appletId: string,
     animalsId: number[],
   ): Promise<number[]> {
-    const lastAnimalsId = await this.keyValueStore.get(appletId + '-animals');
+    const lastAnimalsId = await this.keyValueStore.get(appletId + '_animals');
 
     if (lastAnimalsId === null) {
       await this.keyValueStore.set(
-        appletId + '-animals',
+        appletId + '_animals',
         animalsId.join(','),
         60 * 60 * 24,
       );
@@ -215,7 +215,7 @@ export class PetfinderApplicationEventService {
     );
 
     await this.keyValueStore.set(
-      appletId + '-animals',
+      appletId + '_animals',
       animalsId.join(','),
       60 * 60 * 24,
     );

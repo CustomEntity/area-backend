@@ -35,7 +35,6 @@ export class GithubApplicationReactionService {
       '/',
     )[1];
 
-    console.log(repositoryOwner, repositoryName);
     try {
       await octokit.issues.create({
         owner: repositoryOwner,

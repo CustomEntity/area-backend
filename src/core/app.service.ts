@@ -58,7 +58,7 @@ export class AppService {
       }));
     }
 
-    const dynamicContent = {
+    return {
       client: {
         host: req.headers.host,
       },
@@ -73,7 +73,5 @@ export class AppService {
         ],
       },
     };
-
-    return dynamicContent;
   }
 }

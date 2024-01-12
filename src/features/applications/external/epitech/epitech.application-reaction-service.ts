@@ -11,6 +11,7 @@ import { EventDataSchema } from '../../events/ports/event.service';
 
 @ApplicationReactionService('epitech')
 export class EpitechApplicationReactionService {
+
   @ApplicationReaction('Open door')
   async openDoor(
     reactionParametersData: Record<string, unknown>,

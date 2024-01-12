@@ -23,7 +23,6 @@ export class ConnectionCredentials extends ValueObject<
   private constructor(value: z.infer<typeof ConnectionCredentialsSchema>) {
     super(value);
   }
-
   public static create(value: unknown): ConnectionCredentials {
     const parsedValue = ConnectionCredentialsSchema.parse(value);
     return new ConnectionCredentials(parsedValue);

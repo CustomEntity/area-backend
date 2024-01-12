@@ -18,9 +18,13 @@ export class Aes256EncryptionProvider implements EncryptionProvider {
     if (!secretKey) {
       throw new Error('Encryption key is not defined');
     }
+    const encryptionIV = this.configService.get<string>('encryptionSecretIV');
+    if (!encryptionIV) {
+      throw new Error('Encryption IV is not defined');
+    }
 
     this.key = crypto.scryptSync(secretKey, 'salt', 32);
-    this.encryptionIV = crypto.randomBytes(16);
+    this.encryptionIV = Buffer.from(encryptionIV, 'hex');
   }
 
   encrypt(data: string): string {

@@ -6,10 +6,11 @@
 
 import { ConfigService } from '@nestjs/config';
 import { Knex, knex } from 'knex';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 
 @Injectable()
 export class KnexService {
+  private readonly logger = new Logger(KnexService.name);
   private readonly knex: Knex;
 
   constructor(private readonly configService: ConfigService) {
@@ -25,9 +26,9 @@ export class KnexService {
           timezone: 'utc',
         },
       });
-      console.log('KnexService: Connected to Postgres');
+      this.logger.log('KnexService: Connected to Postgres');
     } catch (error) {
-      console.error(error);
+      this.logger.error('Error initializing KnexService', error.stack);
       throw error;
     }
   }

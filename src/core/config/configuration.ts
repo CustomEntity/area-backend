@@ -11,6 +11,7 @@ export default () => ({
   jwtExpiresIn: process.env.JWT_EXPIRES_IN,
   sessionSecret: process.env.SESSION_SECRET,
   encryptionSecretKey: process.env.ENCRYPTION_SECRET_KEY,
+  encryptionSecretIV: process.env.ENCRYPTION_SECRET_IV,
   kafka: {
     brokers: process.env.KAFKA_BROKERS?.split(',') || [],
     sasl: process.env.KAFKA_SASL_MECHANISM === 'true',

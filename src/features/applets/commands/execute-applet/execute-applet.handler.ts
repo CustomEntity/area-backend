@@ -55,6 +55,8 @@ export class ExecuteAppletHandler
       ) as z.infer<typeof ConnectionCredentialsSchema>,
     );
 
+    console.log('eventsData', eventsData);
+
     const reactionPromises = [];
     for (const eventData of eventsData) {
       const reactionExecution = this.reactionService.executeReaction(
@@ -66,6 +68,7 @@ export class ExecuteAppletHandler
           applet.reactionConnection?.value.connectionCredentials ?? {},
         ) as z.infer<typeof ConnectionCredentialsSchema>,
       );
+
       reactionPromises.push(reactionExecution);
     }
     await Promise.all(reactionPromises);
