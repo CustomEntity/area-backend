@@ -33,6 +33,10 @@ import {
 import { GetUserConnectionsHandler } from './queries/get-user-connections/get-user-connections.handler';
 import { KnexUserConnectionQueryRepository } from './adapters/knex.user-connection.query-repository';
 import { GetUserConnectionHandler } from './queries/get-user-connection/get-user-connection.handler';
+import {
+  ENCRYPTION_PROVIDER,
+  EncryptionProvider,
+} from '../../system/encryption/encryption.provider';
 
 @Module({
   imports: [KnexModule, CqrsModule, SystemModule],
@@ -68,12 +72,14 @@ import { GetUserConnectionHandler } from './queries/get-user-connection/get-user
         dateProvider: CurrentDateProvider,
         idProvider: SnowflakeIdProvider,
         eventDispatcher: EventDispatcher,
+        encryptionProvider: EncryptionProvider,
       ) => {
         return new CreateUserConnectionHandler(
           userConnectionRepository,
           dateProvider,
           idProvider,
           eventDispatcher,
+          encryptionProvider,
         );
       },
       inject: [
@@ -81,6 +87,7 @@ import { GetUserConnectionHandler } from './queries/get-user-connection/get-user
         DATE_PROVIDER,
         ID_PROVIDER,
         EVENT_DISPATCHER,
+        ENCRYPTION_PROVIDER,
       ],
     },
     {

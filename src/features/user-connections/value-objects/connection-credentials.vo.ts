@@ -7,7 +7,7 @@
 import { z } from 'zod';
 import { ValueObject } from '../../../shared/value-object';
 
-const ConnectionCredentialsSchema = z.union([
+export const ConnectionCredentialsSchema = z.union([
   z.object({
     access_token: z.string(),
     refresh_token: z.string().optional(),

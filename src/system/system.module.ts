@@ -18,6 +18,11 @@ import { KEY_VALUE_STORE_PROVIDER } from './keyvaluestore/key-value-store.provid
 import { RedisModule } from '../core/adapters/redis/redis.module';
 import { RedisKeyValueStore } from './keyvaluestore/redis.key-value-store.provider';
 import { RedisService } from '../core/adapters/redis/redis.service';
+import {
+  ENCRYPTION_PROVIDER,
+  EncryptionProvider,
+} from './encryption/encryption.provider';
+import { Aes256EncryptionProvider } from './encryption/aes256-encryption.provider';
 
 @Module({
   imports: [RedisModule],
@@ -58,6 +63,20 @@ import { RedisService } from '../core/adapters/redis/redis.service';
       },
     },
     {
+      provide: ENCRYPTION_PROVIDER,
+      useFactory: (encryptionProvider: EncryptionProvider) => {
+        return encryptionProvider;
+      },
+      inject: [Aes256EncryptionProvider],
+    },
+    {
+      provide: Aes256EncryptionProvider,
+      useFactory: (configService: ConfigService) => {
+        return new Aes256EncryptionProvider(configService);
+      },
+      inject: [ConfigService],
+    },
+    {
       provide: EVENT_DISPATCHER,
       useClass: NodeEventDispatcher,
     },
@@ -75,6 +94,7 @@ import { RedisService } from '../core/adapters/redis/redis.service';
     HASH_PROVIDER,
     EVENT_DISPATCHER,
     KEY_VALUE_STORE_PROVIDER,
+    ENCRYPTION_PROVIDER,
   ],
 })
 export class SystemModule {}

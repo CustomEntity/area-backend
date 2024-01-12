@@ -8,6 +8,9 @@ import { DetailedAppletRepository } from '../../ports/detailed-applet.repository
 import { ExecuteAppletCommand } from './execute-applet.command';
 import { EventService } from '../../../applications/events/ports/event.service';
 import { ReactionService } from '../../../applications/reactions/ports/reaction.service';
+import { EncryptionProvider } from '../../../../system/encryption/encryption.provider';
+import { ConnectionCredentialsSchema } from '../../../user-connections/value-objects/connection-credentials.vo';
+import { z } from 'zod';
 
 @CommandHandler(ExecuteAppletCommand)
 export class ExecuteAppletHandler
@@ -17,7 +20,22 @@ export class ExecuteAppletHandler
     public readonly appletRepository: DetailedAppletRepository,
     public readonly eventService: EventService,
     public readonly reactionService: ReactionService,
+    public readonly encryptionProvider: EncryptionProvider,
   ) {}
+
+  decryptObjectFields(obj: Record<string, any>): Record<string, any> {
+    const decryptedObject: Record<string, any> = {};
+
+    for (const [key, value] of Object.entries(obj)) {
+      if (typeof value === 'string') {
+        decryptedObject[key] = this.encryptionProvider.decrypt(value);
+      } else {
+        decryptedObject[key] = value;
+      }
+    }
+
+    return decryptedObject;
+  }
 
   async execute(command: ExecuteAppletCommand): Promise<void> {
     const appletId = command.appletId;
@@ -32,7 +50,9 @@ export class ExecuteAppletHandler
       applet.event.value.application.name,
       applet.event.value.name,
       applet.eventTriggerData.value,
-      applet.eventConnection?.value.connectionCredentials,
+      this.decryptObjectFields(
+        applet.eventConnection?.value.connectionCredentials ?? {},
+      ) as z.infer<typeof ConnectionCredentialsSchema>,
     );
 
     const reactionPromises = [];
@@ -42,7 +62,9 @@ export class ExecuteAppletHandler
         applet.reaction.value.name,
         eventData,
         applet.reactionParametersData?.value,
-        applet.reactionConnection?.value.connectionCredentials,
+        this.decryptObjectFields(
+          applet.reactionConnection?.value.connectionCredentials ?? {},
+        ) as z.infer<typeof ConnectionCredentialsSchema>,
       );
       reactionPromises.push(reactionExecution);
     }

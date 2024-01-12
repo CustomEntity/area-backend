@@ -71,6 +71,10 @@ import {
   REACTION_SERVICE,
   ReactionService,
 } from '../applications/reactions/ports/reaction.service';
+import {
+  ENCRYPTION_PROVIDER,
+  EncryptionProvider,
+} from '../../system/encryption/encryption.provider';
 
 @Module({
   imports: [
@@ -153,14 +157,21 @@ import {
         appletRepository: DetailedAppletRepository,
         eventService: EventService,
         reactionService: ReactionService,
+        encryptionProvider: EncryptionProvider,
       ) => {
         return new ExecuteAppletHandler(
           appletRepository,
           eventService,
           reactionService,
+          encryptionProvider,
         );
       },
-      inject: [DETAILED_APPLET_REPOSITORY, EVENT_SERVICE, REACTION_SERVICE],
+      inject: [
+        DETAILED_APPLET_REPOSITORY,
+        EVENT_SERVICE,
+        REACTION_SERVICE,
+        ENCRYPTION_PROVIDER,
+      ],
     },
     {
       provide: RemoveUserConnectionHandler,
