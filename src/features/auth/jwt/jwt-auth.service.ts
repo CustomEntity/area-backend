@@ -23,7 +23,7 @@ export class JwtAuthService {
 
     res.cookie('access_token', jwt, {
       httpOnly: true,
-      secure: false, // TODO: set to true in production
+      secure: process.env.NODE_ENV === 'production',
     });
 
     return {
