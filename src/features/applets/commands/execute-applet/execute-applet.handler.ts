@@ -49,7 +49,7 @@ export class ExecuteAppletHandler
       applet.id,
       applet.event.value.application.name,
       applet.event.value.name,
-      applet.eventTriggerData.value,
+      applet.eventTriggerData?.value ?? {},
       this.decryptObjectFields(
         applet.eventConnection?.value.connectionCredentials ?? {},
       ) as z.infer<typeof ConnectionCredentialsSchema>,
