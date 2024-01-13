@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS users
     email               varchar(255) NOT NULL,
     hashed_password     varchar(255) NULL,
     profile_picture_url text,
+    is_admin            boolean      NOT NULL DEFAULT FALSE,
     created_at          timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
 );

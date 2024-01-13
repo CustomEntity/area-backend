@@ -12,6 +12,7 @@ export type UserData = {
   firstName?: string;
   lastName?: string;
   email: Email;
+  isAdmin: boolean;
   hashedPassword?: string;
   profilePictureUrl?: string;
   createdAt: Date;
@@ -32,6 +33,10 @@ export class User extends Entity<UserData> {
 
   get email(): Email {
     return this.data.email;
+  }
+
+  get isAdmin(): boolean {
+    return this.data.isAdmin;
   }
 
   get hashedPassword(): string | undefined {

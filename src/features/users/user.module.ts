@@ -5,8 +5,7 @@
  **/
 
 import { Injectable, Module } from '@nestjs/common';
-import { USER_REPOSITORY } from './ports/user.repository';
-import { InMemoryUserRepository } from './adapters/in-memory.user-repository';
+import { USER_REPOSITORY, UserRepository } from './ports/user.repository';
 import { CreateUserHandler } from './commands/create-user/create-user.handler';
 import { CurrentDateProvider } from '../../system/date/current-date.provider';
 import { SnowflakeIdProvider } from '../../system/id/snowflake.provider';
@@ -17,7 +16,6 @@ import { HASH_PROVIDER } from '../../system/hash/hash.provider';
 import { SystemModule } from '../../system/system.module';
 import { User } from './entities/user.entity';
 import { USER_QUERY_REPOSITORY } from './ports/user.query-repository';
-import { InMemoryUserQueryRepository } from './adapters/in-memory.user-query-repository';
 import { UserController } from './controllers/user.controller';
 import { CqrsModule } from '@nestjs/cqrs';
 import { FindUserByIdHandler } from './queries/find-user-by-id/find-user-by-id.handler';
@@ -54,7 +52,7 @@ export class InMemoryUserService {
     {
       provide: CreateUserHandler,
       useFactory: (
-        userRepository: InMemoryUserRepository,
+        userRepository: UserRepository,
         dateProvider: CurrentDateProvider,
         idProvider: SnowflakeIdProvider,
         hashProvider: ArgonHashProvider,

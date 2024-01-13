@@ -40,6 +40,7 @@ export class CreateUserHandler implements ICommandHandler<CreateUserCommand> {
         firstName: command.firstName,
         lastName: command.lastName,
         email: Email.create(command.email),
+        isAdmin: false,
         hashedPassword: hashedPassword,
         createdAt: this.dateProvider.getDate(),
         profilePictureUrl: command.profilePictureUrl,
