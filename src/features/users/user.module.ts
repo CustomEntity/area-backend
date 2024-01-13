@@ -24,6 +24,7 @@ import { KnexModule } from '../../core/adapters/knex/knex.module';
 import { KnexUserQueryRepository } from './adapters/knex.user-query-repository';
 import { KnexUserRepository } from './adapters/knex.user-repository';
 import { KnexService } from '../../core/adapters/knex/knex.service';
+import { GetUsersHandler } from './queries/get-users/get-users.handler';
 
 @Injectable()
 export class InMemoryUserService {
@@ -77,6 +78,13 @@ export class InMemoryUserService {
       provide: FindUserByEmailHandler,
       useFactory: (userQueryRepository: KnexUserQueryRepository) => {
         return new FindUserByEmailHandler(userQueryRepository);
+      },
+      inject: [USER_QUERY_REPOSITORY],
+    },
+    {
+      provide: GetUsersHandler,
+      useFactory: (userQueryRepository: KnexUserQueryRepository) => {
+        return new GetUsersHandler(userQueryRepository);
       },
       inject: [USER_QUERY_REPOSITORY],
     },
