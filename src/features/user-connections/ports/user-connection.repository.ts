@@ -19,4 +19,6 @@ export interface UserConnectionRepository {
   save(userConnection: UserConnection): Promise<void>;
 
   delete(userConnection: UserConnection): Promise<void>;
+
+  deleteByUserId(userId: string): Promise<void>;
 }

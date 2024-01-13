@@ -21,6 +21,12 @@ export class KnexUserConnectionRepository implements UserConnectionRepository {
 
   constructor(private readonly connection: Knex) {}
 
+  deleteByUserId(userId: string): Promise<void> {
+    return this.connection(USER_CONNECTION_TABLE)
+      .where('user_id', userId)
+      .del();
+  }
+
   async save(userConnection: UserConnection): Promise<void> {
     await this.connection(USER_CONNECTION_TABLE)
       .insert(this.mapper.toPersistence(userConnection))

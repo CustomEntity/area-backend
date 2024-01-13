@@ -27,8 +27,16 @@ export class User extends Entity<UserData> {
     return this.data.firstName;
   }
 
+  set firstName(firstName: string | undefined) {
+    this.data.firstName = firstName;
+  }
+
   get lastName(): string | undefined {
     return this.data.lastName;
+  }
+
+  set lastName(lastName: string | undefined) {
+    this.data.lastName = lastName;
   }
 
   get email(): Email {

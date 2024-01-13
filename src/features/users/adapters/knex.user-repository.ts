@@ -11,6 +11,7 @@ import { Nullable } from '../../../shared/nullable';
 import { User } from '../entities/user.entity';
 import { Mapper } from '../../../shared/mapper';
 import { Email } from '../../../shared/value-objects/email.vo';
+import { undefined } from 'zod';
 
 const USER_TABLE = 'users';
 
@@ -57,6 +58,10 @@ export class KnexUserRepository implements UserRepository {
       .insert(this.mapper.toPersistence(user))
       .onConflict('id')
       .merge();
+  }
+
+  async delete(id: string): Promise<void> {
+    await this.connection(USER_TABLE).delete().where('id', id);
   }
 }
 

@@ -20,6 +20,10 @@ export class KnexAppletRepository implements AppletRepository {
 
   constructor(private readonly connection: Knex) {}
 
+  async deleteByUserId(userId: string): Promise<void> {
+    await this.connection(APPLET_TABLE).where('user_id', userId).del();
+  }
+
   async findAll(): Promise<Applet[]> {
     const rows = await this.connection<Applet>(APPLET_TABLE).select();
     return rows.map((row) => this.mapper.toEntity(row));

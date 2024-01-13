@@ -25,6 +25,12 @@ import { KnexUserQueryRepository } from './adapters/knex.user-query-repository';
 import { KnexUserRepository } from './adapters/knex.user-repository';
 import { KnexService } from '../../core/adapters/knex/knex.service';
 import { GetUsersHandler } from './queries/get-users/get-users.handler';
+import { EditUserHandler } from './commands/edit-user/edit-user.handler';
+import { DeleteUserHandler } from './commands/delete-user/delete-user.handler';
+import {
+  EVENT_DISPATCHER,
+  EventDispatcher,
+} from '../../system/event/event-dispatcher.provider';
 
 @Injectable()
 export class InMemoryUserService {
@@ -87,6 +93,23 @@ export class InMemoryUserService {
         return new GetUsersHandler(userQueryRepository);
       },
       inject: [USER_QUERY_REPOSITORY],
+    },
+    {
+      provide: EditUserHandler,
+      useFactory: (userRepository: KnexUserRepository) => {
+        return new EditUserHandler(userRepository);
+      },
+      inject: [USER_REPOSITORY],
+    },
+    {
+      provide: DeleteUserHandler,
+      useFactory: (
+        userRepository: KnexUserRepository,
+        eventDispatcher: EventDispatcher,
+      ) => {
+        return new DeleteUserHandler(userRepository, eventDispatcher);
+      },
+      inject: [USER_REPOSITORY, EVENT_DISPATCHER],
     },
   ],
   exports: [USER_REPOSITORY, USER_QUERY_REPOSITORY, CreateUserHandler],

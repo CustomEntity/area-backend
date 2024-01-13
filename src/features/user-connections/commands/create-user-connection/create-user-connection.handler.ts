@@ -16,9 +16,8 @@ import {
 } from '../../value-objects/connection-credentials.vo';
 import { EventDispatcher } from '../../../../system/event/event-dispatcher.provider';
 import { UserConnectionCreatedEvent } from '../../events/user-connection-created.event';
-import { HashProvider } from '../../../../system/hash/hash.provider';
 import { z } from 'zod';
-import {EncryptionProvider} from "../../../../system/encryption/encryption.provider";
+import { EncryptionProvider } from '../../../../system/encryption/encryption.provider';
 
 @CommandHandler(CreateUserConnectionCommand)
 export class CreateUserConnectionHandler

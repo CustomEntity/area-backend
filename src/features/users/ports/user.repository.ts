@@ -17,4 +17,6 @@ export interface UserRepository {
   findByEmail(email: string): Promise<Nullable<User>>;
 
   findAll(): Promise<User[]>;
+
+  delete(id: string): Promise<void>;
 }

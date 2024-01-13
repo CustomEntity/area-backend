@@ -6,7 +6,7 @@
 
 import { Module } from '@nestjs/common';
 import { KnexModule } from '../../core/adapters/knex/knex.module';
-import { CqrsModule } from '@nestjs/cqrs';
+import { CommandBus, CqrsModule } from '@nestjs/cqrs';
 import { SystemModule } from '../../system/system.module';
 import {
   USER_CONNECTION_REPOSITORY,
@@ -37,6 +37,8 @@ import {
   ENCRYPTION_PROVIDER,
   EncryptionProvider,
 } from '../../system/encryption/encryption.provider';
+import { UserConnectionEventListener } from './adapters/user-connection.event-listener';
+import { DeleteUserConnectionsHandler } from './commands/delete-user-connections/delete-user-connections.handler';
 
 @Module({
   imports: [KnexModule, CqrsModule, SystemModule],
@@ -124,6 +126,20 @@ import {
         return new GetUserConnectionHandler(userConnectionQueryRepository);
       },
       inject: [USER_CONNECTION_QUERY_REPOSITORY],
+    },
+    {
+      provide: DeleteUserConnectionsHandler,
+      useFactory: (userConnectionRepository: UserConnectionRepository) => {
+        return new DeleteUserConnectionsHandler(userConnectionRepository);
+      },
+      inject: [USER_CONNECTION_REPOSITORY],
+    },
+    {
+      provide: UserConnectionEventListener,
+      useFactory: (commandBus: CommandBus) => {
+        return new UserConnectionEventListener(commandBus);
+      },
+      inject: [CommandBus],
     },
   ],
   exports: [USER_CONNECTION_REPOSITORY],

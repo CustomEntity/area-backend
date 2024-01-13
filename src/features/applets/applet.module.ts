@@ -76,6 +76,7 @@ import {
   EncryptionProvider,
 } from '../../system/encryption/encryption.provider';
 import { RedisService } from '../../core/adapters/redis/redis.service';
+import { DeleteUserAppletsHandler } from './commands/delete-user-applets/delete-user-applets.handler';
 
 @Module({
   imports: [
@@ -178,6 +179,13 @@ import { RedisService } from '../../core/adapters/redis/redis.service';
       provide: RemoveUserConnectionHandler,
       useFactory: (appletRepository: AppletRepository) => {
         return new RemoveUserConnectionHandler(appletRepository);
+      },
+      inject: [APPLET_REPOSITORY],
+    },
+    {
+      provide: DeleteUserAppletsHandler,
+      useFactory: (appletRepository: AppletRepository) => {
+        return new DeleteUserAppletsHandler(appletRepository);
       },
       inject: [APPLET_REPOSITORY],
     },

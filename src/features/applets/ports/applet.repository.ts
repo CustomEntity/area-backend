@@ -20,4 +20,6 @@ export interface AppletRepository {
   save(applet: Applet): Promise<void>;
 
   delete(applet: Applet): Promise<void>;
+
+  deleteByUserId(userId: string): Promise<void>;
 }
