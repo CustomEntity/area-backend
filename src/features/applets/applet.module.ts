@@ -7,7 +7,7 @@
 import { Module } from '@nestjs/common';
 import { ScheduleAppletExecutionTask } from './tasks/schedule-applet-execution.task';
 import { KnexModule } from '../../core/adapters/knex/knex.module';
-import { CqrsModule } from '@nestjs/cqrs';
+import { CommandBus, CqrsModule } from '@nestjs/cqrs';
 import { SystemModule } from '../../system/system.module';
 import { ScheduleAppletExecutionHandler } from './commands/schedule-applet-execution/schedule-applet-execution.handler';
 import {
@@ -75,6 +75,7 @@ import {
   ENCRYPTION_PROVIDER,
   EncryptionProvider,
 } from '../../system/encryption/encryption.provider';
+import { RedisService } from '../../core/adapters/redis/redis.service';
 
 @Module({
   imports: [
@@ -235,6 +236,16 @@ import {
         return new EditAppletHandler(appletRepository);
       },
       inject: [APPLET_REPOSITORY],
+    },
+    {
+      provide: ScheduleAppletExecutionTask,
+      useFactory: (redisService: RedisService, commandBus: CommandBus) => {
+        return new ScheduleAppletExecutionTask(
+          redisService.connection,
+          commandBus,
+        );
+      },
+      inject: [RedisService, CommandBus],
     },
     AppletConsumer,
   ],
