@@ -42,7 +42,8 @@ export class ExecuteAppletHandler
 
     const applet = await this.appletRepository.findById(appletId);
     if (!applet) {
-      throw new Error(`Applet with id ${appletId} not found`);
+      console.error(`Applet with id ${appletId} not found`);
+      return;
     }
 
     const eventsData = await this.eventService.retrieveNewEventsData(

@@ -30,6 +30,15 @@ export const EventSchema = z.object({
       z.object({
         type: z.string(),
         required: z.boolean(),
+        schema: z
+          .union([
+            z.string(),
+            z.number(),
+            z.boolean(),
+            z.array(z.string()),
+            z.array(z.number()),
+          ])
+          .optional(),
       }),
     ),
   ),

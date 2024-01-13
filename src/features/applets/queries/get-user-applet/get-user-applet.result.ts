@@ -6,16 +6,18 @@
 import { IQueryResult } from '@nestjs/cqrs';
 import { z } from 'zod';
 
-export const TriggerDataSchema = z.nullable(
-  z.record(
-    z.union([
-      z.string(),
-      z.number(),
-      z.boolean(),
-      z.array(z.union([z.string(), z.number(), z.boolean()])),
-    ]),
-  ),
-).optional();
+export const TriggerDataSchema = z
+  .nullable(
+    z.record(
+      z.union([
+        z.string(),
+        z.number(),
+        z.boolean(),
+        z.array(z.union([z.string(), z.number(), z.boolean()])),
+      ]),
+    ),
+  )
+  .optional();
 
 export const ReactionParametersDataSchema = z.nullable(
   z.record(
@@ -52,6 +54,15 @@ export const EventSchema = z.object({
       z.object({
         type: z.string(),
         required: z.boolean(),
+        schema: z
+          .union([
+            z.string(),
+            z.number(),
+            z.boolean(),
+            z.array(z.string()),
+            z.array(z.number()),
+          ])
+          .optional(),
       }),
     ),
   ),
