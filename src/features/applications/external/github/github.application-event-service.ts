@@ -74,7 +74,7 @@ export class GithubApplicationEventService {
       if (lastBranches === null) {
         await this.keyValueStore.set(
           `${appletId}-lastBranches`,
-          JSON.stringify(data),
+          JSON.stringify(data.map((branch) => branch.name)),
           60 * 60 * 24,
         );
         return [];
