@@ -105,6 +105,7 @@ export class GithubApplicationEventService {
       return newCollaborators.map((collaborator) => ({
         repository_owner: repositoryOwner,
         repository_name: repositoryName,
+        collaborator_name: collaborator.name,
         collaborator_id: collaborator.id.toString(),
         collaborator_node_id: collaborator.node_id,
         collaborator_login: collaborator.login,
