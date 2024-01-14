@@ -24,6 +24,111 @@ export class GithubApplicationEventService {
     private readonly keyValueStore: KeyValueStore,
   ) {}
 
+  @ApplicationEvent('New Collaborator')
+  async checkIfNewCollaboratorOccurred(
+    appletId: string,
+    eventTriggerData: z.infer<typeof TriggerDataSchema>,
+    eventConnectionCredentials?: {
+      access_token: string;
+      refresh_token: string;
+    },
+  ): Promise<z.infer<typeof EventDataSchema>[]> {
+    if (!eventConnectionCredentials || !eventTriggerData) {
+      return [];
+    }
+
+    const octokit = new Octokit({
+      auth: eventConnectionCredentials.access_token,
+    });
+
+    const repositoryOwner = (eventTriggerData.repository as string).split(
+      '/',
+    )[0];
+    const repositoryName = (eventTriggerData.repository as string).split(
+      '/',
+    )[1];
+
+    let lastPolledAt = await this.keyValueStore.get(appletId);
+    if (lastPolledAt === null) {
+      lastPolledAt = new Date().toISOString();
+      await this.keyValueStore.set(appletId, lastPolledAt, 60 * 60 * 24);
+      const { data } = await octokit.repos.listCollaborators({
+        owner: repositoryOwner,
+        repo: repositoryName,
+      });
+
+      await this.keyValueStore.set(
+        `${appletId}-lastCollaborators`,
+        JSON.stringify(data.map((collaborator) => collaborator.id)),
+        60 * 60 * 24,
+      );
+      return [];
+    }
+
+    await this.keyValueStore.set(
+      appletId,
+      new Date().toISOString(),
+      60 * 60 * 24,
+    );
+
+    try {
+      const { data } = await octokit.repos.listCollaborators({
+        owner: repositoryOwner,
+        repo: repositoryName,
+      });
+
+      const lastCollaborators = await this.keyValueStore.get(
+        `${appletId}-lastCollaborators`,
+      );
+
+      if (lastCollaborators === null) {
+        await this.keyValueStore.set(
+          `${appletId}-lastCollaborators`,
+          JSON.stringify(data.map((collaborator) => collaborator.id)),
+          60 * 60 * 24,
+        );
+        return [];
+      }
+
+      const lastCollaboratorsData = JSON.parse(lastCollaborators) as number[];
+
+      const newCollaborators = data.filter(
+        (collaborator) => !lastCollaboratorsData.includes(collaborator.id),
+      );
+
+      await this.keyValueStore.set(
+        `${appletId}-lastCollaborators`,
+        JSON.stringify(data.map((collaborator) => collaborator.id)),
+        60 * 60 * 24,
+      );
+
+      return newCollaborators.map((collaborator) => ({
+        repository_owner: repositoryOwner,
+        repository_name: repositoryName,
+        collaborator_id: collaborator.id.toString(),
+        collaborator_node_id: collaborator.node_id,
+        collaborator_login: collaborator.login,
+        collaborator_avatar_url: collaborator.avatar_url,
+        collaborator_gravatar_id: collaborator.gravatar_id,
+        collaborator_url: collaborator.url,
+        collaborator_html_url: collaborator.html_url,
+        collaborator_followers_url: collaborator.followers_url,
+        collaborator_following_url: collaborator.following_url,
+        collaborator_gists_url: collaborator.gists_url,
+        collaborator_starred_url: collaborator.starred_url,
+        collaborator_subscriptions_url: collaborator.subscriptions_url,
+        collaborator_organizations_url: collaborator.organizations_url,
+        collaborator_repos_url: collaborator.repos_url,
+        collaborator_events_url: collaborator.events_url,
+        collaborator_received_events_url: collaborator.received_events_url,
+        collaborator_type: collaborator.type,
+        collaborator_site_admin: collaborator.site_admin.toString(),
+      }));
+    } catch (e) {}
+
+    return [];
+  }
+
   @ApplicationEvent('New Commit Comment')
   async checkIfNewCommitCommentOccurred(
     appletId: string,
