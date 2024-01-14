@@ -97,7 +97,7 @@ export class GithubApplicationEventService {
       return newBranches.map((branch) => ({
         repository_owner: repositoryOwner,
         repository_name: repositoryName,
-        branch: branch,
+        branch  : branch,
       }));
     } catch (e) {}
 

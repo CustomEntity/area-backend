@@ -36,12 +36,12 @@ export class ScheduleAppletExecutionTask {
 
   @Cron(CronExpression.EVERY_MINUTE)
   async handleCron() {
-    /*if (await this.acquireLock(LOCK_KEY, LOCK_TIMEOUT)) {
+    if (await this.acquireLock(LOCK_KEY, LOCK_TIMEOUT)) {
       try {
         await this.commandBus.execute(new ScheduleAllAppletsExecutionCommand());
       } finally {
         await this.releaseLock(LOCK_KEY);
       }
-    }*/
+    }
   }
 }
