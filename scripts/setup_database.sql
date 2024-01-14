@@ -99,7 +99,7 @@ CREATE TABLE IF NOT EXISTS logs
 (
     id               bigint       NOT NULL,
     execution_log_id bigint       NOT NULL,
-    log_level        varchar(255) NOT NULL,
+    log_level        smallint NOT NULL,
     message          text,
     log_date         timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

@@ -39,6 +39,7 @@ import { EpitechApplicationReactionService } from './external/epitech/epitech.ap
 import { EpitechController } from './external/epitech/epitech.controller';
 import { EpitechService } from './external/epitech/epitech.service';
 import { PetfinderApplicationEventService } from './external/petfinder/petfinder.application-event-service';
+import { CryptoComApplicationEventService } from './external/cryptocom/cryptocom.application-event-service';
 
 @Module({
   imports: [
@@ -98,6 +99,7 @@ import { PetfinderApplicationEventService } from './external/petfinder/petfinder
     NYTimesApplicationEventService,
     EpitechApplicationReactionService,
     PetfinderApplicationEventService,
+    CryptoComApplicationEventService,
   ],
   exports: [
     APPLICATION_REPOSITORY,

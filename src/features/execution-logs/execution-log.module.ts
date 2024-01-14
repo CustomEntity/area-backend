@@ -15,6 +15,9 @@ import { KnexService } from '../../core/adapters/knex/knex.service';
 import { EXECUTION_LOG_QUERY_REPOSITORY } from './ports/execution-log.query-repository';
 import { KnexExecutionLogQueryRepository } from './adapters/knex.execution-log.query-repository';
 import { GetExecutionLogsByUserHandler } from './queries/get-execution-logs-by-user/get-execution-logs-by-user.handler';
+import { LOG_QUERY_REPOSITORY } from './ports/log.query-repository';
+import { KnexLogQueryRepository } from './adapters/knex.log.query-repository';
+import { GetExecutionLogLogsHandler } from './queries/get-execution-log-logs/get-execution-log-logs.handler';
 
 @Module({
   imports: [KnexModule, CqrsModule, SystemModule],
@@ -39,11 +42,23 @@ import { GetExecutionLogsByUserHandler } from './queries/get-execution-logs-by-u
       inject: [KnexService],
     },
     {
+      provide: LOG_QUERY_REPOSITORY,
+      useFactory: (knexService: KnexService) =>
+        new KnexLogQueryRepository(knexService.connection),
+      inject: [KnexService],
+    },
+    {
       provide: GetExecutionLogsByUserHandler,
       useFactory: (
         executionLogQueryRepository: KnexExecutionLogQueryRepository,
       ) => new GetExecutionLogsByUserHandler(executionLogQueryRepository),
       inject: [EXECUTION_LOG_QUERY_REPOSITORY],
+    },
+    {
+      provide: GetExecutionLogLogsHandler,
+      useFactory: (logQueryRepository: KnexLogQueryRepository) =>
+        new GetExecutionLogLogsHandler(logQueryRepository),
+      inject: [LOG_QUERY_REPOSITORY],
     },
   ],
   exports: [],
