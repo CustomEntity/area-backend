@@ -24,6 +24,101 @@ export class GithubApplicationEventService {
     private readonly keyValueStore: KeyValueStore,
   ) {}
 
+  @ApplicationEvent('New Commit Comment')
+  async checkIfNewCommitCommentOccurred(
+    appletId: string,
+    eventTriggerData: z.infer<typeof TriggerDataSchema>,
+    eventConnectionCredentials?: {
+      access_token: string;
+      refresh_token: string;
+    },
+  ): Promise<z.infer<typeof EventDataSchema>[]> {
+    if (!eventConnectionCredentials || !eventTriggerData) {
+      return [];
+    }
+
+    const octokit = new Octokit({
+      auth: eventConnectionCredentials.access_token,
+    });
+
+    const repositoryOwner = (eventTriggerData.repository as string).split(
+      '/',
+    )[0];
+    const repositoryName = (eventTriggerData.repository as string).split(
+      '/',
+    )[1];
+
+    let lastPolledAt = await this.keyValueStore.get(appletId);
+    if (lastPolledAt === null) {
+      lastPolledAt = new Date().toISOString();
+      await this.keyValueStore.set(appletId, lastPolledAt, 60 * 60 * 24);
+      const { data } = await octokit.repos.listCommitCommentsForRepo({
+        owner: repositoryOwner,
+        repo: repositoryName,
+      });
+
+      await this.keyValueStore.set(
+        `${appletId}-lastCommitComments`,
+        JSON.stringify(data.map((commitComment) => commitComment.id)),
+        60 * 60 * 24,
+      );
+      return [];
+    }
+
+    await this.keyValueStore.set(
+      appletId,
+      new Date().toISOString(),
+      60 * 60 * 24,
+    );
+
+    try {
+      const { data } = await octokit.repos.listCommitCommentsForRepo({
+        owner: repositoryOwner,
+        repo: repositoryName,
+      });
+
+      const lastCommitComments = await this.keyValueStore.get(
+        `${appletId}-lastCommitComments`,
+      );
+
+      if (lastCommitComments === null) {
+        await this.keyValueStore.set(
+          `${appletId}-lastCommitComments`,
+          JSON.stringify(data.map((commitComment) => commitComment.id)),
+          60 * 60 * 24,
+        );
+        return [];
+      }
+
+      const lastCommitCommentsData = JSON.parse(lastCommitComments) as number[];
+
+      const newCommitComments = data.filter(
+        (commitComment) => !lastCommitCommentsData.includes(commitComment.id),
+      );
+
+      await this.keyValueStore.set(
+        `${appletId}-lastCommitComments`,
+        JSON.stringify(data.map((commitComment) => commitComment.id)),
+        60 * 60 * 24,
+      );
+
+      return newCommitComments.map((commitComment) => ({
+        repository_owner: repositoryOwner,
+        repository_name: repositoryName,
+        commit_comment_id: commitComment.id.toString(),
+        commit_comment_node_id: commitComment.node_id,
+        commit_comment_body: commitComment.body,
+        commit_comment_path: commitComment.path,
+        commit_comment_position: commitComment.position?.toString(),
+        commit_comment_line: commitComment.line?.toString(),
+        commit_comment_commit_id: commitComment.commit_id,
+        commit_comment_created_at: commitComment.created_at,
+      }));
+    } catch (e) {}
+
+    return [];
+  }
+
   @ApplicationEvent('New Pull Request')
   async checkIfNewPullRequestOccurred(
     appletId: string,
