@@ -24,6 +24,102 @@ export class GithubApplicationEventService {
     private readonly keyValueStore: KeyValueStore,
   ) {}
 
+  @ApplicationEvent('New Pull Request')
+  async checkIfNewPullRequestOccurred(
+    appletId: string,
+    eventTriggerData: z.infer<typeof TriggerDataSchema>,
+    eventConnectionCredentials?: {
+      access_token: string;
+      refresh_token: string;
+    },
+  ): Promise<z.infer<typeof EventDataSchema>[]> {
+    if (!eventConnectionCredentials || !eventTriggerData) {
+      return [];
+    }
+
+    const octokit = new Octokit({
+      auth: eventConnectionCredentials.access_token,
+    });
+
+    const repositoryOwner = (eventTriggerData.repository as string).split(
+      '/',
+    )[0];
+    const repositoryName = (eventTriggerData.repository as string).split(
+      '/',
+    )[1];
+
+    let lastPolledAt = await this.keyValueStore.get(appletId);
+    if (lastPolledAt === null) {
+      lastPolledAt = new Date().toISOString();
+      await this.keyValueStore.set(appletId, lastPolledAt, 60 * 60 * 24);
+      const { data } = await octokit.pulls.list({
+        owner: repositoryOwner,
+        repo: repositoryName,
+      });
+
+      await this.keyValueStore.set(
+        `${appletId}-lastPullRequests`,
+        JSON.stringify(data.map((pullRequest) => pullRequest.number)),
+        60 * 60 * 24,
+      );
+      return [];
+    }
+
+    await this.keyValueStore.set(
+      appletId,
+      new Date().toISOString(),
+      60 * 60 * 24,
+    );
+
+    try {
+      const { data } = await octokit.pulls.list({
+        owner: repositoryOwner,
+        repo: repositoryName,
+      });
+
+      const lastPullRequests = await this.keyValueStore.get(
+        `${appletId}-lastPullRequests`,
+      );
+
+      if (lastPullRequests === null) {
+        await this.keyValueStore.set(
+          `${appletId}-lastPullRequests`,
+          JSON.stringify(data.map((pullRequest) => pullRequest.number)),
+          60 * 60 * 24,
+        );
+        return [];
+      }
+
+      const lastPullRequestsData = JSON.parse(lastPullRequests) as number[];
+
+      const newPullRequests = data.filter(
+        (pullRequest) => !lastPullRequestsData.includes(pullRequest.number),
+      );
+
+      await this.keyValueStore.set(
+        `${appletId}-lastPullRequests`,
+        JSON.stringify(data.map((pullRequest) => pullRequest.number)),
+        60 * 60 * 24,
+      );
+
+      return newPullRequests.map((pullRequest) => ({
+        repository_owner: repositoryOwner,
+        repository_name: repositoryName,
+        pull_request_id: pullRequest.id.toString(),
+        pull_request_node_id: pullRequest.node_id,
+        pull_request_number: pullRequest.number.toString(),
+        pull_request_state: pullRequest.state,
+        pull_request_locked: pullRequest.locked.toString(),
+        pull_request_title: pullRequest.title,
+        pull_request_body: pullRequest.body,
+        pull_request_created_at: pullRequest.created_at,
+        pull_request_updated_at: pullRequest.updated_at,
+      }));
+    } catch (e) {}
+
+    return [];
+  }
+
   @ApplicationEvent('New Branch')
   async checkIfNewBranchOccurred(
     appletId: string,
@@ -37,19 +133,6 @@ export class GithubApplicationEventService {
       return [];
     }
 
-    let lastPolledAt = await this.keyValueStore.get(appletId);
-    if (lastPolledAt === null) {
-      lastPolledAt = new Date().toISOString();
-      await this.keyValueStore.set(appletId, lastPolledAt, 60 * 60 * 24);
-      return [];
-    }
-
-    await this.keyValueStore.set(
-      appletId,
-      new Date().toISOString(),
-      60 * 60 * 24,
-    );
-
     const octokit = new Octokit({
       auth: eventConnectionCredentials.access_token,
     });
@@ -60,6 +143,29 @@ export class GithubApplicationEventService {
     const repositoryName = (eventTriggerData.repository as string).split(
       '/',
     )[1];
+
+    let lastPolledAt = await this.keyValueStore.get(appletId);
+    if (lastPolledAt === null) {
+      lastPolledAt = new Date().toISOString();
+      await this.keyValueStore.set(appletId, lastPolledAt, 60 * 60 * 24);
+      const { data } = await octokit.repos.listBranches({
+        owner: repositoryOwner,
+        repo: repositoryName,
+      });
+
+      await this.keyValueStore.set(
+        `${appletId}-lastBranches`,
+        JSON.stringify(data.map((branch) => branch.name)),
+        60 * 60 * 24,
+      );
+      return [];
+    }
+
+    await this.keyValueStore.set(
+      appletId,
+      new Date().toISOString(),
+      60 * 60 * 24,
+    );
 
     try {
       const { data } = await octokit.repos.listBranches({
@@ -97,7 +203,7 @@ export class GithubApplicationEventService {
       return newBranches.map((branch) => ({
         repository_owner: repositoryOwner,
         repository_name: repositoryName,
-        branch  : branch,
+        branch: branch,
       }));
     } catch (e) {}
 
