@@ -7,14 +7,12 @@
 import { IQueryResult } from '@nestjs/cqrs';
 
 export class GetExecutionLogLogsResult implements IQueryResult {
-  readonly result: {
-    logs: {
-      id: string;
-      executionLogId: string;
-      logLevel: string;
-      message: string;
-      logDate: Date;
-    }[];
-    count: number;
-  };
+  readonly logs: {
+    id: string;
+    executionLogId: string;
+    logLevel: string;
+    message: string;
+    logDate: Date;
+  }[];
+  readonly count: number;
 }

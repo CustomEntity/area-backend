@@ -8,7 +8,7 @@ import { Injectable } from '@nestjs/common';
 import { Knex } from 'knex';
 import { LogQueryRepository } from '../ports/log.query-repository';
 import { GetExecutionLogLogsResult } from '../queries/get-execution-log-logs/get-execution-log-logs.result';
-import {LogLevel} from "../value-objects/log-level";
+import { LogLevel } from '../value-objects/log-level';
 
 const EXECUTION_LOG_TABLE = 'execution_logs';
 const LOG_TABLE = 'logs';
@@ -40,7 +40,7 @@ export class KnexLogQueryRepository implements LogQueryRepository {
     }
 
     if (rows.length === 1 && !rows[0].id) {
-      return { result: { logs: [], count: 0 } };
+      return { logs: [], count: 0 };
     }
 
     const logs = rows.map((row) => ({
@@ -59,10 +59,8 @@ export class KnexLogQueryRepository implements LogQueryRepository {
     const count = parseInt((countResult?.total ?? '0').toString(), 10);
 
     return {
-      result: {
-        logs,
-        count,
-      },
+      logs,
+      count,
     };
   }
 }

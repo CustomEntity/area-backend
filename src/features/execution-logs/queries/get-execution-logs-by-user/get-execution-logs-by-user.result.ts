@@ -7,13 +7,11 @@
 import { IQuery, IQueryResult } from '@nestjs/cqrs';
 
 export class GetExecutionLogsByUserResult implements IQueryResult {
-  readonly result: {
-    executionLogs: {
-      id: string;
-      appletId: string;
-      summary: string;
-      executionDate: Date;
-    }[];
-    count: number;
-  };
+  readonly executionLogs: {
+    id: string;
+    appletId: string;
+    summary: string;
+    executionDate: Date;
+  }[];
+  readonly count: number;
 }

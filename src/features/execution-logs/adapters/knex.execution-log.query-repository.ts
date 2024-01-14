@@ -48,7 +48,10 @@ export class KnexExecutionLogQueryRepository
     }
 
     if (rows.length === 1 && !rows[0].id) {
-      return { result: { executionLogs: [], count: 0 } };
+      return {
+        executionLogs: [],
+        count: 0,
+      };
     }
 
     const executionLogs = rows.map((row) => ({
@@ -72,10 +75,8 @@ export class KnexExecutionLogQueryRepository
     const count = parseInt((countResult?.total ?? '0').toString(), 10);
 
     return {
-      result: {
-        executionLogs,
-        count,
-      },
+      executionLogs,
+      count,
     };
   }
 }
