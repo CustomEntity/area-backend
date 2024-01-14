@@ -24,7 +24,87 @@ export class GithubApplicationEventService {
     private readonly keyValueStore: KeyValueStore,
   ) {}
 
-  @ApplicationEvent('New commit')
+  @ApplicationEvent('New Branch')
+  async checkIfNewBranchOccurred(
+    appletId: string,
+    eventTriggerData: z.infer<typeof TriggerDataSchema>,
+    eventConnectionCredentials?: {
+      access_token: string;
+      refresh_token: string;
+    },
+  ): Promise<z.infer<typeof EventDataSchema>[]> {
+    if (!eventConnectionCredentials || !eventTriggerData) {
+      return [];
+    }
+
+    let lastPolledAt = await this.keyValueStore.get(appletId);
+    if (lastPolledAt === null) {
+      lastPolledAt = new Date().toISOString();
+      await this.keyValueStore.set(appletId, lastPolledAt, 60 * 60 * 24);
+      return [];
+    }
+
+    await this.keyValueStore.set(
+      appletId,
+      new Date().toISOString(),
+      60 * 60 * 24,
+    );
+
+    const octokit = new Octokit({
+      auth: eventConnectionCredentials.access_token,
+    });
+
+    const repositoryOwner = (eventTriggerData.repository as string).split(
+      '/',
+    )[0];
+    const repositoryName = (eventTriggerData.repository as string).split(
+      '/',
+    )[1];
+
+    try {
+      const { data } = await octokit.repos.listBranches({
+        owner: repositoryOwner,
+        repo: repositoryName,
+      });
+
+      const lastBranches = await this.keyValueStore.get(
+        `${appletId}-lastBranches`,
+      );
+
+      if (lastBranches === null) {
+        await this.keyValueStore.set(
+          `${appletId}-lastBranches`,
+          JSON.stringify(data),
+          60 * 60 * 24,
+        );
+        return [];
+      }
+
+      const lastBranchesData = JSON.parse(lastBranches) as string[];
+
+      const branches = data.map((branch) => branch.name);
+
+      const newBranches = branches.filter(
+        (branch) => !lastBranchesData.includes(branch),
+      );
+
+      await this.keyValueStore.set(
+        `${appletId}-lastBranches`,
+        JSON.stringify(branches),
+        60 * 60 * 24,
+      );
+
+      return newBranches.map((branch) => ({
+        repository_owner: repositoryOwner,
+        repository_name: repositoryName,
+        branch: branch,
+      }));
+    } catch (e) {}
+
+    return [];
+  }
+
+  @ApplicationEvent('New Commit')
   async checkIfNewCommitOccurred(
     appletId: string,
     eventTriggerData: z.infer<typeof TriggerDataSchema>,
@@ -74,6 +154,8 @@ export class GithubApplicationEventService {
       const { data } = await octokit.repos.listCommits(listCommitsParams);
 
       return data.map((commit) => ({
+        repository_owner: repositoryOwner,
+        repository_name: repositoryName,
         sha: commit.sha,
         commit_message: commit.commit.message,
         commit_author: commit.commit.author?.name,

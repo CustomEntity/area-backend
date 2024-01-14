@@ -38,10 +38,10 @@ export class ExecutionLogController {
   @Get('execution-logs/:executionLogId/logs')
   @ApiTags('execution-logs')
   @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: 'Get logs by execution log id' })
+  @ApiOperation({ summary: 'Get execution log logs' })
   @ApiResponse({
     status: 200,
-    description: 'Get logs by execution log id',
+    description: 'Get execution log logs',
   })
   @ApiResponse({
     status: 401,
@@ -104,10 +104,10 @@ export class ExecutionLogController {
   @Get('/users/:userId/execution-logs')
   @ApiTags('users')
   @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: 'Get execution logs by user' })
+  @ApiOperation({ summary: 'Get user applet execution logs' })
   @ApiResponse({
     status: 200,
-    description: 'Get execution logs by user',
+    description: 'Get user applet execution logs',
   })
   @ApiResponse({
     status: 401,
