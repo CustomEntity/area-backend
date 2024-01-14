@@ -11,8 +11,6 @@ export namespace UserAPI {
     export const userIdSchema = z.string().refine((value) => {
       return value === '@me' || !isNaN(Number(value));
     }, 'Invalid user id');
-
-
   }
 
   export namespace GetAllUsers {

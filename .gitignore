@@ -6,7 +6,6 @@
 client_secret_991088484616-4r22l8dmnclqvkomsmbikl19g92v8511.apps.googleusercontent.com.json
 
 # Logs
-logs
 *.log
 npm-debug.log*
 pnpm-debug.log*

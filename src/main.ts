@@ -54,6 +54,7 @@ async function bootstrap() {
     .addTag('auth', 'Everything about authentication')
     .addTag('auth/oauth', 'Everything about oauth authentication')
     .addTag('users/applets', 'Everything about user applets')
+    .addTag('execution-logs', 'Everything about execution logs')
     .addCookieAuth('access_token')
     .build();
   const document = SwaggerModule.createDocument(app, config);

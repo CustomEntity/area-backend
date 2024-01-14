@@ -86,3 +86,20 @@ CREATE TABLE IF NOT EXISTS applets
     --FOREIGN KEY (event_connection_id) REFERENCES user_connections (id),
     --FOREIGN KEY (reaction_connection_id) REFERENCES user_connections (id)
 );
+
+CREATE TABLE IF NOT EXISTS execution_logs
+(
+    id            bigint    NOT NULL,
+    applet_id     bigint    NOT NULL,
+    summary       varchar(255),
+    execution_date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS logs
+(
+    id               bigint       NOT NULL,
+    execution_log_id bigint       NOT NULL,
+    log_level        varchar(255) NOT NULL,
+    message          text,
+    log_date         timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
