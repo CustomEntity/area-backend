@@ -1,10 +1,10 @@
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
+import { afterAll, beforeAll, describe, it ,jest} from '@jest/globals';
 import { AppModule } from '../../../core/app.module';
-import { afterAll, beforeAll, describe, it, jest } from '@jest/globals';
-import {RedisService} from "../../../core/adapters/redis/redis.service";
-import {KafkaService} from "../../../core/adapters/kafka/kafka.service";
+import { RedisService } from '../../../core/adapters/redis/redis.service';
+import { KafkaService } from '../../../core/adapters/kafka/kafka.service';
 
 describe('AppletController (e2e)', () => {
   let app: INestApplication;
@@ -14,11 +14,14 @@ describe('AppletController (e2e)', () => {
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
-      providers: [
-        { provide: KafkaService, useValue: jest.fn() },
-        { provide: RedisService, useValue: jest.fn() },
-      ],
-    }).compile();
+    })
+      .overrideProvider(RedisService)
+      .useValue({})
+      .overrideProvider(KafkaService)
+      .useValue({
+        init: jest.fn(),
+      })
+      .compile();
 
     app = moduleFixture.createNestApplication();
     await app.init();
