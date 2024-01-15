@@ -3,11 +3,11 @@
  * @mailto : contact@flaviomoreno.fr
  * @created : 2023-12-17
  **/
-import { Entity } from 'src/shared/entity';
 import { TriggerMapping } from '../value-objects/trigger-mapping.vo';
 import { NotificationParameters } from '../value-objects/notification-parameters.vo';
 import { NotificationMethod } from '../value-objects/notification-method.vo';
 import { DataMapping } from '../value-objects/data-mapping.vo';
+import { Entity } from '../../../../shared/entity';
 
 export type EventData = {
   id: string;

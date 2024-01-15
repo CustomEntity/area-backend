@@ -24,6 +24,5 @@ export class ScheduleAllAppletsExecutionHandler
     await this.messageQueueProvider.bulkPublishAppletExecution(
       applets.map((applet) => applet.id),
     );
-    console.log('ScheduleAllAppletsExecutionHandler:execute');
   }
 }
