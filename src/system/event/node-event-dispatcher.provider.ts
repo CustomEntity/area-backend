@@ -5,10 +5,8 @@
  **/
 
 import { Injectable } from '@nestjs/common';
-import { EventDispatcher } from './event-dispatcher.provider';
+import { Event, EventDispatcher } from './event-dispatcher.provider';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { Event } from './event-dispatcher.provider';
-import { UserConnectionCreatedEvent } from '../../features/user-connections/events/user-connection-created.event';
 
 @Injectable()
 export class NodeEventDispatcher implements EventDispatcher {
