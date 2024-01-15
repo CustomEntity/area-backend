@@ -24,18 +24,18 @@ export class GithubApplicationReactionService {
     if (!reactionConnectionCredentials) {
       return;
     }
-    const octokit = new Octokit({
-      auth: reactionConnectionCredentials.access_token,
-    });
-
-    const repositoryOwner = (reactionParametersData.repository as string).split(
-      '/',
-    )[0];
-    const repositoryName = (reactionParametersData.repository as string).split(
-      '/',
-    )[1];
-
     try {
+      const octokit = new Octokit({
+        auth: reactionConnectionCredentials.access_token,
+      });
+
+      const repositoryOwner = (
+        reactionParametersData.repository as string
+      ).split('/')[0];
+      const repositoryName = (
+        reactionParametersData.repository as string
+      ).split('/')[1];
+
       await octokit.issues.create({
         owner: repositoryOwner,
         repo: repositoryName,
