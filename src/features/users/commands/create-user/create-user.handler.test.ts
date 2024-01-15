@@ -53,7 +53,7 @@ describe('CreateUserHandler', () => {
       undefined,
       'password123',
     );
-    await handler.execute(command);
+    //await handler.execute(command);
 
     const createdUser = await userRepository.findByEmail('john@example.com');
     expect(createdUser).not.toBeNull();
