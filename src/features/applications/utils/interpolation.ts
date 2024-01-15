@@ -8,5 +8,5 @@ export function interpolateString(
   string: string,
   data: Record<string, string>,
 ): string {
-  return string.replace(/{{(.*?)}}/g, (_, g) => data[g.trim()]);
+  return string.replace(/{{(.*?)}}/g, (_, g) => data[g] ?? '');
 }

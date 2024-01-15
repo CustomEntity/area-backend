@@ -44,6 +44,7 @@ export class KafkaService implements OnModuleInit {
           'localhost:9092',
         ],
         ssl: false,
+        connectionTimeout: 3000,
       };
 
       if (this.configService.get<boolean>('kafka.sasl')) {
