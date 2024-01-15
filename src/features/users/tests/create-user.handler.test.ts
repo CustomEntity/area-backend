@@ -1,15 +1,15 @@
-import { CreateUserHandler } from './create-user.handler';
-import { UserRepository } from '../../ports/user.repository';
-import { DateProvider } from '../../../../system/date/date.provider';
-import { IdProvider } from '../../../../system/id/id.provider';
-import { HashProvider } from '../../../../system/hash/hash.provider';
+import { CreateUserHandler } from '../commands/create-user/create-user.handler';
+import { UserRepository } from '../ports/user.repository';
+import { DateProvider } from '../../../system/date/date.provider';
+import { IdProvider } from '../../../system/id/id.provider';
+import { HashProvider } from '../../../system/hash/hash.provider';
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
-import { CreateUserCommand } from './create-user.command';
-import { UserAlreadyExistsError } from '../../exceptions/user-already-exists.error';
-import { CurrentDateProvider } from '../../../../system/date/current-date.provider';
-import { SnowflakeIdProvider } from '../../../../system/id/snowflake.provider';
-import { InMemoryUserRepository } from '../../adapters/in-memory.user-repository';
-import { ArgonHashProvider } from '../../../../system/hash/argon-hash.provider';
+import { CreateUserCommand } from '../commands/create-user/create-user.command';
+import { UserAlreadyExistsError } from '../exceptions/user-already-exists.error';
+import { CurrentDateProvider } from '../../../system/date/current-date.provider';
+import { SnowflakeIdProvider } from '../../../system/id/snowflake.provider';
+import { InMemoryUserRepository } from '../adapters/in-memory.user-repository';
+import { ArgonHashProvider } from '../../../system/hash/argon-hash.provider';
 import { ConfigService } from '@nestjs/config';
 
 const mockConfigService = {

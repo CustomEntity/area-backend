@@ -1,11 +1,10 @@
-import { EditUserHandler } from './edit-user.handler';
-import { UserRepository } from '../../ports/user.repository';
-import { EventDispatcher } from '../../../../system/event/event-dispatcher.provider';
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
-import { InMemoryUserRepository } from '../../adapters/in-memory.user-repository';
-import { EditUserCommand } from './edit-user.command';
-import { User } from '../../entities/user.entity';
-import { Email } from '../../../../shared/value-objects/email.vo';
+import { EditUserHandler } from '../commands/edit-user/edit-user.handler';
+import { UserRepository } from '../ports/user.repository';
+import { beforeEach, describe, expect, it } from '@jest/globals';
+import { InMemoryUserRepository } from '../adapters/in-memory.user-repository';
+import { EditUserCommand } from '../commands/edit-user/edit-user.command';
+import { User } from '../entities/user.entity';
+import { Email } from '../../../shared/value-objects/email.vo';
 
 describe('EditUserHandler', () => {
   let handler: EditUserHandler;

@@ -23,7 +23,7 @@ export class FindUserByIdHandler
     const user = await this.userQueryRepository.findById(query.id);
 
     if (!user) {
-      throw new UserDoesNotExistError(query.id);
+      return null;
     }
 
     return user;

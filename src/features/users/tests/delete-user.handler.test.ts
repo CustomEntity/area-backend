@@ -1,12 +1,12 @@
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
-import { DeleteUserHandler } from './delete-user.handler';
-import { UserRepository } from '../../ports/user.repository';
-import { EventDispatcher } from '../../../../system/event/event-dispatcher.provider';
-import { InMemoryUserRepository } from '../../adapters/in-memory.user-repository';
-import { User } from '../../entities/user.entity';
-import { DeleteUserCommand } from './delete-user.command';
-import { UserDeletedEvent } from '../../events/user-deleted.event';
-import { Email } from '../../../../shared/value-objects/email.vo';
+import { DeleteUserHandler } from '../commands/delete-user/delete-user.handler';
+import { UserRepository } from '../ports/user.repository';
+import { EventDispatcher } from '../../../system/event/event-dispatcher.provider';
+import { InMemoryUserRepository } from '../adapters/in-memory.user-repository';
+import { User } from '../entities/user.entity';
+import { DeleteUserCommand } from '../commands/delete-user/delete-user.command';
+import { UserDeletedEvent } from '../events/user-deleted.event';
+import { Email } from '../../../shared/value-objects/email.vo';
 
 describe('DeleteUserHandler', () => {
   let handler: DeleteUserHandler;
