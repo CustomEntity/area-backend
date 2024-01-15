@@ -7,85 +7,86 @@ import {
   EventDataSchema,
   TriggerDataSchema,
 } from '../../events/ports/event.service';
-import { z } from 'zod';
-import { ApplicationEventService } from '../../events/decorators/application-event-service.decorator';
-import { ApplicationEvent } from '../../events/decorators/application-event.decorator';
-import { Octokit } from '@octokit/rest';
+import {z} from 'zod';
+import {ApplicationEventService} from '../../events/decorators/application-event-service.decorator';
+import {ApplicationEvent} from '../../events/decorators/application-event.decorator';
+import {Octokit} from '@octokit/rest';
 import {
   KEY_VALUE_STORE_PROVIDER,
   KeyValueStore,
 } from '../../../../system/keyvaluestore/key-value-store.provider';
-import { Inject } from '@nestjs/common';
+import {Inject} from '@nestjs/common';
 
 @ApplicationEventService('github')
 export class GithubApplicationEventService {
   constructor(
-    @Inject(KEY_VALUE_STORE_PROVIDER)
-    private readonly keyValueStore: KeyValueStore,
-  ) {}
+      @Inject(KEY_VALUE_STORE_PROVIDER)
+      private readonly keyValueStore: KeyValueStore,
+  ) {
+  }
 
   @ApplicationEvent('New Collaborator')
   async checkIfNewCollaboratorOccurred(
-    appletId: string,
-    eventTriggerData: z.infer<typeof TriggerDataSchema>,
-    eventConnectionCredentials?: {
-      access_token: string;
-      refresh_token: string;
-    },
+      appletId: string,
+      eventTriggerData: z.infer<typeof TriggerDataSchema>,
+      eventConnectionCredentials?: {
+        access_token: string;
+        refresh_token: string;
+      },
   ): Promise<z.infer<typeof EventDataSchema>[]> {
     if (!eventConnectionCredentials || !eventTriggerData) {
       return [];
     }
 
-    const octokit = new Octokit({
-      auth: eventConnectionCredentials.access_token,
-    });
-
-    const repositoryOwner = (eventTriggerData.repository as string).split(
-      '/',
-    )[0];
-    const repositoryName = (eventTriggerData.repository as string).split(
-      '/',
-    )[1];
-
-    let lastPolledAt = await this.keyValueStore.get(appletId);
-    if (lastPolledAt === null) {
-      lastPolledAt = new Date().toISOString();
-      await this.keyValueStore.set(appletId, lastPolledAt, 60 * 60 * 24);
-      const { data } = await octokit.repos.listCollaborators({
-        owner: repositoryOwner,
-        repo: repositoryName,
+    try {
+      const octokit = new Octokit({
+        auth: eventConnectionCredentials.access_token,
       });
 
+      const repositoryOwner = (eventTriggerData.repository as string).split(
+          '/',
+      )[0];
+      const repositoryName = (eventTriggerData.repository as string).split(
+          '/',
+      )[1];
+
+      let lastPolledAt = await this.keyValueStore.get(appletId);
+      if (lastPolledAt === null) {
+        lastPolledAt = new Date().toISOString();
+        await this.keyValueStore.set(appletId, lastPolledAt, 60 * 60 * 24);
+        const {data} = await octokit.repos.listCollaborators({
+          owner: repositoryOwner,
+          repo: repositoryName,
+        });
+
+        await this.keyValueStore.set(
+            `${appletId}-lastCollaborators`,
+            JSON.stringify(data.map((collaborator) => collaborator.id)),
+            60 * 60 * 24,
+        );
+        return [];
+      }
+
       await this.keyValueStore.set(
-        `${appletId}-lastCollaborators`,
-        JSON.stringify(data.map((collaborator) => collaborator.id)),
-        60 * 60 * 24,
+          appletId,
+          new Date().toISOString(),
+          60 * 60 * 24,
       );
-      return [];
-    }
 
-    await this.keyValueStore.set(
-      appletId,
-      new Date().toISOString(),
-      60 * 60 * 24,
-    );
-
-    try {
-      const { data } = await octokit.repos.listCollaborators({
+      const {data} = await octokit.repos.listCollaborators({
         owner: repositoryOwner,
         repo: repositoryName,
       });
 
       const lastCollaborators = await this.keyValueStore.get(
-        `${appletId}-lastCollaborators`,
+          `${appletId}-lastCollaborators`,
       );
 
       if (lastCollaborators === null) {
         await this.keyValueStore.set(
-          `${appletId}-lastCollaborators`,
-          JSON.stringify(data.map((collaborator) => collaborator.id)),
-          60 * 60 * 24,
+            `${appletId}-lastCollaborators`,
+            JSON.stringify(data.map((collaborator) => collaborator.id)),
+            60 * 60 * 24,
         );
         return [];
       }
@@ -93,13 +94,13 @@ export class GithubApplicationEventService {
       const lastCollaboratorsData = JSON.parse(lastCollaborators) as number[];
 
       const newCollaborators = data.filter(
-        (collaborator) => !lastCollaboratorsData.includes(collaborator.id),
+          (collaborator) => !lastCollaboratorsData.includes(collaborator.id),
       );
 
       await this.keyValueStore.set(
-        `${appletId}-lastCollaborators`,
-        JSON.stringify(data.map((collaborator) => collaborator.id)),
-        60 * 60 * 24,
+          `${appletId}-lastCollaborators`,
+          JSON.stringify(data.map((collaborator) => collaborator.id)),
+          60 * 60 * 24,
       );
 
       return newCollaborators.map((collaborator) => ({
@@ -125,73 +126,73 @@ export class GithubApplicationEventService {
         collaborator_type: collaborator.type,
         collaborator_site_admin: collaborator.site_admin.toString(),
       }));
-    } catch (e) {}
+    } catch (e) {
+    }
 
     return [];
   }
 
   @ApplicationEvent('New Commit Comment')
   async checkIfNewCommitCommentOccurred(
-    appletId: string,
-    eventTriggerData: z.infer<typeof TriggerDataSchema>,
-    eventConnectionCredentials?: {
-      access_token: string;
-      refresh_token: string;
-    },
+      appletId: string,
+      eventTriggerData: z.infer<typeof TriggerDataSchema>,
+      eventConnectionCredentials?: {
+        access_token: string;
+        refresh_token: string;
+      },
   ): Promise<z.infer<typeof EventDataSchema>[]> {
     if (!eventConnectionCredentials || !eventTriggerData) {
       return [];
     }
-
-    const octokit = new Octokit({
-      auth: eventConnectionCredentials.access_token,
-    });
-
-    const repositoryOwner = (eventTriggerData.repository as string).split(
-      '/',
-    )[0];
-    const repositoryName = (eventTriggerData.repository as string).split(
-      '/',
-    )[1];
-
-    let lastPolledAt = await this.keyValueStore.get(appletId);
-    if (lastPolledAt === null) {
-      lastPolledAt = new Date().toISOString();
-      await this.keyValueStore.set(appletId, lastPolledAt, 60 * 60 * 24);
-      const { data } = await octokit.repos.listCommitCommentsForRepo({
-        owner: repositoryOwner,
-        repo: repositoryName,
+    try {
+      const octokit = new Octokit({
+        auth: eventConnectionCredentials.access_token,
       });
 
+      const repositoryOwner = (eventTriggerData.repository as string).split(
+          '/',
+      )[0];
+      const repositoryName = (eventTriggerData.repository as string).split(
+          '/',
+      )[1];
+
+      let lastPolledAt = await this.keyValueStore.get(appletId);
+      if (lastPolledAt === null) {
+        lastPolledAt = new Date().toISOString();
+        await this.keyValueStore.set(appletId, lastPolledAt, 60 * 60 * 24);
+        const {data} = await octokit.repos.listCommitCommentsForRepo({
+          owner: repositoryOwner,
+          repo: repositoryName,
+        });
+
+        await this.keyValueStore.set(
+            `${appletId}-lastCommitComments`,
+            JSON.stringify(data.map((commitComment) => commitComment.id)),
+            60 * 60 * 24,
+        );
+        return [];
+      }
+
       await this.keyValueStore.set(
-        `${appletId}-lastCommitComments`,
-        JSON.stringify(data.map((commitComment) => commitComment.id)),
-        60 * 60 * 24,
+          appletId,
+          new Date().toISOString(),
+          60 * 60 * 24,
       );
-      return [];
-    }
 
-    await this.keyValueStore.set(
-      appletId,
-      new Date().toISOString(),
-      60 * 60 * 24,
-    );
-
-    try {
-      const { data } = await octokit.repos.listCommitCommentsForRepo({
+      const {data} = await octokit.repos.listCommitCommentsForRepo({
         owner: repositoryOwner,
         repo: repositoryName,
       });
 
       const lastCommitComments = await this.keyValueStore.get(
-        `${appletId}-lastCommitComments`,
+          `${appletId}-lastCommitComments`,
       );
 
       if (lastCommitComments === null) {
         await this.keyValueStore.set(
-          `${appletId}-lastCommitComments`,
-          JSON.stringify(data.map((commitComment) => commitComment.id)),
-          60 * 60 * 24,
+            `${appletId}-lastCommitComments`,
+            JSON.stringify(data.map((commitComment) => commitComment.id)),
+            60 * 60 * 24,
         );
         return [];
       }
@@ -199,13 +200,13 @@ export class GithubApplicationEventService {
       const lastCommitCommentsData = JSON.parse(lastCommitComments) as number[];
 
       const newCommitComments = data.filter(
-        (commitComment) => !lastCommitCommentsData.includes(commitComment.id),
+          (commitComment) => !lastCommitCommentsData.includes(commitComment.id),
       );
 
       await this.keyValueStore.set(
-        `${appletId}-lastCommitComments`,
-        JSON.stringify(data.map((commitComment) => commitComment.id)),
-        60 * 60 * 24,
+          `${appletId}-lastCommitComments`,
+          JSON.stringify(data.map((commitComment) => commitComment.id)),
+          60 * 60 * 24,
       );
 
       return newCommitComments.map((commitComment) => ({
@@ -220,73 +221,73 @@ export class GithubApplicationEventService {
         commit_comment_commit_id: commitComment.commit_id,
         commit_comment_created_at: commitComment.created_at,
       }));
-    } catch (e) {}
+    } catch (e) {
+    }
 
     return [];
   }
 
   @ApplicationEvent('New Pull Request')
   async checkIfNewPullRequestOccurred(
-    appletId: string,
-    eventTriggerData: z.infer<typeof TriggerDataSchema>,
-    eventConnectionCredentials?: {
-      access_token: string;
-      refresh_token: string;
-    },
+      appletId: string,
+      eventTriggerData: z.infer<typeof TriggerDataSchema>,
+      eventConnectionCredentials?: {
+        access_token: string;
+        refresh_token: string;
+      },
   ): Promise<z.infer<typeof EventDataSchema>[]> {
     if (!eventConnectionCredentials || !eventTriggerData) {
       return [];
     }
-
-    const octokit = new Octokit({
-      auth: eventConnectionCredentials.access_token,
-    });
-
-    const repositoryOwner = (eventTriggerData.repository as string).split(
-      '/',
-    )[0];
-    const repositoryName = (eventTriggerData.repository as string).split(
-      '/',
-    )[1];
-
-    let lastPolledAt = await this.keyValueStore.get(appletId);
-    if (lastPolledAt === null) {
-      lastPolledAt = new Date().toISOString();
-      await this.keyValueStore.set(appletId, lastPolledAt, 60 * 60 * 24);
-      const { data } = await octokit.pulls.list({
-        owner: repositoryOwner,
-        repo: repositoryName,
+    try {
+      const octokit = new Octokit({
+        auth: eventConnectionCredentials.access_token,
       });
 
+      const repositoryOwner = (eventTriggerData.repository as string).split(
+          '/',
+      )[0];
+      const repositoryName = (eventTriggerData.repository as string).split(
+          '/',
+      )[1];
+
+      let lastPolledAt = await this.keyValueStore.get(appletId);
+      if (lastPolledAt === null) {
+        lastPolledAt = new Date().toISOString();
+        await this.keyValueStore.set(appletId, lastPolledAt, 60 * 60 * 24);
+        const {data} = await octokit.pulls.list({
+          owner: repositoryOwner,
+          repo: repositoryName,
+        });
+
+        await this.keyValueStore.set(
+            `${appletId}-lastPullRequests`,
+            JSON.stringify(data.map((pullRequest) => pullRequest.number)),
+            60 * 60 * 24,
+        );
+        return [];
+      }
+
       await this.keyValueStore.set(
-        `${appletId}-lastPullRequests`,
-        JSON.stringify(data.map((pullRequest) => pullRequest.number)),
-        60 * 60 * 24,
+          appletId,
+          new Date().toISOString(),
+          60 * 60 * 24,
       );
-      return [];
-    }
 
-    await this.keyValueStore.set(
-      appletId,
-      new Date().toISOString(),
-      60 * 60 * 24,
-    );
-
-    try {
-      const { data } = await octokit.pulls.list({
+      const {data} = await octokit.pulls.list({
         owner: repositoryOwner,
         repo: repositoryName,
       });
 
       const lastPullRequests = await this.keyValueStore.get(
-        `${appletId}-lastPullRequests`,
+          `${appletId}-lastPullRequests`,
       );
 
       if (lastPullRequests === null) {
         await this.keyValueStore.set(
-          `${appletId}-lastPullRequests`,
-          JSON.stringify(data.map((pullRequest) => pullRequest.number)),
-          60 * 60 * 24,
+            `${appletId}-lastPullRequests`,
+            JSON.stringify(data.map((pullRequest) => pullRequest.number)),
+            60 * 60 * 24,
         );
         return [];
       }
@@ -294,13 +295,13 @@ export class GithubApplicationEventService {
       const lastPullRequestsData = JSON.parse(lastPullRequests) as number[];
 
       const newPullRequests = data.filter(
-        (pullRequest) => !lastPullRequestsData.includes(pullRequest.number),
+          (pullRequest) => !lastPullRequestsData.includes(pullRequest.number),
       );
 
       await this.keyValueStore.set(
-        `${appletId}-lastPullRequests`,
-        JSON.stringify(data.map((pullRequest) => pullRequest.number)),
-        60 * 60 * 24,
+          `${appletId}-lastPullRequests`,
+          JSON.stringify(data.map((pullRequest) => pullRequest.number)),
+          60 * 60 * 24,
       );
 
       return newPullRequests.map((pullRequest) => ({
@@ -316,73 +317,74 @@ export class GithubApplicationEventService {
         pull_request_created_at: pullRequest.created_at,
         pull_request_updated_at: pullRequest.updated_at,
       }));
-    } catch (e) {}
+    } catch (e) {
+    }
 
     return [];
   }
 
   @ApplicationEvent('New Branch')
   async checkIfNewBranchOccurred(
-    appletId: string,
-    eventTriggerData: z.infer<typeof TriggerDataSchema>,
-    eventConnectionCredentials?: {
-      access_token: string;
-      refresh_token: string;
-    },
+      appletId: string,
+      eventTriggerData: z.infer<typeof TriggerDataSchema>,
+      eventConnectionCredentials?: {
+        access_token: string;
+        refresh_token: string;
+      },
   ): Promise<z.infer<typeof EventDataSchema>[]> {
     if (!eventConnectionCredentials || !eventTriggerData) {
       return [];
     }
 
-    const octokit = new Octokit({
-      auth: eventConnectionCredentials.access_token,
-    });
-
-    const repositoryOwner = (eventTriggerData.repository as string).split(
-      '/',
-    )[0];
-    const repositoryName = (eventTriggerData.repository as string).split(
-      '/',
-    )[1];
-
-    let lastPolledAt = await this.keyValueStore.get(appletId);
-    if (lastPolledAt === null) {
-      lastPolledAt = new Date().toISOString();
-      await this.keyValueStore.set(appletId, lastPolledAt, 60 * 60 * 24);
-      const { data } = await octokit.repos.listBranches({
-        owner: repositoryOwner,
-        repo: repositoryName,
+    try {
+      const octokit = new Octokit({
+        auth: eventConnectionCredentials.access_token,
       });
 
+      const repositoryOwner = (eventTriggerData.repository as string).split(
+          '/',
+      )[0];
+      const repositoryName = (eventTriggerData.repository as string).split(
+          '/',
+      )[1];
+
+      let lastPolledAt = await this.keyValueStore.get(appletId);
+      if (lastPolledAt === null) {
+        lastPolledAt = new Date().toISOString();
+        await this.keyValueStore.set(appletId, lastPolledAt, 60 * 60 * 24);
+        const {data} = await octokit.repos.listBranches({
+          owner: repositoryOwner,
+          repo: repositoryName,
+        });
+
+        await this.keyValueStore.set(
+            `${appletId}-lastBranches`,
+            JSON.stringify(data.map((branch) => branch.name)),
+            60 * 60 * 24,
+        );
+        return [];
+      }
+
       await this.keyValueStore.set(
-        `${appletId}-lastBranches`,
-        JSON.stringify(data.map((branch) => branch.name)),
-        60 * 60 * 24,
+          appletId,
+          new Date().toISOString(),
+          60 * 60 * 24,
       );
-      return [];
-    }
 
-    await this.keyValueStore.set(
-      appletId,
-      new Date().toISOString(),
-      60 * 60 * 24,
-    );
-
-    try {
-      const { data } = await octokit.repos.listBranches({
+      const {data} = await octokit.repos.listBranches({
         owner: repositoryOwner,
         repo: repositoryName,
       });
 
       const lastBranches = await this.keyValueStore.get(
-        `${appletId}-lastBranches`,
+          `${appletId}-lastBranches`,
       );
 
       if (lastBranches === null) {
         await this.keyValueStore.set(
-          `${appletId}-lastBranches`,
-          JSON.stringify(data.map((branch) => branch.name)),
-          60 * 60 * 24,
+            `${appletId}-lastBranches`,
+            JSON.stringify(data.map((branch) => branch.name)),
+            60 * 60 * 24,
         );
         return [];
       }
@@ -392,13 +394,13 @@ export class GithubApplicationEventService {
       const branches = data.map((branch) => branch.name);
 
       const newBranches = branches.filter(
-        (branch) => !lastBranchesData.includes(branch),
+          (branch) => !lastBranchesData.includes(branch),
       );
 
       await this.keyValueStore.set(
-        `${appletId}-lastBranches`,
-        JSON.stringify(branches),
-        60 * 60 * 24,
+          `${appletId}-lastBranches`,
+          JSON.stringify(branches),
+          60 * 60 * 24,
       );
 
       return newBranches.map((branch) => ({
@@ -406,19 +408,20 @@ export class GithubApplicationEventService {
         repository_name: repositoryName,
         branch: branch,
       }));
-    } catch (e) {}
+    } catch (e) {
+    }
 
     return [];
   }
 
   @ApplicationEvent('New Commit')
   async checkIfNewCommitOccurred(
-    appletId: string,
-    eventTriggerData: z.infer<typeof TriggerDataSchema>,
-    eventConnectionCredentials?: {
-      access_token: string;
-      refresh_token: string;
-    },
+      appletId: string,
+      eventTriggerData: z.infer<typeof TriggerDataSchema>,
+      eventConnectionCredentials?: {
+        access_token: string;
+        refresh_token: string;
+      },
   ): Promise<z.infer<typeof EventDataSchema>[]> {
     if (!eventConnectionCredentials || !eventTriggerData) {
       return [];
@@ -432,23 +435,23 @@ export class GithubApplicationEventService {
     }
 
     await this.keyValueStore.set(
-      appletId,
-      new Date().toISOString(),
-      60 * 60 * 24,
+        appletId,
+        new Date().toISOString(),
+        60 * 60 * 24,
     );
 
-    const octokit = new Octokit({
-      auth: eventConnectionCredentials.access_token,
-    });
-
-    const repositoryOwner = (eventTriggerData.repository as string).split(
-      '/',
-    )[0];
-    const repositoryName = (eventTriggerData.repository as string).split(
-      '/',
-    )[1];
-
     try {
+      const octokit = new Octokit({
+        auth: eventConnectionCredentials.access_token,
+      });
+
+      const repositoryOwner = (eventTriggerData.repository as string).split(
+          '/',
+      )[0];
+      const repositoryName = (eventTriggerData.repository as string).split(
+          '/',
+      )[1];
+
       const listCommitsParams = {
         owner: repositoryOwner,
         repo: repositoryName,
@@ -458,7 +461,7 @@ export class GithubApplicationEventService {
       if (eventTriggerData.branch) {
         listCommitsParams.sha = eventTriggerData.branch;
       }
-      const { data } = await octokit.repos.listCommits(listCommitsParams);
+      const {data} = await octokit.repos.listCommits(listCommitsParams);
 
       return data.map((commit) => ({
         repository_owner: repositoryOwner,
@@ -475,7 +478,7 @@ export class GithubApplicationEventService {
         commit_url: commit.commit.url,
         commit_comment_count: commit.commit.comment_count.toString(),
         commit_verification_verified:
-          commit.commit.verification?.verified.toString(),
+            commit.commit.verification?.verified.toString(),
         commit_verification_reason: commit.commit.verification?.reason,
         commit_verification_signature: commit.commit.verification?.signature,
         commit_verification_payload: commit.commit.verification?.payload,
@@ -502,7 +505,8 @@ export class GithubApplicationEventService {
         committer_node_id: commit.committer?.node_id,
         committer_avatar_url: commit.committer?.avatar_url,
       }));
-    } catch (e) {}
+    } catch (e) {
+    }
 
     return [];
   }
