@@ -8,8 +8,11 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { SystemModule } from '../../system/system.module';
 import { ExecutionLogController } from './controllers/execution-log.controller';
 import { Module } from '@nestjs/common';
-import { EXECUTION_LOG_REPOSITORY } from './ports/execution-log.repository';
-import { LOG_REPOSITORY } from './ports/log.repository';
+import {
+  EXECUTION_LOG_REPOSITORY,
+  ExecutionLogRepository,
+} from './ports/execution-log.repository';
+import { LOG_REPOSITORY, LogRepository } from './ports/log.repository';
 import { KnexLogRepository } from './adapters/knex.log.repository';
 import { KnexService } from '../../core/adapters/knex/knex.service';
 import { EXECUTION_LOG_QUERY_REPOSITORY } from './ports/execution-log.query-repository';
@@ -18,6 +21,9 @@ import { GetExecutionLogsByUserHandler } from './queries/get-execution-logs-by-u
 import { LOG_QUERY_REPOSITORY } from './ports/log.query-repository';
 import { KnexLogQueryRepository } from './adapters/knex.log.query-repository';
 import { GetExecutionLogLogsHandler } from './queries/get-execution-log-logs/get-execution-log-logs.handler';
+import { CreateExecutionLogHandler } from './commands/create-execution-log/create-execution-log.handler';
+import { ID_PROVIDER, IdProvider } from '../../system/id/id.provider';
+import { CreateLogHandler } from './commands/create-log/create-log.handler';
 
 @Module({
   imports: [KnexModule, CqrsModule, SystemModule],
@@ -59,6 +65,20 @@ import { GetExecutionLogLogsHandler } from './queries/get-execution-log-logs/get
       useFactory: (logQueryRepository: KnexLogQueryRepository) =>
         new GetExecutionLogLogsHandler(logQueryRepository),
       inject: [LOG_QUERY_REPOSITORY],
+    },
+    {
+      provide: CreateExecutionLogHandler,
+      useFactory: (
+        executionLogRepository: ExecutionLogRepository,
+        idProvider: IdProvider,
+      ) => new CreateExecutionLogHandler(executionLogRepository, idProvider),
+      inject: [EXECUTION_LOG_REPOSITORY, ID_PROVIDER],
+    },
+    {
+      provide: CreateLogHandler,
+      useFactory: (logRepository: LogRepository, idProvider: IdProvider) =>
+        new CreateLogHandler(logRepository, idProvider),
+      inject: [LOG_REPOSITORY, ID_PROVIDER],
     },
   ],
   exports: [],

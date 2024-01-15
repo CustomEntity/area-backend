@@ -5,7 +5,6 @@ import { afterAll, beforeAll, describe, it, jest } from '@jest/globals';
 import { AppModule } from '../../../core/app.module';
 import { RedisService } from '../../../core/adapters/redis/redis.service';
 import { KafkaService } from '../../../core/adapters/kafka/kafka.service';
-import { ConfigService } from '@nestjs/config';
 
 describe('AppletController (e2e)', () => {
   let app: INestApplication;
@@ -16,18 +15,6 @@ describe('AppletController (e2e)', () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     })
-      .overrideProvider(ConfigService)
-      .useValue({
-        get: jest.fn((key: string) => {
-          if (key === 'encryptionSecretKey')
-            return 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6';
-          if (key === 'encryptionSecretIV')
-            return '08c4bdc5ebab3567ef2c9e8c9f9e9e9e';
-          if (key === 'systemEpoch') return 1609459200000;
-          if (key === 'jwtSecret') return 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6';
-          if (key === 'jwtExpiresIn') return '1d';
-        }),
-      })
       .overrideProvider(RedisService)
       .useValue({})
       .overrideProvider(KafkaService)

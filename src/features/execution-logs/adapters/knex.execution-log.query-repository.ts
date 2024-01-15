@@ -24,34 +24,30 @@ export class KnexExecutionLogQueryRepository
     take: number,
     skip: number,
   ): Promise<Nullable<GetExecutionLogsByUserResult>> {
-    const rows = await this.connection(USER_TABLE)
-      .leftJoin(
+    const userExists = await this.connection(USER_TABLE)
+      .where('id', userId)
+      .select('id')
+      .first();
+
+    if (!userExists) {
+      return null;
+    }
+
+    const rows = await this.connection(EXECUTION_LOG_TABLE)
+      .join(
         APPLET_TABLE,
-        `${USER_TABLE}.id`,
-        '=',
-        `${APPLET_TABLE}.user_id`,
-      )
-      .leftJoin(
-        EXECUTION_LOG_TABLE,
-        `${APPLET_TABLE}.id`,
-        '=',
         `${EXECUTION_LOG_TABLE}.applet_id`,
+        '=',
+        `${APPLET_TABLE}.id`,
       )
+      .where(`${APPLET_TABLE}.user_id`, userId)
       .limit(take)
       .offset(skip)
-      .select(`${EXECUTION_LOG_TABLE}.*`, `${USER_TABLE}.id as userExists`)
-      .where(`${USER_TABLE}.id`, userId)
+      .select(`${EXECUTION_LOG_TABLE}.*`)
       .orderBy(`${EXECUTION_LOG_TABLE}.id`, 'desc');
 
     if (!rows || rows.length === 0) {
       return null;
-    }
-
-    if (rows.length === 1 && !rows[0].id) {
-      return {
-        executionLogs: [],
-        count: 0,
-      };
     }
 
     const executionLogs = rows.map((row) => ({
