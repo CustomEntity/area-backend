@@ -16,18 +16,25 @@ import {
   KeyValueStore,
 } from '../../../../system/keyvaluestore/key-value-store.provider';
 import { Inject } from '@nestjs/common';
+import {
+  EXECUTION_LOG_SERVICE,
+  ExecutionLogService,
+} from '../../../execution-logs/services/execution-log.service';
 
 @ApplicationEventService('github')
 export class GithubApplicationEventService {
   constructor(
     @Inject(KEY_VALUE_STORE_PROVIDER)
     private readonly keyValueStore: KeyValueStore,
+    @Inject(EXECUTION_LOG_SERVICE)
+    private readonly executionLogService: ExecutionLogService,
   ) {}
 
   @ApplicationEvent('New Collaborator')
   async checkIfNewCollaboratorOccurred(
     appletId: string,
     eventTriggerData: z.infer<typeof TriggerDataSchema>,
+    executionLogId: string,
     eventConnectionCredentials?: {
       access_token: string;
       refresh_token: string;
@@ -36,6 +43,12 @@ export class GithubApplicationEventService {
     if (!eventConnectionCredentials || !eventTriggerData) {
       return [];
     }
+
+    await this.executionLogService.log(
+      executionLogId,
+      'INFO',
+      'New Collaborator event triggered',
+    );
 
     try {
       const octokit = new Octokit({
@@ -51,6 +64,11 @@ export class GithubApplicationEventService {
 
       let lastPolledAt = await this.keyValueStore.get(appletId);
       if (lastPolledAt === null) {
+        await this.executionLogService.log(
+          executionLogId,
+          'INFO',
+          'No previous poll found, storing data for next poll',
+        );
         lastPolledAt = new Date().toISOString();
         await this.keyValueStore.set(appletId, lastPolledAt, 60 * 60 * 24);
         const { data } = await octokit.repos.listCollaborators({
@@ -102,6 +120,12 @@ export class GithubApplicationEventService {
         60 * 60 * 24,
       );
 
+      await this.executionLogService.log(
+        executionLogId,
+        'INFO',
+        `${newCollaborators.length} new collaborators found`,
+      );
+
       return newCollaborators.map((collaborator) => ({
         repository_owner: repositoryOwner,
         repository_name: repositoryName,
@@ -125,7 +149,13 @@ export class GithubApplicationEventService {
         collaborator_type: collaborator.type,
         collaborator_site_admin: collaborator.site_admin.toString(),
       }));
-    } catch (e) {}
+    } catch (e) {
+      await this.executionLogService.log(
+        executionLogId,
+        'ERROR',
+        'Error while fetching collaborators',
+      );
+    }
 
     return [];
   }
@@ -134,6 +164,7 @@ export class GithubApplicationEventService {
   async checkIfNewCommitCommentOccurred(
     appletId: string,
     eventTriggerData: z.infer<typeof TriggerDataSchema>,
+    executionLogId: string,
     eventConnectionCredentials?: {
       access_token: string;
       refresh_token: string;
@@ -142,6 +173,13 @@ export class GithubApplicationEventService {
     if (!eventConnectionCredentials || !eventTriggerData) {
       return [];
     }
+
+    await this.executionLogService.log(
+      executionLogId,
+      'INFO',
+      'New Commit Comment event triggered',
+    );
+
     try {
       const octokit = new Octokit({
         auth: eventConnectionCredentials.access_token,
@@ -156,6 +194,12 @@ export class GithubApplicationEventService {
 
       let lastPolledAt = await this.keyValueStore.get(appletId);
       if (lastPolledAt === null) {
+        await this.executionLogService.log(
+          executionLogId,
+          'INFO',
+          'No previous poll found, storing data for next poll',
+        );
+
         lastPolledAt = new Date().toISOString();
         await this.keyValueStore.set(appletId, lastPolledAt, 60 * 60 * 24);
         const { data } = await octokit.repos.listCommitCommentsForRepo({
@@ -201,6 +245,12 @@ export class GithubApplicationEventService {
         (commitComment) => !lastCommitCommentsData.includes(commitComment.id),
       );
 
+      await this.executionLogService.log(
+        executionLogId,
+        'INFO',
+        `${newCommitComments.length} new commit comments found`,
+      );
+
       await this.keyValueStore.set(
         `${appletId}-lastCommitComments`,
         JSON.stringify(data.map((commitComment) => commitComment.id)),
@@ -228,6 +278,7 @@ export class GithubApplicationEventService {
   async checkIfNewPullRequestOccurred(
     appletId: string,
     eventTriggerData: z.infer<typeof TriggerDataSchema>,
+    executionLogId: string,
     eventConnectionCredentials?: {
       access_token: string;
       refresh_token: string;
@@ -236,6 +287,13 @@ export class GithubApplicationEventService {
     if (!eventConnectionCredentials || !eventTriggerData) {
       return [];
     }
+
+    await this.executionLogService.log(
+      executionLogId,
+      'INFO',
+      'New Pull Request event triggered',
+    );
+
     try {
       const octokit = new Octokit({
         auth: eventConnectionCredentials.access_token,
@@ -250,6 +308,11 @@ export class GithubApplicationEventService {
 
       let lastPolledAt = await this.keyValueStore.get(appletId);
       if (lastPolledAt === null) {
+        await this.executionLogService.log(
+          executionLogId,
+          'INFO',
+          'No previous poll found, storing data for next poll',
+        );
         lastPolledAt = new Date().toISOString();
         await this.keyValueStore.set(appletId, lastPolledAt, 60 * 60 * 24);
         const { data } = await octokit.pulls.list({
@@ -301,6 +364,12 @@ export class GithubApplicationEventService {
         60 * 60 * 24,
       );
 
+      await this.executionLogService.log(
+        executionLogId,
+        'INFO',
+        `${newPullRequests.length} new pull requests found`,
+      );
+
       return newPullRequests.map((pullRequest) => ({
         repository_owner: repositoryOwner,
         repository_name: repositoryName,
@@ -314,7 +383,13 @@ export class GithubApplicationEventService {
         pull_request_created_at: pullRequest.created_at,
         pull_request_updated_at: pullRequest.updated_at,
       }));
-    } catch (e) {}
+    } catch (e) {
+      await this.executionLogService.log(
+        executionLogId,
+        'ERROR',
+        'Error while fetching pull requests',
+      );
+    }
 
     return [];
   }
@@ -323,6 +398,7 @@ export class GithubApplicationEventService {
   async checkIfNewBranchOccurred(
     appletId: string,
     eventTriggerData: z.infer<typeof TriggerDataSchema>,
+    executionLogId: string,
     eventConnectionCredentials?: {
       access_token: string;
       refresh_token: string;
@@ -331,6 +407,12 @@ export class GithubApplicationEventService {
     if (!eventConnectionCredentials || !eventTriggerData) {
       return [];
     }
+
+    await this.executionLogService.log(
+      executionLogId,
+      'INFO',
+      'New Branch event triggered',
+    );
 
     try {
       const octokit = new Octokit({
@@ -346,6 +428,11 @@ export class GithubApplicationEventService {
 
       let lastPolledAt = await this.keyValueStore.get(appletId);
       if (lastPolledAt === null) {
+        await this.executionLogService.log(
+          executionLogId,
+          'INFO',
+          'No previous poll found, storing data for next poll',
+        );
         lastPolledAt = new Date().toISOString();
         await this.keyValueStore.set(appletId, lastPolledAt, 60 * 60 * 24);
         const { data } = await octokit.repos.listBranches({
@@ -393,6 +480,12 @@ export class GithubApplicationEventService {
         (branch) => !lastBranchesData.includes(branch),
       );
 
+      await this.executionLogService.log(
+        executionLogId,
+        'INFO',
+        `${newBranches.length} new branches found`,
+      );
+
       await this.keyValueStore.set(
         `${appletId}-lastBranches`,
         JSON.stringify(branches),
@@ -404,7 +497,13 @@ export class GithubApplicationEventService {
         repository_name: repositoryName,
         branch: branch,
       }));
-    } catch (e) {}
+    } catch (e) {
+      await this.executionLogService.log(
+        executionLogId,
+        'ERROR',
+        'Error while fetching branches',
+      );
+    }
 
     return [];
   }
@@ -413,6 +512,7 @@ export class GithubApplicationEventService {
   async checkIfNewCommitOccurred(
     appletId: string,
     eventTriggerData: z.infer<typeof TriggerDataSchema>,
+    executionLogId: string,
     eventConnectionCredentials?: {
       access_token: string;
       refresh_token: string;
@@ -421,11 +521,22 @@ export class GithubApplicationEventService {
     if (!eventConnectionCredentials || !eventTriggerData) {
       return [];
     }
+    await this.executionLogService.log(
+      executionLogId,
+      'INFO',
+      'New Commit event triggered',
+    );
 
     let lastPolledAt = await this.keyValueStore.get(appletId);
     if (lastPolledAt === null) {
+      await this.executionLogService.log(
+        executionLogId,
+        'INFO',
+        'No previous poll found, storing data for next poll',
+      );
       lastPolledAt = new Date().toISOString();
       await this.keyValueStore.set(appletId, lastPolledAt, 60 * 60 * 24);
+
       return [];
     }
 
@@ -458,6 +569,11 @@ export class GithubApplicationEventService {
       }
       const { data } = await octokit.repos.listCommits(listCommitsParams);
 
+      await this.executionLogService.log(
+        executionLogId,
+        'INFO',
+        `${data.length} new commits found`,
+      );
       return data.map((commit) => ({
         repository_owner: repositoryOwner,
         repository_name: repositoryName,
@@ -500,7 +616,13 @@ export class GithubApplicationEventService {
         committer_node_id: commit.committer?.node_id,
         committer_avatar_url: commit.committer?.avatar_url,
       }));
-    } catch (e) {}
+    } catch (e) {
+      await this.executionLogService.log(
+        executionLogId,
+        'ERROR',
+        'Error while fetching commits',
+      );
+    }
 
     return [];
   }

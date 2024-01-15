@@ -11,6 +11,8 @@ import { ReactionService } from '../../../applications/reactions/ports/reaction.
 import { EncryptionProvider } from '../../../../system/encryption/encryption.provider';
 import { ConnectionCredentialsSchema } from '../../../user-connections/value-objects/connection-credentials.vo';
 import { z } from 'zod';
+import { ExecutionLogService } from '../../../execution-logs/services/execution-log.service';
+import { IdProvider } from '../../../../system/id/id.provider';
 
 @CommandHandler(ExecuteAppletCommand)
 export class ExecuteAppletHandler
@@ -21,6 +23,8 @@ export class ExecuteAppletHandler
     public readonly eventService: EventService,
     public readonly reactionService: ReactionService,
     public readonly encryptionProvider: EncryptionProvider,
+    public readonly executionLogService: ExecutionLogService,
+    public readonly idProvider: IdProvider,
   ) {}
 
   decryptObjectFields(obj: Record<string, any>): Record<string, any> {
@@ -46,10 +50,22 @@ export class ExecuteAppletHandler
       return;
     }
 
+    const executionLogId = this.idProvider.getId();
+
+    const executionLogData = {
+      id: executionLogId,
+      appletId: applet.id,
+      summary: `Execution of applet ${applet.name}`,
+      executionDate: new Date(),
+    };
+
+    await this.executionLogService.createExecutionLog(executionLogData);
+
     const eventsData = await this.eventService.retrieveNewEventsData(
       applet.id,
       applet.event.value.application.name,
       applet.event.value.name,
+      executionLogId,
       applet.eventTriggerData?.value ?? {},
       this.decryptObjectFields(
         applet.eventConnection?.value.connectionCredentials ?? {},
@@ -64,6 +80,7 @@ export class ExecuteAppletHandler
         applet.reaction.value.application.name,
         applet.reaction.value.name,
         eventData,
+        executionLogId,
         applet.reactionParametersData?.value,
         this.decryptObjectFields(
           applet.reactionConnection?.value.connectionCredentials ?? {},

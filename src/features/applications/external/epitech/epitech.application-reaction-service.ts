@@ -16,6 +16,7 @@ export class EpitechApplicationReactionService {
   async openDoor(
     reactionParametersData: Record<string, unknown>,
     eventData: z.infer<typeof EventDataSchema>,
+    executionLogId: string,
     reactionConnectionCredentials?: {
       api_key: string;
     },

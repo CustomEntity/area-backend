@@ -8,7 +8,6 @@ import { ExecutionLogRepository } from '../ports/execution-log.repository';
 import { Knex } from 'knex';
 import { ExecutionLog } from '../entities/execution-log.entity';
 import { Mapper } from '../../../shared/mapper';
-import { undefined } from 'zod';
 import { Nullable } from '../../../shared/nullable';
 
 const EXECUTION_LOG_TABLE = 'execution_logs';

@@ -70,13 +70,19 @@ export class ConcreteEventService implements EventService, OnModuleInit {
     appletId: string,
     applicationName: string,
     eventName: string,
+    executionLogId: string,
     eventTriggerData: z.infer<typeof TriggerDataSchema>,
     eventConnectionCredentials?: z.infer<typeof ConnectionCredentialsSchema>,
   ): Promise<z.infer<typeof EventDataSchema>[]> {
     const key = `${applicationName}:${eventName}`;
     const method = this.eventMethodMap.get(key);
     if (method) {
-      return method(appletId, eventTriggerData, eventConnectionCredentials);
+      return method(
+        appletId,
+        eventTriggerData,
+        executionLogId,
+        eventConnectionCredentials,
+      );
     } else {
       console.error(`No method found for key: ${key}`);
       return [];

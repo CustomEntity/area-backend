@@ -35,6 +35,7 @@ export interface ReactionService {
     applicationName: string,
     reactionName: string,
     eventData: z.infer<typeof EventDataSchema>,
+    executionLogId: string,
     reactionParametersData?: z.infer<typeof ReactionParametersDataSchema>,
     reactionConnectionCredentials?: z.infer<typeof ConnectionCredentialsSchema>,
   ): Promise<void>;

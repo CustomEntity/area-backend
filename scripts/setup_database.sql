@@ -89,17 +89,19 @@ CREATE TABLE IF NOT EXISTS applets
 
 CREATE TABLE IF NOT EXISTS execution_logs
 (
-    id            bigint    NOT NULL,
-    applet_id     bigint    NOT NULL,
-    summary       varchar(255),
-    execution_date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+    id             bigint    NOT NULL,
+    applet_id      bigint    NOT NULL,
+    summary        varchar(255),
+    execution_date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS logs
 (
-    id               bigint       NOT NULL,
-    execution_log_id bigint       NOT NULL,
-    log_level        smallint NOT NULL,
+    id               bigint    NOT NULL,
+    execution_log_id bigint    NOT NULL,
+    log_level        smallint  NOT NULL,
     message          text,
-    log_date         timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP
+    log_date         timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id)
 );

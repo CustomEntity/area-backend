@@ -77,6 +77,11 @@ import {
 } from '../../system/encryption/encryption.provider';
 import { RedisService } from '../../core/adapters/redis/redis.service';
 import { DeleteUserAppletsHandler } from './commands/delete-user-applets/delete-user-applets.handler';
+import { ExecutionLogModule } from '../execution-logs/execution-log.module';
+import {
+  EXECUTION_LOG_SERVICE,
+  ExecutionLogService,
+} from '../execution-logs/services/execution-log.service';
 
 @Module({
   imports: [
@@ -88,6 +93,7 @@ import { DeleteUserAppletsHandler } from './commands/delete-user-applets/delete-
     EventModule,
     ReactionModule,
     UserModule,
+    ExecutionLogModule,
   ],
   providers: [
     ScheduleAppletExecutionTask,
@@ -160,12 +166,16 @@ import { DeleteUserAppletsHandler } from './commands/delete-user-applets/delete-
         eventService: EventService,
         reactionService: ReactionService,
         encryptionProvider: EncryptionProvider,
+        executionLogService: ExecutionLogService,
+        idProvider: IdProvider,
       ) => {
         return new ExecuteAppletHandler(
           appletRepository,
           eventService,
           reactionService,
           encryptionProvider,
+          executionLogService,
+          idProvider,
         );
       },
       inject: [
@@ -173,6 +183,8 @@ import { DeleteUserAppletsHandler } from './commands/delete-user-applets/delete-
         EVENT_SERVICE,
         REACTION_SERVICE,
         ENCRYPTION_PROVIDER,
+        EXECUTION_LOG_SERVICE,
+        ID_PROVIDER,
       ],
     },
     {

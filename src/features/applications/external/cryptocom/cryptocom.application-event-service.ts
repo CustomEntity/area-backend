@@ -42,22 +42,23 @@ type BollingerBands = {
 @ApplicationEventService('crypto.com')
 export class CryptoComApplicationEventService {
   constructor(
-      @Inject(KEY_VALUE_STORE_PROVIDER)
-      private readonly keyValueStore: KeyValueStore,
+    @Inject(KEY_VALUE_STORE_PROVIDER)
+    private readonly keyValueStore: KeyValueStore,
   ) {}
 
   @ApplicationEvent('Threshold exceeded')
   async checkIfThresholdExceeded(
-      appletId: string,
-      eventTriggerData: z.infer<typeof TriggerDataSchema>,
-      eventConnectionCredentials?: z.infer<typeof ConnectionCredentialsSchema>,
+    appletId: string,
+    eventTriggerData: z.infer<typeof TriggerDataSchema>,
+    executionLogId: string,
+    eventConnectionCredentials?: z.infer<typeof ConnectionCredentialsSchema>,
   ): Promise<z.infer<typeof EventDataSchema>[]> {
     await this.updateLastPolledAt(appletId);
 
     const params = {} as any;
     if (eventTriggerData) {
       const { instrument_name, interval, threshold, operation } =
-          eventTriggerData;
+        eventTriggerData;
       params.instrument_name = instrument_name;
       params.interval = interval;
       params.threshold = Number(threshold);
@@ -65,55 +66,13 @@ export class CryptoComApplicationEventService {
     }
 
     const k_line_data_history: KLineDataHistory =
-        await this.fetchKLineDataHistory(params.instrument_name, params.interval);
+      await this.fetchKLineDataHistory(params.instrument_name, params.interval);
 
     const currentPrice: CandleStick | undefined =
-        k_line_data_history.data.pop();
+      k_line_data_history.data.pop();
 
     if (currentPrice === undefined) {
       return this.formatKLineSynthesis(
-          'raw value',
-          'idle',
-          params.interval,
-          params.operation,
-          params.threshold,
-          params.instrument_name,
-          currentPrice,
-      );
-    }
-
-    switch (params.operation) {
-      case 'is above':
-        if (params.threshold < currentPrice.c) {
-          return this.formatKLineSynthesis(
-              'raw value',
-              'triggered',
-              params.interval,
-              params.operation,
-              params.threshold,
-              params.instrument_name,
-              currentPrice,
-          );
-        }
-        break;
-      case 'is below':
-        if (currentPrice.c < params.threshold) {
-          return this.formatKLineSynthesis(
-              'raw value',
-              'triggered',
-              params.interval,
-              params.operation,
-              params.threshold,
-              params.instrument_name,
-              currentPrice,
-          );
-        }
-        break;
-      default:
-        throw new Error('Invalid operation');
-    }
-
-    return this.formatKLineSynthesis(
         'raw value',
         'idle',
         params.interval,
@@ -121,83 +80,33 @@ export class CryptoComApplicationEventService {
         params.threshold,
         params.instrument_name,
         currentPrice,
-    );
-  }
-
-  @ApplicationEvent('Moving average')
-  async checkIfMovingAverageThresholdExceeded(
-      appletId: string,
-      eventTriggerData: z.infer<typeof TriggerDataSchema>,
-      eventConnectionCredentials?: z.infer<typeof ConnectionCredentialsSchema>,
-  ): Promise<z.infer<typeof EventDataSchema>[]> {
-    await this.updateLastPolledAt(appletId);
-
-    const params = {} as any;
-    if (eventTriggerData) {
-      const { instrument_name, interval, period, threshold, operation } =
-          eventTriggerData;
-      params.instrument_name = instrument_name;
-      params.interval = interval;
-      params.period = Number(period);
-      params.threshold = Number(threshold);
-      params.operation = operation;
-    }
-
-    const k_line_data_history: KLineDataHistory =
-        await this.fetchKLineDataHistory(params.instrument_name, params.interval);
-
-    const currentPrice: CandleStick | undefined =
-        k_line_data_history.data.pop();
-
-    if (currentPrice === undefined) {
-      return this.formatKLineSynthesis(
-          'moving average',
-          'idle',
-          params.interval,
-          params.operation,
-          params.threshold,
-          params.instrument_name,
-          currentPrice,
       );
     }
 
-    const movingAverage: number[] = this.calculateMovingAverage(
-        k_line_data_history,
-        params.period,
-    );
-
-    const currentMovingAverage: number = movingAverage.pop() ?? currentPrice.c;
-
     switch (params.operation) {
       case 'is above':
-        if (
-            currentMovingAverage < currentPrice.c &&
-            params.threshold <= Math.abs(currentPrice.c - currentMovingAverage)
-        ) {
+        if (params.threshold < currentPrice.c) {
           return this.formatKLineSynthesis(
-              'moving average',
-              'triggered',
-              params.interval,
-              params.operation,
-              params.threshold,
-              params.instrument_name,
-              currentPrice,
+            'raw value',
+            'triggered',
+            params.interval,
+            params.operation,
+            params.threshold,
+            params.instrument_name,
+            currentPrice,
           );
         }
         break;
       case 'is below':
-        if (
-            currentPrice.c < currentMovingAverage &&
-            params.threshold <= Math.abs(currentPrice.c - currentMovingAverage)
-        ) {
+        if (currentPrice.c < params.threshold) {
           return this.formatKLineSynthesis(
-              'moving average',
-              'triggered',
-              params.interval,
-              params.operation,
-              params.threshold,
-              params.instrument_name,
-              currentPrice,
+            'raw value',
+            'triggered',
+            params.interval,
+            params.operation,
+            params.threshold,
+            params.instrument_name,
+            currentPrice,
           );
         }
         break;
@@ -206,28 +115,29 @@ export class CryptoComApplicationEventService {
     }
 
     return this.formatKLineSynthesis(
-        'moving average',
-        'idle',
-        params.interval,
-        params.operation,
-        params.threshold,
-        params.instrument_name,
-        currentPrice,
+      'raw value',
+      'idle',
+      params.interval,
+      params.operation,
+      params.threshold,
+      params.instrument_name,
+      currentPrice,
     );
   }
 
-  @ApplicationEvent('RSI')
-  async checkIfRSIThresholdExceeded(
-      appletId: string,
-      eventTriggerData: z.infer<typeof TriggerDataSchema>,
-      eventConnectionCredentials?: z.infer<typeof ConnectionCredentialsSchema>,
+  @ApplicationEvent('Moving average')
+  async checkIfMovingAverageThresholdExceeded(
+    appletId: string,
+    executionLogId: string,
+    eventTriggerData: z.infer<typeof TriggerDataSchema>,
+    eventConnectionCredentials?: z.infer<typeof ConnectionCredentialsSchema>,
   ): Promise<z.infer<typeof EventDataSchema>[]> {
     await this.updateLastPolledAt(appletId);
 
     const params = {} as any;
     if (eventTriggerData) {
       const { instrument_name, interval, period, threshold, operation } =
-          eventTriggerData;
+        eventTriggerData;
       params.instrument_name = instrument_name;
       params.interval = interval;
       params.period = Number(period);
@@ -236,20 +146,113 @@ export class CryptoComApplicationEventService {
     }
 
     const k_line_data_history: KLineDataHistory =
-        await this.fetchKLineDataHistory(params.instrument_name, params.interval);
+      await this.fetchKLineDataHistory(params.instrument_name, params.interval);
 
     const currentPrice: CandleStick | undefined =
-        k_line_data_history.data.pop();
+      k_line_data_history.data.pop();
 
     if (currentPrice === undefined) {
       return this.formatKLineSynthesis(
-          'RSI',
-          'idle',
-          params.interval,
-          params.operation,
-          params.threshold,
-          params.instrument_name,
-          currentPrice,
+        'moving average',
+        'idle',
+        params.interval,
+        params.operation,
+        params.threshold,
+        params.instrument_name,
+        currentPrice,
+      );
+    }
+
+    const movingAverage: number[] = this.calculateMovingAverage(
+      k_line_data_history,
+      params.period,
+    );
+
+    const currentMovingAverage: number = movingAverage.pop() ?? currentPrice.c;
+
+    switch (params.operation) {
+      case 'is above':
+        if (
+          currentMovingAverage < currentPrice.c &&
+          params.threshold <= Math.abs(currentPrice.c - currentMovingAverage)
+        ) {
+          return this.formatKLineSynthesis(
+            'moving average',
+            'triggered',
+            params.interval,
+            params.operation,
+            params.threshold,
+            params.instrument_name,
+            currentPrice,
+          );
+        }
+        break;
+      case 'is below':
+        if (
+          currentPrice.c < currentMovingAverage &&
+          params.threshold <= Math.abs(currentPrice.c - currentMovingAverage)
+        ) {
+          return this.formatKLineSynthesis(
+            'moving average',
+            'triggered',
+            params.interval,
+            params.operation,
+            params.threshold,
+            params.instrument_name,
+            currentPrice,
+          );
+        }
+        break;
+      default:
+        throw new Error('Invalid operation');
+    }
+
+    return this.formatKLineSynthesis(
+      'moving average',
+      'idle',
+      params.interval,
+      params.operation,
+      params.threshold,
+      params.instrument_name,
+      currentPrice,
+    );
+  }
+
+  @ApplicationEvent('RSI')
+  async checkIfRSIThresholdExceeded(
+    appletId: string,
+    eventTriggerData: z.infer<typeof TriggerDataSchema>,
+    executionLogId: string,
+    eventConnectionCredentials?: z.infer<typeof ConnectionCredentialsSchema>,
+  ): Promise<z.infer<typeof EventDataSchema>[]> {
+    await this.updateLastPolledAt(appletId);
+
+    const params = {} as any;
+    if (eventTriggerData) {
+      const { instrument_name, interval, period, threshold, operation } =
+        eventTriggerData;
+      params.instrument_name = instrument_name;
+      params.interval = interval;
+      params.period = Number(period);
+      params.threshold = Number(threshold);
+      params.operation = operation;
+    }
+
+    const k_line_data_history: KLineDataHistory =
+      await this.fetchKLineDataHistory(params.instrument_name, params.interval);
+
+    const currentPrice: CandleStick | undefined =
+      k_line_data_history.data.pop();
+
+    if (currentPrice === undefined) {
+      return this.formatKLineSynthesis(
+        'RSI',
+        'idle',
+        params.interval,
+        params.operation,
+        params.threshold,
+        params.instrument_name,
+        currentPrice,
       );
     }
 
@@ -259,13 +262,13 @@ export class CryptoComApplicationEventService {
 
     if (currentRSI === undefined) {
       return this.formatKLineSynthesis(
-          'RSI',
-          'idle',
-          params.interval,
-          params.operation,
-          params.threshold,
-          params.instrument_name,
-          currentPrice,
+        'RSI',
+        'idle',
+        params.interval,
+        params.operation,
+        params.threshold,
+        params.instrument_name,
+        currentPrice,
       );
     }
 
@@ -273,26 +276,26 @@ export class CryptoComApplicationEventService {
       case 'is above':
         if (currentRSI < params.threshold) {
           return this.formatKLineSynthesis(
-              'RSI',
-              'triggered',
-              params.interval,
-              params.operation,
-              params.threshold,
-              params.instrument_name,
-              currentPrice,
+            'RSI',
+            'triggered',
+            params.interval,
+            params.operation,
+            params.threshold,
+            params.instrument_name,
+            currentPrice,
           );
         }
         break;
       case 'is below':
         if (params.threshold < currentRSI) {
           return this.formatKLineSynthesis(
-              'RSI',
-              'triggered',
-              params.interval,
-              params.operation,
-              params.threshold,
-              params.instrument_name,
-              currentPrice,
+            'RSI',
+            'triggered',
+            params.interval,
+            params.operation,
+            params.threshold,
+            params.instrument_name,
+            currentPrice,
           );
         }
         break;
@@ -301,28 +304,29 @@ export class CryptoComApplicationEventService {
     }
 
     return this.formatKLineSynthesis(
-        'RSI',
-        'idle',
-        params.interval,
-        params.operation,
-        params.threshold,
-        params.instrument_name,
-        currentPrice,
+      'RSI',
+      'idle',
+      params.interval,
+      params.operation,
+      params.threshold,
+      params.instrument_name,
+      currentPrice,
     );
   }
 
   @ApplicationEvent('Bollinger bands')
   async checkIfBollingerBandsThresholdExceeded(
-      appletId: string,
-      eventTriggerData: z.infer<typeof TriggerDataSchema>,
-      eventConnectionCredentials?: z.infer<typeof ConnectionCredentialsSchema>,
+    appletId: string,
+    eventTriggerData: z.infer<typeof TriggerDataSchema>,
+    executionLogId: string,
+    eventConnectionCredentials?: z.infer<typeof ConnectionCredentialsSchema>,
   ): Promise<z.infer<typeof EventDataSchema>[]> {
     await this.updateLastPolledAt(appletId);
 
     const params = {} as any;
     if (eventTriggerData) {
       const { instrument_name, interval, period, threshold, operation } =
-          eventTriggerData;
+        eventTriggerData;
       params.instrument_name = instrument_name;
       params.interval = interval;
       params.period = Number(period);
@@ -331,26 +335,26 @@ export class CryptoComApplicationEventService {
     }
 
     const k_line_data_history: KLineDataHistory =
-        await this.fetchKLineDataHistory(params.instrument_name, params.interval);
+      await this.fetchKLineDataHistory(params.instrument_name, params.interval);
 
     const currentPrice: CandleStick | undefined =
-        k_line_data_history.data.pop();
+      k_line_data_history.data.pop();
 
     if (currentPrice === undefined) {
       return this.formatKLineSynthesis(
-          'Bollinger bands',
-          'idle',
-          params.interval,
-          params.operation,
-          params.threshold,
-          params.instrument_name,
-          currentPrice,
+        'Bollinger bands',
+        'idle',
+        params.interval,
+        params.operation,
+        params.threshold,
+        params.instrument_name,
+        currentPrice,
       );
     }
 
     const bollingerBands: BollingerBands = this.calculateBollingerBands(
-        k_line_data_history,
-        params.period,
+      k_line_data_history,
+      params.period,
     );
 
     const currentUpperBand: number | undefined = bollingerBands.upper.pop();
@@ -358,18 +362,18 @@ export class CryptoComApplicationEventService {
     const currentLowerBand: number | undefined = bollingerBands.lower.pop();
 
     if (
-        currentUpperBand === undefined ||
-        currentMiddleBand === undefined ||
-        currentLowerBand === undefined
+      currentUpperBand === undefined ||
+      currentMiddleBand === undefined ||
+      currentLowerBand === undefined
     ) {
       return this.formatKLineSynthesis(
-          'Bollinger bands',
-          'idle',
-          params.interval,
-          params.operation,
-          params.threshold,
-          params.instrument_name,
-          currentPrice,
+        'Bollinger bands',
+        'idle',
+        params.interval,
+        params.operation,
+        params.threshold,
+        params.instrument_name,
+        currentPrice,
       );
     }
 
@@ -377,26 +381,26 @@ export class CryptoComApplicationEventService {
       case 'is above':
         if (currentUpperBand < currentPrice.c) {
           return this.formatKLineSynthesis(
-              'Bollinger bands',
-              'triggered',
-              params.interval,
-              params.operation,
-              params.threshold,
-              params.instrument_name,
-              currentPrice,
+            'Bollinger bands',
+            'triggered',
+            params.interval,
+            params.operation,
+            params.threshold,
+            params.instrument_name,
+            currentPrice,
           );
         }
         break;
       case 'is below':
         if (currentPrice.c < currentLowerBand) {
           return this.formatKLineSynthesis(
-              'Bollinger bands',
-              'triggered',
-              params.interval,
-              params.operation,
-              params.threshold,
-              params.instrument_name,
-              currentPrice,
+            'Bollinger bands',
+            'triggered',
+            params.interval,
+            params.operation,
+            params.threshold,
+            params.instrument_name,
+            currentPrice,
           );
         }
         break;
@@ -405,13 +409,13 @@ export class CryptoComApplicationEventService {
     }
 
     return this.formatKLineSynthesis(
-        'Bollinger bands',
-        'idle',
-        params.interval,
-        params.operation,
-        params.threshold,
-        params.instrument_name,
-        currentPrice,
+      'Bollinger bands',
+      'idle',
+      params.interval,
+      params.operation,
+      params.threshold,
+      params.instrument_name,
+      currentPrice,
     );
   }
 
@@ -428,13 +432,13 @@ export class CryptoComApplicationEventService {
   }
 
   private formatKLineSynthesis(
-      mode: string,
-      status: string,
-      interval: string,
-      operation: string,
-      threshold: number,
-      instrument_name: string,
-      currentPrice: CandleStick | undefined,
+    mode: string,
+    status: string,
+    interval: string,
+    operation: string,
+    threshold: number,
+    instrument_name: string,
+    currentPrice: CandleStick | undefined,
   ): z.infer<typeof EventDataSchema>[] {
     return [
       {
@@ -450,11 +454,11 @@ export class CryptoComApplicationEventService {
   }
 
   private async fetchKLineDataHistory(
-      instrument_name: string,
-      interval: string,
+    instrument_name: string,
+    interval: string,
   ): Promise<KLineDataHistory> {
     const response: Response = await fetch(
-        `https://api.crypto.com/v2/public/get-candlestick?instrument_name=${instrument_name}&timeframe=${interval}`,
+      `https://api.crypto.com/v2/public/get-candlestick?instrument_name=${instrument_name}&timeframe=${interval}`,
     );
 
     if (!response.ok) {
@@ -476,8 +480,8 @@ export class CryptoComApplicationEventService {
   }
 
   private calculateMovingAverage(
-      kLineDataHistory: KLineDataHistory,
-      period: number,
+    kLineDataHistory: KLineDataHistory,
+    period: number,
   ): number[] {
     const data: CandleStick[] = kLineDataHistory.data;
 
@@ -497,8 +501,8 @@ export class CryptoComApplicationEventService {
   }
 
   private calculateRSI(
-      kLineDataHistory: KLineDataHistory,
-      period: number,
+    kLineDataHistory: KLineDataHistory,
+    period: number,
   ): number[] {
     const data: CandleStick[] = kLineDataHistory.data;
 
@@ -529,8 +533,8 @@ export class CryptoComApplicationEventService {
   }
 
   private calculateBollingerBands(
-      kLineDataHistory: KLineDataHistory,
-      period: number,
+    kLineDataHistory: KLineDataHistory,
+    period: number,
   ): BollingerBands {
     const data: CandleStick[] = kLineDataHistory.data;
 

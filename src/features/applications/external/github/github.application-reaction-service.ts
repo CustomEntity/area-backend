@@ -16,6 +16,7 @@ export class GithubApplicationReactionService {
   async createIssue(
     reactionParametersData: Record<string, unknown>,
     eventData: z.infer<typeof EventDataSchema>,
+    executionLogId: string,
     reactionConnectionCredentials?: {
       access_token: string;
       refresh_token: string;

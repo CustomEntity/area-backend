@@ -135,6 +135,7 @@ export class PetfinderApplicationEventService {
   async checkIfNewAdoptablePet(
     appletId: string,
     eventTriggerData: z.infer<typeof TriggerDataSchema>,
+    executionLogId: string,
     eventConnectionCredentials?: z.infer<typeof ConnectionCredentialsSchema>,
   ): Promise<z.infer<typeof EventDataSchema>[]> {
     const apiKey = this.configService.get<string>(

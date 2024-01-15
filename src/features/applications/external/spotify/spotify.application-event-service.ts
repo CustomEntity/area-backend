@@ -68,6 +68,7 @@ export class SpotifyApplicationEventService {
   async checkNewPlaylistWasCreated(
     appletId: string,
     eventTriggerData: z.infer<typeof TriggerDataSchema>,
+    executionLogId: string,
     eventConnectionCredentials?: {
       access_token: string;
       refresh_token: string;

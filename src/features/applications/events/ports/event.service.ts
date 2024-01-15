@@ -35,6 +35,7 @@ export interface EventService {
     appletId: string,
     applicationName: string,
     eventName: string,
+    executionLogId: string,
     eventTriggerData: z.infer<typeof TriggerDataSchema>,
     eventConnectionCredentials?: z.infer<typeof ConnectionCredentialsSchema>,
   ): Promise<z.infer<typeof EventDataSchema>[]>;

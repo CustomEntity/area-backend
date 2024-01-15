@@ -4,7 +4,7 @@
  * @created : 2024-01-14
  **/
 import { KnexModule } from '../../core/adapters/knex/knex.module';
-import { CqrsModule } from '@nestjs/cqrs';
+import { CommandBus, CqrsModule } from '@nestjs/cqrs';
 import { SystemModule } from '../../system/system.module';
 import { ExecutionLogController } from './controllers/execution-log.controller';
 import { Module } from '@nestjs/common';
@@ -24,6 +24,10 @@ import { GetExecutionLogLogsHandler } from './queries/get-execution-log-logs/get
 import { CreateExecutionLogHandler } from './commands/create-execution-log/create-execution-log.handler';
 import { ID_PROVIDER, IdProvider } from '../../system/id/id.provider';
 import { CreateLogHandler } from './commands/create-log/create-log.handler';
+import { EXECUTION_LOG_SERVICE } from './services/execution-log.service';
+import { ConcreteExecutionLogService } from './adapters/concrete.execution-log.service';
+import { DATE_PROVIDER } from '../../system/date/date.provider';
+import { KnexExecutionLogRepository } from './adapters/knex.execution-log.repository';
 
 @Module({
   imports: [KnexModule, CqrsModule, SystemModule],
@@ -38,7 +42,7 @@ import { CreateLogHandler } from './commands/create-log/create-log.handler';
     {
       provide: EXECUTION_LOG_REPOSITORY,
       useFactory: (knexService: KnexService) =>
-        new KnexLogRepository(knexService.connection),
+        new KnexExecutionLogRepository(knexService.connection),
       inject: [KnexService],
     },
     {
@@ -80,7 +84,13 @@ import { CreateLogHandler } from './commands/create-log/create-log.handler';
         new CreateLogHandler(logRepository, idProvider),
       inject: [LOG_REPOSITORY, ID_PROVIDER],
     },
+    {
+      provide: EXECUTION_LOG_SERVICE,
+      useFactory: (commandBus, dateProvider) =>
+        new ConcreteExecutionLogService(commandBus, dateProvider),
+      inject: [CommandBus, DATE_PROVIDER],
+    },
   ],
-  exports: [],
+  exports: [EXECUTION_LOG_SERVICE],
 })
 export class ExecutionLogModule {}

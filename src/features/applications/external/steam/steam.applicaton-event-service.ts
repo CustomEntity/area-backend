@@ -28,6 +28,7 @@ export class SteamApplicationEventService {
   async newOwnedGame(
     appletId: string,
     eventTriggerData: z.infer<typeof TriggerDataSchema>,
+    executionLogId: string,
     eventConnectionCredentials: { api_key: string },
   ) {
     if (!eventConnectionCredentials || !eventTriggerData) {

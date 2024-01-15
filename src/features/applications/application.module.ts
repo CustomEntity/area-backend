@@ -40,6 +40,7 @@ import { EpitechController } from './external/epitech/epitech.controller';
 import { EpitechService } from './external/epitech/epitech.service';
 import { PetfinderApplicationEventService } from './external/petfinder/petfinder.application-event-service';
 import { CryptoComApplicationEventService } from './external/cryptocom/cryptocom.application-event-service';
+import { ExecutionLogModule } from '../execution-logs/execution-log.module';
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { CryptoComApplicationEventService } from './external/cryptocom/cryptocom
     ReactionModule,
     EventModule,
     DiscoveryModule,
+    ExecutionLogModule,
   ],
   controllers: [
     ApplicationController,
