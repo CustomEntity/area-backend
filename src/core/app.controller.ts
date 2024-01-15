@@ -22,4 +22,14 @@ export class AppController {
   async getAboutJson(@Req() req: Request, @Res() res: Response) {
     return res.json(await this.appService.getAboutJson(req));
   }
+
+  @Get('health')
+  @ApiOperation({ summary: 'Get health' })
+  @ApiResponse({
+    status: 200,
+    description: 'Get health',
+  })
+  async getHealth(@Req() req: Request, @Res() res: Response) {
+    return res.json('OK');
+  }
 }
