@@ -23,14 +23,14 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
     origin: function (origin, callback) {
-      const allowedOrigins = ['http://localhost:5173', 'http://localhost:3000'];
+      const localRegex = /^[a-z]+:\/\/(?:[^\/]*\.+)*localhost:\d+/;
       const domainRegex = /^[a-z]+:\/\/(?:[^\/]*\.+)*lfdp\.eu/;
       const ngrokRegex = /^[a-z]+:\/\/(?:[^\/]*\.+)*ngrok-free\.app/;
       const gcpRegex = /^[a-z]+:\/\/(?:[^\/]*\.+)*run\.app/;
       const vercelRegex = /^[a-z]+:\/\/(?:[^\/]*\.+)*vercel\.app/;
       if (
         !origin ||
-        allowedOrigins.includes(origin) ||
+        localRegex.test(origin) ||
         domainRegex.test(origin) ||
         ngrokRegex.test(origin) ||
         gcpRegex.test(origin) ||

@@ -2,7 +2,9 @@ import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
 import { AppModule } from '../../../core/app.module';
-import { afterAll, beforeAll, describe, it } from '@jest/globals';
+import { afterAll, beforeAll, describe, it, jest } from '@jest/globals';
+import {RedisService} from "../../../core/adapters/redis/redis.service";
+import {KafkaService} from "../../../core/adapters/kafka/kafka.service";
 
 describe('AppletController (e2e)', () => {
   let app: INestApplication;
@@ -12,7 +14,10 @@ describe('AppletController (e2e)', () => {
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
-      providers: [],
+      providers: [
+        { provide: KafkaService, useValue: jest.fn() },
+        { provide: RedisService, useValue: jest.fn() },
+      ],
     }).compile();
 
     app = moduleFixture.createNestApplication();
