@@ -504,7 +504,7 @@ export class CryptoComApplicationEventService {
 
     const rsi: number[] = [];
 
-    for (let i: number = 0; i <= data.length - period; i++) {
+    for (let i: number = 1; i <= data.length - period; i++) {
       let sumGain: number = 0;
       let sumLoss: number = 0;
 
