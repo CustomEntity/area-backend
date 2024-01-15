@@ -16,6 +16,9 @@ steps:
       - '-c'
       - 'npm install && npm test'
     id: Test
+    env:
+      - 'ENCRYPTION_SECRET_KEY=test'
+      - 'ENCRYPTION_IV=test'
   - name: gcr.io/cloud-builders/docker
     args:
       - push
