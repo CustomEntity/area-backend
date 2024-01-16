@@ -21,29 +21,6 @@ BigInt.prototype.toJSON = function (): string {
 };
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.enableCors({
-    origin: function (origin, callback) {
-      const localRegex = /^[a-z]+:\/\/(?:[^\/]*\.+)*localhost:\d+/;
-      const domainRegex = /^[a-z]+:\/\/(?:[^\/]*\.+)*lfdp\.eu/;
-      const ngrokRegex = /^[a-z]+:\/\/(?:[^\/]*\.+)*ngrok-free\.app/;
-      const gcpRegex = /^[a-z]+:\/\/(?:[^\/]*\.+)*run\.app/;
-      const vercelRegex = /^[a-z]+:\/\/(?:[^\/]*\.+)*vercel\.app/;
-      if (
-        !origin ||
-        localRegex.test(origin) ||
-        domainRegex.test(origin) ||
-        ngrokRegex.test(origin) ||
-        gcpRegex.test(origin) ||
-        vercelRegex.test(origin)
-      ) {
-        callback(null, true);
-      } else {
-        callback(null, true);
-        //callback(new Error('Not allowed by CORS: ' + origin), false);
-      }
-    },
-    credentials: true,
-  });
   app.useGlobalFilters(new DomainExceptionFilter(), new HttpExceptionFilter());
 
   const config = new DocumentBuilder()
