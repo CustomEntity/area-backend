@@ -16,6 +16,7 @@ export class AppletConsumer {
 
   @Consumer('applet-execution')
   async handleAppletExecution(message: { appletId: string }): Promise<void> {
+    console.log('Received applet execution message', message);
     await this.commandBus.execute(new ExecuteAppletCommand(message.appletId));
   }
 }
