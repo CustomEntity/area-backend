@@ -24,7 +24,6 @@ export class JwtAuthService {
     res.cookie('access_token', jwt, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      domain: process.env.COOKIE_DOMAIN ?? 'localhost',
     });
 
     return {
