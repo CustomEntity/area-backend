@@ -36,9 +36,7 @@ export class ScheduleAppletExecutionTask {
 
   @Cron(CronExpression.EVERY_MINUTE)
   async handleCron() {
-    console.log('Running cron task');
     if (await this.acquireLock(LOCK_KEY, LOCK_TIMEOUT)) {
-      console.log('Lock acquired');
       try {
         await this.commandBus.execute(new ScheduleAllAppletsExecutionCommand());
       } finally {

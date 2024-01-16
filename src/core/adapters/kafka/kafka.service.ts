@@ -137,7 +137,6 @@ export class KafkaService implements OnModuleInit {
     try {
       await this._consumer.run({
         eachMessage: async ({ topic, partition, message }) => {
-          console.log('Received message lol');
           const handler = this.topicHandlers.get(topic);
           if (handler) {
             try {
