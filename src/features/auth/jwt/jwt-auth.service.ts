@@ -25,7 +25,6 @@ export class JwtAuthService {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       domain: process.env.COOKIE_DOMAIN ?? 'localhost',
-      sameSite: 'none',
     });
 
     return {

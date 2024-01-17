@@ -39,8 +39,8 @@ async function bootstrap() {
       ) {
         callback(null, true);
       } else {
-        callback(null, true);
-        //callback(new Error('Not allowed by CORS: ' + origin), false);
+        //callback(null, true);
+        callback(new Error('Not allowed by CORS: ' + origin), false);
       }
     },
     credentials: true,
