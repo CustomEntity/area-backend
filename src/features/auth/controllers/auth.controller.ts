@@ -43,7 +43,6 @@ export class AuthController {
       secure: process.env.NODE_ENV === 'production',
       httpOnly: true,
       sameSite: 'none',
-      path: '/',
     });
     return res.status(200).send();
   }
