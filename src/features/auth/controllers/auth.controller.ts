@@ -38,7 +38,13 @@ export class AuthController {
   @ApiResponse({ status: 200, description: 'User is logged out' })
   @ApiResponse({ status: 401, description: 'User is not authenticated' })
   async logout(@Req() req: Request, @Res() res: Response) {
-    res.clearCookie('access_token');
+    res.clearCookie('access_token', {
+      domain: process.env.COOKIE_DOMAIN ?? 'localhost',
+      secure: process.env.NODE_ENV === 'production',
+      httpOnly: true,
+      sameSite: 'none',
+      path: '/',
+    });
     return res.status(200).send();
   }
 }
