@@ -23,16 +23,26 @@ BigInt.prototype.toJSON = function (): string {
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: [
-      'http://localhost:3000',
-      'http://localhost:5173',
-      'tauri://localhost',
-      'tauri://',
-      'https://lfdp.eu',
-      'http://lfdp.eu',
-      'http://tauri.localhost',
-    ],
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    origin: function (origin, callback) {
+      const localRegex = /^[a-z]+:\/\/(?:[^\/]*\.+)*localhost:\d+/;
+      const domainRegex = /^[a-z]+:\/\/(?:[^\/]*\.+)*lfdp\.eu/;
+      const ngrokRegex = /^[a-z]+:\/\/(?:[^\/]*\.+)*ngrok-free\.app/;
+      const gcpRegex = /^[a-z]+:\/\/(?:[^\/]*\.+)*run\.app/;
+      const vercelRegex = /^[a-z]+:\/\/(?:[^\/]*\.+)*vercel\.app/;
+      if (
+        !origin ||
+        localRegex.test(origin) ||
+        domainRegex.test(origin) ||
+        ngrokRegex.test(origin) ||
+        gcpRegex.test(origin) ||
+        vercelRegex.test(origin)
+      ) {
+        callback(null, true);
+      } else {
+        callback(null, true);
+        //callback(new Error('Not allowed by CORS: ' + origin), false);
+      }
+    },
     credentials: true,
   });
   app.useGlobalFilters(new DomainExceptionFilter(), new HttpExceptionFilter());
